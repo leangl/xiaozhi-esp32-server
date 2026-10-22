@@ -436,7 +436,7 @@ def test_distributed_adapter_and_dependency_inventory(tmp_path):
         assert package not in requirements
     expected = {
         "asr": {"base", "openai", "utils"}, "tts": {"base", "openai", "default"},
-        "vllm": {"base", "openai"}, "vad": {"base", "silero"},
+        "vllm": {"base", "openai"}, "vad": {"base", "silero", "device"},
     }
     for directory, names in expected.items():
         assert {p.stem for p in (root / "core/providers" / directory).glob("*.py")} == names
@@ -460,7 +460,7 @@ logging.setup_logging = lambda *args, **kwargs: logger
 sys.modules["config.logger"] = logging
 for kind in ("asr", "llm", "tts", "vad", "vllm", "memory", "intent"):
     importlib.import_module("core.utils." + kind)
-for module in ("asr.openai", "llm.openai.openai", "llm.ollama.ollama", "tts.openai", "vllm.openai", "vad.silero", "memory.nomem.nomem", "memory.mem_report_only.mem_report_only", "memory.mem_local_short.mem_local_short", "intent.nointent.nointent", "intent.intent_llm.intent_llm", "intent.function_call.function_call"):
+for module in ("asr.openai", "llm.openai.openai", "llm.ollama.ollama", "tts.openai", "vllm.openai", "vad.silero", "vad.device", "memory.nomem.nomem", "memory.mem_report_only.mem_report_only", "memory.mem_local_short.mem_local_short", "intent.nointent.nointent", "intent.intent_llm.intent_llm", "intent.function_call.function_call"):
     importlib.import_module("core.providers." + module)
 assert not removed.intersection(sys.modules)
 '''

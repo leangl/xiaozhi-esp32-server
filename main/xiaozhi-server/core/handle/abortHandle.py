@@ -12,6 +12,9 @@ async def handleAbortMessage(conn: "ConnectionHandler"):
     conn.close_after_chat = False
     conn.client_abort = True
     conn.clear_queues()
+    if getattr(getattr(conn, "vad", None), "device_controlled", False) is True:
+        conn.vad.stop_listening(conn)
+        conn.reset_audio_states()
     # Interrupt the client's speaking state.
     await conn.websocket.send(
         json.dumps({"type": "tts", "state": "stop", "session_id": conn.session_id})

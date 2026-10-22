@@ -13,7 +13,7 @@ import threading
 
 from abc import ABC, abstractmethod
 from config.logger import setup_logging
-from core.providers.asr.dto.dto import InterfaceType
+from core.providers.asr.dto.dto import AudioQueueBarrier, InterfaceType
 from core.handle.receiveAudioHandle import startToChat
 from core.handle.reportHandle import enqueue_asr_report
 from core.utils.util import remove_punctuation_and_length
@@ -44,6 +44,9 @@ class ASRProviderBase(ABC):
         while not conn.stop_event.is_set():
             try:
                 message = conn.asr_audio_queue.get(timeout=1)
+                if isinstance(message, AudioQueueBarrier):
+                    message.release()
+                    continue
                 future = asyncio.run_coroutine_threadsafe(
                     handleAudioMessage(conn, message),
                     conn.loop,
@@ -56,6 +59,12 @@ class ASRProviderBase(ABC):
                     f"Failed to process ASR text: {str(e)}, type: {type(e).__name__}, traceback: {traceback.format_exc()}"
                 )
                 continue
+
+    async def drain_audio_queue(self, conn: "ConnectionHandler"):
+        """Device stop must follow all PCM already received on the socket."""
+        barrier = AudioQueueBarrier()
+        conn.asr_audio_queue.put(barrier)
+        await asyncio.wait_for(barrier.future, timeout=5)
 
     # Receive audio.
     async def receive_audio(self, conn: "ConnectionHandler", pcm_frame, audio_have_voice):

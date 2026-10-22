@@ -27,6 +27,40 @@ class ListenTextMessageHandler(TextMessageHandler):
         return TextMessageType.LISTEN
 
     async def handle(self, conn: "ConnectionHandler", msg_json: Dict[str, Any]) -> None:
+        device_vad = getattr(getattr(conn, "vad", None), "device_controlled", False) is True
+        if device_vad and "mode" in msg_json and msg_json["mode"] != "manual":
+            conn.vad.stop_listening(conn)
+            conn.reset_audio_states()
+            conn.logger.bind(tag=TAG).warning("Device VAD requires manual listen/start and listen/stop")
+            await conn.close()
+            return
+        if device_vad and msg_json["state"] in {"start", "stop"}:
+            mode = msg_json.get("mode", conn.client_listen_mode)
+            if mode != "manual" or conn.asr is None:
+                conn.vad.stop_listening(conn)
+                conn.reset_audio_states()
+                conn.logger.bind(tag=TAG).warning("Device VAD requires manual listen/start and listen/stop")
+                await conn.close()
+                return
+            if msg_json["state"] == "start":
+                conn.client_listen_mode = mode
+                if not conn.vad.start_listening(conn):
+                    return  # A duplicate start must not erase buffered speech.
+                conn.just_woken_up = False
+                conn.reset_audio_states()
+                return
+            if not conn.vad.is_listening(conn):
+                return  # Duplicate/unsolicited stop must not transcribe twice.
+            try:
+                await conn.asr.drain_audio_queue(conn)
+            except asyncio.TimeoutError:
+                conn.vad.stop_listening(conn)
+                conn.reset_audio_states()
+                conn.logger.bind(tag=TAG).warning("Device VAD audio queue unavailable; discarding incomplete turn")
+                await conn.close()
+                return
+            if not conn.vad.stop_listening(conn):
+                return  # The turn may have exceeded its limit while draining.
         if "mode" in msg_json:
             conn.client_listen_mode = msg_json["mode"]
             conn.logger.bind(tag=TAG).debug(

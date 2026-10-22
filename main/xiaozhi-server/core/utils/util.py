@@ -480,21 +480,10 @@ def check_vad_update(before_config, new_config):
         or new_config["selected_module"].get("VAD") is None
     ):
         return False
-    update_vad = False
     current_vad_module = before_config["selected_module"]["VAD"]
     new_vad_module = new_config["selected_module"]["VAD"]
-    current_vad_type = (
-        current_vad_module
-        if "type" not in before_config["VAD"][current_vad_module]
-        else before_config["VAD"][current_vad_module]["type"]
-    )
-    new_vad_type = (
-        new_vad_module
-        if "type" not in new_config["VAD"][new_vad_module]
-        else new_config["VAD"][new_vad_module]["type"]
-    )
-    update_vad = current_vad_type != new_vad_type
-    return update_vad
+    return (current_vad_module != new_vad_module
+            or before_config["VAD"][current_vad_module] != new_config["VAD"][new_vad_module])
 
 
 def check_asr_update(before_config, new_config):

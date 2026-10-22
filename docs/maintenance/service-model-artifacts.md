@@ -7,6 +7,10 @@ or local VAD files produces an actionable readiness error.
 
 ## Silero VAD
 
+Silero remains the default, but server inference can now be disabled explicitly
+by selecting `DeviceVAD` (`type: device`). That mode requires no local VAD model
+and uses the device's manual start/stop protocol. See [configuration and limits](../device-vad.md).
+
 The retained `core/providers/vad/silero.py` loads an explicit local ONNX file
 with ONNX Runtime's CPU provider. It does not import the vendored project's
 Torch helpers or their optional download function. The default configured path

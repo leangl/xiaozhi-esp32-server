@@ -48,9 +48,9 @@ class ServiceMigrationValidation {
         var result = new TreeMap<String, String>();
         for (String table : PRESERVED) result.put(table, fingerprint(jdbc, "SELECT * FROM " + table));
         result.put("model-identities-config", fingerprint(jdbc,
-            "SELECT id,model_type,model_code,model_name,config_json FROM ai_model_config"));
+            "SELECT id,model_type,model_code,model_name,config_json FROM ai_model_config WHERE id<>'VAD_DeviceVAD'"));
         result.put("historical-ledger", fingerprint(jdbc,
-            "SELECT ID,AUTHOR,FILENAME,MD5SUM FROM DATABASECHANGELOG WHERE ID<>'202610210001'"));
+            "SELECT ID,AUTHOR,FILENAME,MD5SUM FROM DATABASECHANGELOG WHERE ID NOT IN ('202610210001','202610220001')"));
         return result;
     }
 
@@ -149,6 +149,10 @@ class ServiceMigrationValidation {
         for (var model : jdbc.query("SELECT * FROM ai_model_config", ServiceMigrationValidation::readModel)) {
             require(!Integer.valueOf(1).equals(model.getIsEnabled()) || ApprovedProviderCatalog.isSupported(model), "Unsupported enabled model");
         }
+        require(jdbc.queryForObject("SELECT COUNT(*) FROM ai_model_config WHERE id='VAD_DeviceVAD' AND is_default=0 AND is_enabled=1", Integer.class) == 1,
+            "Device VAD opt-in catalog row missing or unexpectedly default");
+        require(jdbc.queryForObject("SELECT COUNT(*) FROM ai_model_provider WHERE id='SYSTEM_VAD_DeviceVAD' AND provider_code='device'", Integer.class) == 1,
+            "Device VAD provider missing");
         require("false".equals(jdbc.queryForObject("SELECT param_value FROM sys_params WHERE param_code='server.enable_mobile_register'", String.class)), "SMS flag not migrated");
     }
 }

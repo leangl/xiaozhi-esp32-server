@@ -201,6 +201,11 @@ ASR:
     output_dir: tmp/
 
 VAD:
+  # Select DeviceVAD instead of SileroVAD to trust device-owned turn boundaries.
+  # The device must use mode: manual and explicit listen/start + listen/stop.
+  DeviceVAD:
+    type: device
+    max_audio_duration_ms: 60000
   SileroVAD:
     type: silero
     threshold: 0.5

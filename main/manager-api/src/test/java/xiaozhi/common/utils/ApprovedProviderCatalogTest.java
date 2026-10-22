@@ -14,6 +14,38 @@ import xiaozhi.modules.agent.dto.AgentUpdateDTO;
 import xiaozhi.modules.model.entity.ModelConfigEntity;
 
 class ApprovedProviderCatalogTest {
+    @Test
+    void deviceVadNeedsNoModelOrEndpointAndDoesNotChangeSilero() {
+        assertDoesNotThrow(() -> ApprovedProviderCatalog.validate("VAD", "device", Map.of("type", "device")));
+        assertDoesNotThrow(() -> ApprovedProviderCatalog.validate("VAD", "device",
+                Map.of("type", "device", "max_audio_duration_ms", "60000")));
+        assertDoesNotThrow(() -> ApprovedProviderCatalog.validate("VAD", "silero", Map.of("type", "silero")));
+        ModelConfigEntity model = model("VAD", "device", null, null);
+        assertTrue(ApprovedProviderCatalog.isAvailable(model));
+        AgentUpdateDTO dto = new AgentUpdateDTO();
+        dto.setVadModelId(model.getId());
+        assertDoesNotThrow(() -> ApprovedProviderCatalog.validateSelections(dto, id -> model));
+        assertDoesNotThrow(() -> ApprovedProviderCatalog.validateRuntimeConfig(
+                Map.of("VAD", Map.of("DeviceVAD", Map.of("type", "device")))));
+    }
+
+    @Test
+    void deviceVadDurationIsBoundedAndRedactedForApiAndUiValues() {
+        for (Object duration : List.of(1000, 300000, "120000")) {
+            assertDoesNotThrow(() -> ApprovedProviderCatalog.validate("VAD", "device",
+                    Map.of("type", "device", "max_audio_duration_ms", duration)));
+        }
+        for (Object duration : List.of(true, false, 0, 999, 300001, 1000.5, "1000.0", "private-value", Map.of(), List.of())) {
+            RenException error = assertThrows(RenException.class, () -> ApprovedProviderCatalog.validate("VAD", "device",
+                    Map.of("type", "device", "max_audio_duration_ms", duration)));
+            assertFalse(error.getMessage().contains("private-value"));
+        }
+        Map<String, Object> nullValue = new java.util.HashMap<>();
+        nullValue.put("type", "device");
+        nullValue.put("max_audio_duration_ms", null);
+        assertThrows(RenException.class, () -> ApprovedProviderCatalog.validate("VAD", "device", nullValue));
+    }
+
     @ParameterizedTest
     @CsvSource({"ASR,openai,base_url", "LLM,openai,base_url", "VLLM,openai,base_url", "TTS,openai,api_url", "RAG,ragflow,base_url"})
     void supportsReviewedActualEndpointsRegardlessOfAlias(String role, String type, String key) {

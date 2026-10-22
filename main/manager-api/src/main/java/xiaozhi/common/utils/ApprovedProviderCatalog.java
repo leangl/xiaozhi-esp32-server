@@ -17,7 +17,7 @@ public final class ApprovedProviderCatalog {
 
     private static final Map<String, Set<String>> TYPES = Map.of(
             "asr", Set.of("openai"), "llm", Set.of("openai", "ollama"),
-            "vllm", Set.of("openai"), "tts", Set.of("openai"), "vad", Set.of("silero"),
+            "vllm", Set.of("openai"), "tts", Set.of("openai"), "vad", Set.of("silero", "device"),
             "memory", Set.of("nomem", "mem_local_short", "mem_report_only"),
             "intent", Set.of("nointent", "intent_llm", "function_call"),
             "rag", Set.of("ragflow"));
@@ -59,6 +59,13 @@ public final class ApprovedProviderCatalog {
             throw unavailable(role);
         }
         try {
+            if (normalizedRole.equals("vad") && type.equals("device")) {
+                Object duration = config.getOrDefault("max_audio_duration_ms", null);
+                if (config.containsKey("max_audio_duration_ms")
+                        && (duration == null || !duration.toString().matches("[0-9]+")
+                        || Long.parseLong(duration.toString()) < 1000
+                        || Long.parseLong(duration.toString()) > 300000)) throw unavailable(role);
+            }
             for (Map.Entry<String, ?> entry : config.entrySet()) {
                 String key = normalize(entry.getKey());
                 Object value = entry.getValue();

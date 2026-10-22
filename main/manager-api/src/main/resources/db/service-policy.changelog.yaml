@@ -9,3 +9,10 @@ databaseChangeLog:
         - sqlFile:
             encoding: utf8
             path: classpath:db/service-policy/202610210001.sql
+  - changeSet:
+      id: 202610220001
+      author: platform
+      changes:
+        - sqlFile:
+            encoding: utf8
+            path: classpath:db/service-policy/202610220001-device-vad.sql

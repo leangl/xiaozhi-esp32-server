@@ -10,13 +10,28 @@ from core.handle.abortHandle import handleAbortMessage
 from core.handle.intentHandler import handle_user_intent
 from core.utils.output_counter import check_device_output_limit
 from core.handle.sendAudioHandle import send_stt_message, SentenceType
+from core.providers.vad.device import DeviceAudioFrame, DeviceVadLimitError
 
 TAG = __name__
 
 
 async def handleAudioMessage(conn: "ConnectionHandler", pcm_frame):
+    if isinstance(pcm_frame, DeviceAudioFrame):
+        if (not conn.vad.is_listening(conn)
+                or pcm_frame.turn_id != getattr(conn, "_device_vad_turn_id", None)):
+            return  # An aborted turn's in-flight worker cannot enter the next turn.
+        pcm_frame = pcm_frame.pcm
     # Check whether the current segment contains speech.
-    have_voice = conn.vad.is_vad(conn, pcm_frame)
+    try:
+        have_voice = conn.vad.is_vad(conn, pcm_frame)
+    except DeviceVadLimitError:
+        conn.reset_audio_states()
+        conn.logger.bind(tag=TAG).warning("Device VAD turn limit reached; discarding audio and closing")
+        await conn.close()
+        return
+    if getattr(conn.vad, "device_controlled", False) is True and not have_voice:
+        # Never buffer/transcribe late packets or unsolicited microphone audio.
+        return
     # Briefly ignore VAD when the device has just woken up.
     if hasattr(conn, "just_woken_up") and conn.just_woken_up:
         have_voice = False

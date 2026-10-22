@@ -16,7 +16,7 @@ SUPPORTED_PROVIDERS = {
     "LLM": frozenset({"openai", "ollama"}),
     "VLLM": frozenset({"openai"}),
     "TTS": frozenset({"openai"}),
-    "VAD": frozenset({"silero"}),
+    "VAD": frozenset({"silero", "device"}),
     "Memory": frozenset({"nomem", "mem_local_short", "mem_report_only"}),
     "Intent": frozenset({"nointent", "intent_llm", "function_call"}),
 }
@@ -61,6 +61,22 @@ def vad_model_path(config):
     directory = config.get("model_dir")
     return (Path(directory) / "src/silero_vad/data/silero_vad.onnx"
             if _configured(directory) else None)
+
+
+def device_vad_max_audio_duration_ms(config):
+    """Bound manual turns; accept integer strings from the model editor."""
+    value = config.get("max_audio_duration_ms", 60000)
+    if isinstance(value, bool) or not isinstance(value, (str, int)):
+        raise ProviderProfileError("Device VAD max_audio_duration_ms must be an integer from 1000 to 300000")
+    if isinstance(value, str) and (not value.isascii() or not value.isdecimal()):
+        raise ProviderProfileError("Device VAD max_audio_duration_ms must be an integer from 1000 to 300000")
+    try:
+        duration = int(value)
+    except (ValueError, OverflowError):
+        raise ProviderProfileError("Device VAD max_audio_duration_ms must be an integer from 1000 to 300000") from None
+    if not 1000 <= duration <= 300000:
+        raise ProviderProfileError("Device VAD max_audio_duration_ms must be an integer from 1000 to 300000")
+    return duration
 
 
 def validate_provider_config(module, config, provider_type=None, *, require_ready=False):
@@ -111,6 +127,8 @@ def validate_provider_config(module, config, provider_type=None, *, require_read
             # SDK-only token is supplied locally by the adapter, never persisted.
             if not loopback and not _configured(config.get("api_key")):
                 raise ProviderProfileError(f"{module}.api_key is not ready; configure credentials server-side")
+    elif module == "VAD" and kind == "device":
+        device_vad_max_audio_duration_ms(config)
     elif module == "VAD" and require_ready:
         path = vad_model_path(config)
         try:

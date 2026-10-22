@@ -372,6 +372,8 @@ class ConnectionHandler:
         elif isinstance(message, bytes):
             if self.vad is None or self.asr is None:
                 return
+            if getattr(self.vad, "device_controlled", False) is True and not self.vad.is_listening(self):
+                return
 
             # Handle audio packets from the MQTT gateway.
             if self.conn_from_mqtt_gateway and len(message) >= 16:
@@ -382,7 +384,22 @@ class ConnectionHandler:
             # Decode PCM at entry to avoid decoding it separately for VAD and ASR.
             pcm_frame = self._decode_opus_packet(message)
             if pcm_frame:
-                self.asr_audio_queue.put(pcm_frame)
+                await self._queue_asr_audio(pcm_frame)
+
+    async def _queue_asr_audio(self, pcm_frame):
+        if getattr(self.vad, "device_controlled", False) is True:
+            from core.providers.vad.device import DeviceVadLimitError
+
+            try:
+                pcm_frame = self.vad.queue_audio(self, pcm_frame)
+            except DeviceVadLimitError:
+                self.reset_audio_states()
+                self.logger.bind(tag=TAG).warning("Device VAD receive limit reached; discarding audio and closing")
+                await self.close()
+                return
+            if pcm_frame is None:
+                return
+        self.asr_audio_queue.put(pcm_frame)
 
     async def _process_mqtt_audio_message(self, message):
         """
@@ -408,7 +425,7 @@ class ConnectionHandler:
             if timestamp > 0 and self.client_aec:
                 pcm_frame = self._apply_aec(timestamp, pcm_frame)
 
-            self.asr_audio_queue.put(pcm_frame)
+            await self._queue_asr_audio(pcm_frame)
             return True
         except Exception as e:
             self.logger.bind(tag=TAG).error(f"Failed to parse WebSocket audio packet: {e}")
