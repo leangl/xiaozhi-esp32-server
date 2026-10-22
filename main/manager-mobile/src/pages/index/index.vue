@@ -1,9 +1,9 @@
-<!-- 使用 type="home" 属性设置首页，其他页面不需要设置，默认为page -->
+<!-- Use type="home" for the home page; other pages default to page -->
 <route lang="jsonc" type="home">
 {
   "layout": "tabbar",
   "style": {
-    // 'custom' 表示开启自定义导航栏，默认 'default'
+    // 'custom' enables a custom navigation bar; the default is 'default'
     "navigationStyle": "custom",
     "navigationBarTitleText": "首页"
   }
@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import type { Agent } from '@/api/agent/types'
 import { computed, onMounted, ref } from 'vue'
-// 在组件挂载后设置导航栏标题
+// Set the navigation bar title after mounting
 import { useMessage } from 'wot-design-uni/components/wd-message-box'
 import useZPaging from 'z-paging/components/z-paging/js/hooks/useZPaging.js'
 import { createAgent, deleteAgent, getAgentList } from '@/api/agent/agent'
@@ -24,12 +24,12 @@ defineOptions({
   name: 'Home',
 })
 
-// 获取屏幕边界到安全区域距离
+// Get the distance from screen edges to the safe area
 let safeAreaInsets: any
 let systemInfo: any
 
 // #ifdef MP-WEIXIN
-// 微信小程序使用新的API
+// Use the new API in WeChat mini-programs
 systemInfo = uni.getWindowInfo()
 safeAreaInsets = systemInfo.safeArea
   ? {
@@ -42,16 +42,16 @@ safeAreaInsets = systemInfo.safeArea
 // #endif
 
 // #ifndef MP-WEIXIN
-// 其他平台继续使用uni API
+// Keep using the uni API on other platforms
 systemInfo = uni.getSystemInfoSync()
 safeAreaInsets = systemInfo.safeAreaInsets
 // #endif
 
-// 智能体数据
+// Agent data
 const agentList = ref<Agent[]>([])
 const pagingRef = ref()
 useZPaging(pagingRef)
-// 消息组件
+// Message component
 const message = useMessage()
 const deleteDialogVisible = ref(false)
 const deleteTargetAgent = ref<Agent | null>(null)
@@ -62,36 +62,36 @@ const isDeleteAgentNameMatched = computed(() => {
   return !!deleteTargetAgent.value?.agentName && deleteConfirmText.value === deleteTargetAgent.value.agentName
 })
 
-// z-paging查询列表数据
+// Query list data for z-paging
 async function queryList(pageNo: number, pageSize: number) {
   try {
-    console.log('z-paging获取智能体列表')
+    console.log('Fetching agents for z-paging')
 
     const response = await getAgentList()
 
-    // 更新本地列表
+    // Update the local list
     agentList.value = response
 
-    // 直接返回全部数据，不需要分页处理
+    // Return all data directly; pagination is unnecessary
     pagingRef.value.complete(response)
   }
   catch (error) {
-    console.error('获取智能体列表失败:', error)
-    // 告知z-paging数据加载失败
+    console.error('Failed to fetch agents:', error)
+    // Notify z-paging that loading failed
     pagingRef.value.complete(false)
   }
 }
 
-// 创建智能体
+// Create an agent
 async function handleCreateAgent(agentName: string) {
   try {
     await createAgent({ agentName: agentName.trim() })
-    // 创建成功后刷新列表
+    // Refresh the list after successful creation
     pagingRef.value.reload()
     toast.success(`${t('home.agentName')}"${agentName}"${t('message.saveSuccess')}`)
   }
   catch (error: any) {
-    console.error('创建智能体失败:', error)
+    console.error('Failed to create the agent:', error)
     const errorMessage = error?.message || t('message.saveFail')
     toast.error(errorMessage)
   }
@@ -121,7 +121,7 @@ function handleDeleteAgentPaste() {
   toast.warning(t('home.deleteAgentPasteForbidden'))
 }
 
-// 删除智能体
+// Delete an agent
 async function handleDeleteAgent() {
   if (!deleteTargetAgent.value || !isDeleteAgentNameMatched.value || deleteAgentLoading.value)
     return
@@ -129,7 +129,7 @@ async function handleDeleteAgent() {
   try {
     deleteAgentLoading.value = true
     await deleteAgent(deleteTargetAgent.value.id)
-    // 删除成功后刷新列表
+    // Refresh the list after successful deletion
     pagingRef.value.reload()
     toast.success(t('home.deleteAgentSuccess'))
     deleteDialogVisible.value = false
@@ -137,7 +137,7 @@ async function handleDeleteAgent() {
     deleteConfirmText.value = ''
   }
   catch (error: any) {
-    console.error('删除智能体失败:', error)
+    console.error('Failed to delete the agent:', error)
     const errorMessage = error?.message || t('message.deleteFail')
     toast.error(errorMessage)
   }
@@ -146,20 +146,20 @@ async function handleDeleteAgent() {
   }
 }
 
-// 进入编辑页面
+// Open the editor
 function goToEditAgent(agent: Agent) {
-  // 传递智能体ID到编辑页面
+  // Pass the agent ID to the editor
   uni.navigateTo({
     url: `/pages/agent/index?agentId=${agent.id}`,
   })
 }
 
-// 点击卡片进入编辑
+// Open the editor when a card is clicked
 function handleCardClick(agent: Agent) {
   goToEditAgent(agent)
 }
 
-// 打开创建对话框
+// Open the creation dialog
 function openCreateDialog() {
   message
     .prompt({
@@ -178,11 +178,11 @@ function openCreateDialog() {
       }
     })
     .catch(() => {
-      // 用户取消操作
+      // User canceled the operation
     })
 }
 
-// 格式化时间
+// Format time
 function formatTime(timeStr: string) {
   const date = new Date(timeStr)
   const now = new Date()
@@ -197,9 +197,9 @@ function formatTime(timeStr: string) {
   return `${Math.floor(diff / 86400000)}${t('home.daysAgo')}`
 }
 
-// 页面显示时刷新列表
+// Refresh the list when the page appears
 onShow(() => {
-  console.log('首页 onShow，刷新智能体列表')
+  console.log('Home onShow: refreshing agents')
   if (pagingRef.value) {
     pagingRef.value.refresh()
   }
@@ -223,7 +223,7 @@ onMounted(() => {
       height: '56px',
     }" @query="queryList"
   >
-    <!-- 固定在顶部的横幅区域 -->
+    <!-- Fixed top banner -->
     <template #top>
       <view class="banner-section" :style="{ paddingTop: `${safeAreaInsets?.top + 100}rpx` }">
         <view class="banner-content">
@@ -238,18 +238,18 @@ onMounted(() => {
             </text>
           </view>
           <view class="wave-decoration">
-            <!-- 添加波浪装饰 -->
+            <!-- Wave decoration -->
             <view class="wave" />
             <view class="wave wave-2" />
           </view>
         </view>
       </view>
 
-      <!-- 内容区域开始标识 -->
+      <!-- Content area start marker -->
       <view class="content-section-header" />
     </template>
 
-    <!-- 智能体卡片列表 -->
+    <!-- Agent card list -->
     <view class="agent-list">
       <view v-for="agent in agentList" :key="agent.id" class="agent-item">
         <wd-swipe-action>
@@ -306,7 +306,7 @@ onMounted(() => {
       </view>
     </view>
 
-    <!-- 自定义空状态 -->
+    <!-- Custom empty state -->
     <template #empty>
       <view class="empty-state">
         <wd-icon name="robot" custom-class="empty-icon" />
@@ -319,10 +319,10 @@ onMounted(() => {
       </view>
     </template>
 
-    <!-- FAB 新增按钮 -->
+    <!-- Floating add button -->
     <wd-fab type="primary" icon="add" :draggable="true" :expandable="false" @click="openCreateDialog" />
 
-    <!-- MessageBox 组件 -->
+    <!-- MessageBox component -->
     <wd-message-box />
   </z-paging>
 
@@ -500,7 +500,7 @@ onMounted(() => {
   }
 }
 
-// 内容区域开始标识，创建白色背景过渡
+// Content area start marker creates a white background transition
 .content-section-header {
   background: #ffffff;
   border-radius: 32rpx 32rpx 0 0;
@@ -510,7 +510,7 @@ onMounted(() => {
   z-index: 1;
 }
 
-// z-paging内容区域样式
+// z-paging content styles
 :deep(.z-paging-content) {
   background: #ffffff;
   padding: 0 0 40rpx 0;

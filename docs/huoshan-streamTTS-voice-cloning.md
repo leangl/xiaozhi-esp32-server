@@ -1,58 +1,47 @@
-# 智控台 火山双流式语音合成+音色克隆配置教程
+# Volcengine bidirectional streaming TTS and voice cloning
 
-本教程分为4个阶段：准备阶段、配置阶段、克隆阶段、使用阶段。主要是介绍通过智控台配置火山双流式语音合成+音色克隆的过程。
+This guide covers preparation, configuration, cloning, and using a voice through the management console.
 
-## 第一阶段：准备阶段
-超级管理员先预先把火山引擎服务开通好，获取到App Id，Access Token。默认火山引擎会赠送一个音色资源。这个音色资源需要把它复制到本项目里。
+## Phase 1: Preparation
 
-如果你想克隆多个音色，需要购买开通多个音色资源。只要把每个音色资源的声音ID(S_xxxxx)复制到本项目。然后分配给系统的账号使用即可。以下是详细步骤：
+A super administrator must enable the Volcengine service and obtain an App Id and Access Token. The provider may include one voice resource; copy that resource into this project. To clone more voices, purchase additional resources, copy each voice ID (`S_xxxxx`), and assign it to a system account.
 
-### 1.开通火山引擎服务
-访问 https://console.volcengine.com/speech/app  在应用管理创建应用，勾选语音合成大模型和声音复刻大模型。
+### 1. Enable the service
 
-### 2.获取音色资源ID
-访问 https://console.volcengine.com/speech/service/9999 复制三项内容，分别是App Id，Access Token以及声音ID(S_xxxxx)。如图
+Open https://console.volcengine.com/speech/app and create an application in **Application Management**. Enable the large-model speech synthesis and voice-cloning services.
 
-![获取音色资源](images/image-clone-integration-01.png)
+### 2. Obtain the voice resource ID
 
-## 第二阶段：配置火山引擎服务
+Open https://console.volcengine.com/speech/service/9999 and copy **App Id**, **Access Token**, and **Voice ID** (`S_xxxxx`). These are the three values illustrated in the provider screenshot:
 
-### 1.填写火山引擎配置
+![Volcengine application credentials and voice resource](images/image-clone-integration-01.png)
 
-使用超级管理员账号登录智控台，点击顶部【模型配置】，再点击模型配置页面左侧的【语音合成】，搜索找到“火山双流式语音合成”，点击修改，将你火山引擎的`App Id`填入到【应用ID】字段里，将`Access Token`填入到【访问令牌】字段里。然后保存。
+## Phase 2: Configure Volcengine
 
-### 2.将音色资源ID分配给系统账号
+### 1. Enter provider credentials
 
-使用超级管理员账号登录智控台，点击顶部`参数字典`，在下拉菜单中，点击`系统功能配置`页面。在页面上勾选`音色克隆`，点击保存配置。即可在顶部菜单看到`音色克隆`按钮。
+As super administrator, open **Model Configuration > Text-to-Speech**. Find **Volcengine Bidirectional Streaming TTS**, click **Edit**, put App Id in **Application ID** and Access Token in **Access Token**, then save.
 
-使用超级管理员账号登录智控台，点击顶部【音色克隆】、【音色资源】。
+### 2. Assign a voice resource to an account
 
-点击新增按钮，在【平台名称】选择“火山双流式语音合成”；
+Open **Parameters and Dictionaries > System Feature Configuration**, enable **Voice Cloning**, and save. The top menu now includes **Voice Cloning**.
 
-在【音色资源ID】填入你火山引擎的声音资源ID(S_xxxxx)，填入后按回车；
+Open **Voice Cloning > Voice Resources** and click **Add**. Select **Volcengine Bidirectional Streaming TTS** as **Platform Name**. Enter the provider's `S_xxxxx` ID in **Voice Resource ID** and press Enter. In **Owner Account**, choose the system account to receive the resource, including your own if appropriate, and save.
 
-在【归属账号】选择你要分配给的系统账号，你可以分配给你自己。然后点击保存
+## Phase 3: Clone the voice
 
-## 第三阶段：克隆阶段
+Open **Voice Cloning > Voice Cloning**. If the page says your account has no voice resources and asks you to contact an administrator, return to phase 2 and assign a resource to that account.
 
-如果登录后，点击顶部【音色克隆】》【音色克隆】，显示【您的账号暂无音色资源请联系管理员分配音色资源】，说明你在第二阶段还没有把音色资源ID分配给这个账号。那就是回到第二阶段，分配音色资源给对应的账号。
+If resources appear, select one and click **Upload Audio**. Choose an audio sample, listen to it or trim a segment, then confirm with **Upload Audio**. The screenshot shows the upload/preview/selection step:
 
-如果登录后，点击顶部【音色克隆】》【音色克隆】，能看到对应的音色列表。请继续。
+![Upload and preview a voice sample](images/image-clone-integration-02.png)
 
-在列表里会看到对应的音色列表。选择其中一个音色资源，点击【上传音频】按钮。上传后，可以试听一下声音或者截取某段声音。确认后点击【上传音频】按钮。
-![上传音频](images/image-clone-integration-02.png)
+After upload, the resource should show **Pending Cloning**. Click **Clone Now** and wait 1–2 seconds for the result. On failure, hover over the **Error Information** icon to read the cause. On success, the state becomes **Training Successful**. Use the edit button under **Voice Name** to give the resource a recognizable name.
 
-上传音频后，在列表里会看到对应的音色会变成“待复刻”状态。点击【立即复刻】按钮。等1~2秒会返回结果。
+## Phase 4: Use the cloned voice
 
-如果复刻失败，请将鼠标放到“错误信息”图标上，会显示失败的原因。
+Open **Agent Management**, choose an agent, and click **Configure Role**. Select **Volcengine Bidirectional Streaming TTS** as TTS. Choose a voice resource whose name includes **Cloned Voice**, then save. The screenshot illustrates this voice selection:
 
-如果复刻成功，在列表里会看到对应的音色会变成“训练成功”状态。此时你可以点击【声音名称】栏的修改按钮，修改音色资源的名称，方便后期选择使用。
+![Select a cloned voice for an agent](images/image-clone-integration-03.png)
 
-## 第四阶段：使用阶段
-
-点击顶部【智能体管理】，选择任意一个智能体，点击【配置角色】按钮。
-
-语音合成(TTS)选择“火山双流式语音合成”。在列表里，找到名字带有“克隆音色”的音色资源（如图），选择它，点击保存。
-![选择音色](images/image-clone-integration-03.png)
-
-接下来，可以唤醒小智和它对话。
+Wake Xiaozhi and start a conversation.

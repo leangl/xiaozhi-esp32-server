@@ -168,7 +168,7 @@
         <div class="el-upload__text">{{ $t('knowledgeFileUpload.dragOrClick') }}</div>
         <div class="el-upload__tip" slot="tip">{{ $t('knowledgeFileUpload.uploadTip') }}</div>
       </el-upload>
-      <!-- 已选择文件列表 -->
+      <!-- Selected files -->
       <div class="selected-files-section" v-if="selectedFilesList.length > 0">
         <h4>{{ $t('knowledgeFileUpload.selectedFiles') }} ({{ selectedFilesList.length }})</h4>
         <div class="selected-files-list">
@@ -470,7 +470,7 @@ export default {
 
     handleFileChange(file) {
       if (!file || !file.raw) return;
-       // 文件上传前的验证
+       // Validate before uploading a file
       const isLt10M = file.size / 1024 / 1024 < 10;
       if (!isLt10M) {
         this.$message.error(this.$t('knowledgeFileUpload.fileSizeExceeded'));
@@ -522,7 +522,7 @@ export default {
               } else {
                 reject({ success: false, fileName: file.name, error: this.$t('knowledgeFileUpload.uploadFailed') });
               }
-              console.error('上传文档失败:', err);
+              console.error('Failed to upload the document:', err);
             }
           );
         });

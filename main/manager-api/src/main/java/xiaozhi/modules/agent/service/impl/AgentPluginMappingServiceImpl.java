@@ -21,9 +21,11 @@ import xiaozhi.modules.knowledge.entity.KnowledgeBaseEntity;
 import xiaozhi.modules.knowledge.service.KnowledgeBaseService;
 import xiaozhi.modules.model.entity.ModelConfigEntity;
 import xiaozhi.modules.model.service.ModelConfigService;
+import xiaozhi.modules.model.service.ModelProviderService;
+import xiaozhi.common.utils.ApprovedProviderCatalog;
 
 /**
- * @description 针对表【ai_agent_plugin_mapping(Agent与插件的唯一映射表)】的数据库操作Service实现
+ * @description Database service implementation for ai_agent_plugin_mapping (unique agent-to-plugin mappings)
  * @createDate 2025-05-25 22:33:17
  */
 @Service
@@ -34,6 +36,16 @@ public class AgentPluginMappingServiceImpl extends CrudRepository<AgentPluginMap
     private final AgentPluginMappingMapper agentPluginMappingMapper;
     private final KnowledgeBaseService knowledgeBaseService;
     private final ModelConfigService modelConfigService;
+    private final ModelProviderService modelProviderService;
+
+    @Override
+    public void validateSelections(List<xiaozhi.modules.agent.dto.AgentUpdateDTO.FunctionInfo> functions) {
+        if (functions == null) return;
+        for (var function : functions) {
+            if (function == null) throw ApprovedProviderCatalog.unavailable(null);
+            modelProviderService.validateSelection(function.getPluginId(), function.getParamInfo());
+        }
+    }
 
     @Override
     public List<AgentPluginMapping> agentPluginParamsByAgentId(String agentId) {
@@ -42,16 +54,32 @@ public class AgentPluginMappingServiceImpl extends CrudRepository<AgentPluginMap
         Map<String, ModelConfigEntity> modelConfigMap = new HashMap<>();
         for (int i = list.size() - 1; i >= 0; i--) {
             AgentPluginMapping mapping = list.get(i);
+            if (StringUtils.isNotBlank(mapping.getProviderCode())
+                    && !ApprovedProviderCatalog.isSupportedPlugin(mapping.getProviderCode())) {
+                list.remove(i);
+                continue;
+            }
             if (StringUtils.isBlank(mapping.getProviderCode())) {
-                // 查询知识库插件参数
+                // Query knowledge base plugin parameters
                 KnowledgeBaseEntity knowledgeBaseEntity = knowledgeBaseService.selectById(mapping.getPluginId());
                 if (knowledgeBaseEntity == null) {
                     list.remove(i);
                     continue;
                 }
-                ModelConfigEntity modelConfigEntity = modelConfigService
-                        .getModelByIdFromCache(knowledgeBaseEntity.getRagModelId());
-                if (modelConfigEntity == null) {
+                if (!Integer.valueOf(1).equals(knowledgeBaseEntity.getStatus())) {
+                    list.remove(i);
+                    continue;
+                }
+                ModelConfigEntity modelConfigEntity;
+                try {
+                    modelConfigEntity = modelConfigService.getModelByIdFromCache(knowledgeBaseEntity.getRagModelId());
+                } catch (RuntimeException unavailable) {
+                    // Stale optional knowledge integrations do not prevent core dialogue.
+                    list.remove(i);
+                    continue;
+                }
+                if (!ApprovedProviderCatalog.isAvailable(modelConfigEntity)
+                        || !"rag".equals(ApprovedProviderCatalog.normalize(modelConfigEntity.getModelType()))) {
                     list.remove(i);
                     continue;
                 }
@@ -85,9 +113,9 @@ public class AgentPluginMappingServiceImpl extends CrudRepository<AgentPluginMap
                 paramInfo.put("dataset_ids",
                         knowledgeBaseList.stream().map(KnowledgeBaseEntity::getDatasetId).toList());
 
-                String description = "如果用户询问与【"
+                String description = "When the user asks about topics within the scope of 【"
                         + String.join(",", knowledgeBaseList.stream().map(KnowledgeBaseEntity::getName).toList())
-                        + "】涵盖的主体范围相关内容时应调用本方法，用于查询：" + String.join(",",
+                        + "】, call this method to query: " + String.join(",",
                                 knowledgeBaseList.stream().map(KnowledgeBaseEntity::getDescription).toList());
                 paramInfo.put("description", description);
                 agentPluginMapping.setParamInfo(JsonUtils.toJsonString(paramInfo));

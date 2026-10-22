@@ -1,0 +1,93 @@
+{
+  "kind": "public-synthetic-fixture-manifest",
+  "date": "2026-10-21",
+  "sourceCommit": "eb9dc8ca0fc8a30bc8afb0f302dcfc1578f76a7b",
+  "workingTree": "Uncommitted translation and service-removal changes; sourceCommit is baseline, not a reviewed release.",
+  "files": [
+    {
+      "path": "tools/service-api-smoke.mjs",
+      "bytes": 50592,
+      "sha256": "fd19e77fef6587b2f2fdf9f81a554fa3198c75097ec62b65643970b0618b78d7"
+    },
+    {
+      "path": "tools/service-api-fixtures.sql",
+      "bytes": 4372,
+      "sha256": "1b6d2b0008c65ab2f7038ef4a386fc7b163e992b362c28e94c04e993403398bd"
+    },
+    {
+      "path": "tools/service-voice-smoke.py",
+      "bytes": 29100,
+      "sha256": "55fc55ed8959b40beecbe0df944ee6c7eb0cb6ef03d37c419d4cdfe0129bc4a9"
+    },
+    {
+      "path": "tools/service-mqtt-smoke.mjs",
+      "bytes": 26295,
+      "sha256": "093f4d6f0a61d677a46e6df244df3ec3084ca7c43321433bf584efa178dc56ff"
+    },
+    {
+      "path": "tools/service-migration-validation.py",
+      "bytes": 5567,
+      "sha256": "041bac6b3445cece0717049d412ad488756577140c3ad713c40c64a20fac458b"
+    },
+    {
+      "path": "tools/service-migration-validation.java",
+      "bytes": 9892,
+      "sha256": "14464c6ca5692ad3fefe9c6603caca3e9f457e01d8dc050c36cfbee164ea7610"
+    },
+    {
+      "path": "docs/maintenance/english-baseline.json",
+      "bytes": 17912,
+      "sha256": "a8391cd9ca3a62b16695b2bb17480940dc976c28854f23b636d8c5b5d1735e98"
+    },
+    {
+      "path": "tools/service-egress-check.py",
+      "bytes": 32932,
+      "sha256": "edb6cdd2e21bacc34524daca5cec8507ce6e951abeb8751a7f4a22c579fc9f59"
+    },
+    {
+      "path": "tools/service-egress-check.test.py",
+      "bytes": 41929,
+      "sha256": "f4c7718eeac71ca387bdf914c8eaa375db8076c396155a4ccc4bc7cc1078edfa"
+    },
+    {
+      "path": "tools/service-network-fixture.py",
+      "bytes": 9459,
+      "sha256": "233ee89ee06bcaf79d240bed24b4afb688646d36fb10c3eb96d78058cd7c6ec4"
+    },
+    {
+      "path": "tools/service-network-fixture.test.py",
+      "bytes": 4554,
+      "sha256": "6bc0d42e66ba1a2ac8e42d38af94dfb2a3515472acfc3cea69b39e15e8eeda8f"
+    },
+    {
+      "path": "tools/service-network-report.py",
+      "bytes": 8741,
+      "sha256": "b136e382146c8eafc719507efd90fa04f1c882bc4d6fbe09ed653b2e3af061d9"
+    },
+    {
+      "path": "tools/service-network-report.test.py",
+      "bytes": 5348,
+      "sha256": "862133407b9d7f554679891333be8007e7731f222c7e7e0386a6a7eecbe3a621"
+    },
+    {
+      "path": "tools/service-trace-launch.sh",
+      "bytes": 762,
+      "sha256": "746fccd474abbeec088cd28a7bac33d5c63a9565f737fe677b9773d91a7c7ed1"
+    },
+    {
+      "path": "tools/compose.service-egress.yaml",
+      "bytes": 2172,
+      "sha256": "b423a3b8bf49675d55528b81a5420311d92a01dc70c2c929a1cc8a2f28641da4"
+    },
+    {
+      "path": "tools/service-removed-smoke.py",
+      "bytes": 2384,
+      "sha256": "02bd982d52040fb1573921191910835f0f9fba8f9f7bccfaa5d8e29a116eecbd"
+    }
+  ],
+  "protectedFiles": 118,
+  "limits": [
+    "No credentials, generated accounts, real device IDs or conversation/audio bodies included.",
+    "Hashes identify public fixture code; execution outcomes and untested paths are recorded separately."
+  ]
+}

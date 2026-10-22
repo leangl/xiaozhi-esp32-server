@@ -1,0 +1,126 @@
+{
+  "kind": "source-input-manifest",
+  "files": [
+    {
+      "path": "Dockerfile-server-base",
+      "sha256": "ddd44e3323807fbf22ac090e76ed0a652702d9751048cd8115c2930c93f12085",
+      "bytes": 2040,
+      "git_lfs_pointer": false
+    },
+    {
+      "path": "Dockerfile-server",
+      "sha256": "97709b90f06371eb0cb6d92d427f09307b3cc13f31dc211f0fc58b754c9c3cea",
+      "bytes": 211,
+      "git_lfs_pointer": false
+    },
+    {
+      "path": "Dockerfile-web",
+      "sha256": "8afbfe7a4982abf2a3d6875c6dbad24e760aa2ce9b9de35d681d2d2fc53a0e9a",
+      "bytes": 3851,
+      "git_lfs_pointer": false
+    },
+    {
+      "path": ".dockerignore",
+      "sha256": "05141e29d92d870cce3997a64362758de44125d9529a971536d1f8d769f4953a",
+      "bytes": 596,
+      "git_lfs_pointer": false
+    },
+    {
+      "path": "main/xiaozhi-server/requirements.txt",
+      "sha256": "1c98a44177d9d1461c8389b7aa1834ed7d6510e9b070515542160cf6cf4466e2",
+      "bytes": 412,
+      "git_lfs_pointer": false
+    },
+    {
+      "path": "main/xiaozhi-server/requirements.lock",
+      "sha256": "270397c06b5cb2b713d715ee396722d3237b23d097c2ba221dd3f2b3ef7e04aa",
+      "bytes": 163472,
+      "git_lfs_pointer": false
+    },
+    {
+      "path": "main/manager-api/pom.xml",
+      "sha256": "4759e8973935b36950f47cff9324d9953cbb8b6d1747a507fc5687e6a5714ede",
+      "bytes": 10831,
+      "git_lfs_pointer": false
+    },
+    {
+      "path": "main/manager-api/.mvn/settings.xml",
+      "sha256": "6336a56c21981db27acaba22334f64767c6abc13435dee8f1a1eed2408a56b90",
+      "bytes": 569,
+      "git_lfs_pointer": false
+    },
+    {
+      "path": "main/manager-api/.mvn/maven.config",
+      "sha256": "28910bdd1c1ff2614c40d2bb64e133b8a86cc262809e6c2d1d05dbc064d185b4",
+      "bytes": 29,
+      "git_lfs_pointer": false
+    },
+    {
+      "path": "tools/service-dependency-lock.py",
+      "sha256": "90a2385e8c79fc6327ce58f9cfe4dd3c858b70e7879d11b9a0419c93780e0d20",
+      "bytes": 12940,
+      "git_lfs_pointer": false
+    },
+    {
+      "path": "tools/service-dependency-lock.java",
+      "sha256": "a7c1aa34295b8a8cb969326ee0747962030df414e1396d5b8f855b96b7e684eb",
+      "bytes": 8018,
+      "git_lfs_pointer": false
+    },
+    {
+      "path": "tools/service-dependency-lock-apk.sh",
+      "sha256": "3debf4aa837be872ea99a37258b4b7f00558ebc485b548b4cedd6e947eb0b996",
+      "bytes": 1438,
+      "git_lfs_pointer": false
+    },
+    {
+      "path": "tools/dependency-locks/maven-linux-aarch64.lock",
+      "sha256": "c3b6fb865b562ca740bf5ea2f05cc2d7decb14d01c531e082aab93e3e3eef1a4",
+      "bytes": 258610,
+      "git_lfs_pointer": false
+    },
+    {
+      "path": "tools/dependency-locks/voice-deb-arm64.lock",
+      "sha256": "19e4c4a5a30b21847cda9ff9ea73fabca12cb14491a28e2cd1ffbc587ae82965",
+      "bytes": 62261,
+      "git_lfs_pointer": false
+    },
+    {
+      "path": "tools/dependency-locks/manager-apk-aarch64.lock",
+      "sha256": "d9296658bf0d1b73fda589b56c860a881e213165889e0665df0a961569f29e53",
+      "bytes": 7618,
+      "git_lfs_pointer": false
+    },
+    {
+      "path": "tools/dependency-locks/maven-embedded.json",
+      "sha256": "c0ad238a0c3e12097e4006bc0b490164fad3404a2bf5423bcc095bb1888ef1eb",
+      "bytes": 641,
+      "git_lfs_pointer": false
+    },
+    {
+      "path": "main/manager-web/package.json",
+      "sha256": "5ff2aea8a209cdbaf5a461cd99d2fc5a6a236aa3e9efb3366fa725f6a842e986",
+      "bytes": 1732,
+      "git_lfs_pointer": false
+    },
+    {
+      "path": "main/manager-web/package-lock.json",
+      "sha256": "3083860c9c6fbfcf5a147a361afb76a3f9196a866ac6ad2d4fca5ec166f5b6e5",
+      "bytes": 554330,
+      "git_lfs_pointer": false
+    },
+    {
+      "path": "main/xiaozhi-server/models/snakers4_silero-vad/src/silero_vad/data/silero_vad.onnx",
+      "sha256": "2623a2953f6ff3d2c1e61740c6cdb7168133479b267dfef114a4a3cc5bdd788f",
+      "bytes": 2327524,
+      "git_lfs_pointer": false
+    }
+  ],
+  "limitations": [
+    "Not an installed dependency SBOM or build verification",
+    "Python lock resolution targets CPython 3.10 Linux aarch64; other platforms need verification",
+    "OS/Maven archive locks target the reviewed Linux ARM64 bases and production Maven goal only",
+    "Model hash records checkout bytes, not provenance/license approval",
+    "Source hashes alone do not establish clean-build or externally observed runtime acceptance"
+  ]
+}

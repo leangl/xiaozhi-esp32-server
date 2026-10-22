@@ -19,7 +19,8 @@ import xiaozhi.modules.sys.service.SysUserService;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("dev")
-@DisplayName("设备测试")
+@DisplayName("Device tests")
+// The Chinese hardware-model string is device-data fixture content, not a test description.
 public class DeviceTest {
 
     @Autowired
@@ -38,12 +39,12 @@ public class DeviceTest {
     }
 
     @Test
-    @DisplayName("测试写入设备信息")
+    @DisplayName("Test writing device information")
     public void testWriteDeviceInfo() {
-        log.info("开始测试写入设备信息...");
-        // 模拟设备MAC地址
+        log.info("Starting device information write test...");
+        // Mock device MAC address
         String macAddress = "00:11:22:33:44:66";
-        // 模拟设备验证码
+        // Mock device verification code
         String deviceCode = "123456";
 
         HashMap<String, Object> map = new HashMap<>();
@@ -59,18 +60,18 @@ public class DeviceTest {
         String redisKey = "ota:activation:code:" + deviceCode;
         log.info("Redis Key: {}", redisKey);
 
-        // 将设备信息写入Redis
+        // Write device information to Redis
         redisUtils.set(redisKey, macAddress, 300);
-        log.info("设备信息已写入Redis");
+        log.info("Device information written to Redis");
 
-        // 验证是否写入成功
+        // Verify the write succeeded
         String savedMacAddress = (String) redisUtils.get(redisKey);
-        log.info("从Redis读取的MAC地址: {}", savedMacAddress);
+        log.info("MAC address read from Redis: {}", savedMacAddress);
 
-        // 使用断言验证
-        Assertions.assertNotNull(savedMacAddress, "从Redis读取的MAC地址不应为空");
-        Assertions.assertEquals(macAddress, savedMacAddress, "保存的MAC地址与原始MAC地址不匹配");
+        // Verify with assertions
+        Assertions.assertNotNull(savedMacAddress, "MAC address read from Redis must not be null");
+        Assertions.assertEquals(macAddress, savedMacAddress, "Saved MAC address differs from the original");
 
-        log.info("测试完成");
+        log.info("Test completed");
     }
 }

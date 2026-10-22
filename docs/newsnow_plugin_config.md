@@ -1,23 +1,18 @@
-# get_news_from_newsnow 插件新闻源配置指南
+# News source configuration for get_news_from_newsnow
 
-## 概述
+## Overview
 
-`get_news_from_newsnow` 插件现在支持通过Web管理界面动态配置新闻源，不再需要修改代码。用户可以在智控台中为每个智能体配置不同的新闻源。
+Configure each agent's news sources in the management console without editing plugin code.
 
-## 配置方式
+## Configuration
 
-### 1. 通过Web管理界面配置（推荐）
+### 1. Web console (recommended)
 
-1. 登录智控台
-2. 进入"角色配置"页面
-3. 选择要配置的智能体
-4. 点击"编辑功能"按钮
-5. 在右侧参数配置区域找到"newsnow新闻聚合"插件
-6. 在"新闻源配置"字段中输入分号分隔的中文名称
+Sign in, open **Role Configuration**, select an agent, and click **Edit Functions**. In the right-hand parameters, find **NewsNow News Aggregation**. Enter semicolon-separated Chinese source names in **News Source Configuration**.
 
-### 2. 配置文件方式
+### 2. Configuration file
 
-在 `config.yaml` 中配置：
+Set these values in `config.yaml`:
 
 ```yaml
 plugins:
@@ -26,80 +21,75 @@ plugins:
     news_sources: "澎湃新闻;百度热搜;财联社;微博;抖音"
 ```
 
-## 新闻源配置格式
+## Source name format
 
-新闻源配置使用分号分隔的中文名称，格式为：
+Use Chinese names separated by ASCII semicolons:
 
 ```
 中文名称1;中文名称2;中文名称3
 ```
 
-### 配置示例
+The placeholder format means “Chinese name 1;Chinese name 2;Chinese name 3”. Example:
 
 ```
 澎湃新闻;百度热搜;财联社;微博;抖音;知乎;36氪
 ```
 
-## 支持的新闻源
+## Supported sources
 
-插件支持以下新闻源的中文名称：
+The exact Chinese names below are compatibility values from `CHANNEL_MAP`, not prose to translate in configuration. English labels explain each value:
 
-- 澎湃新闻
-- 百度热搜
-- 财联社
-- 微博
-- 抖音
-- 知乎
-- 36氪
-- 华尔街见闻
-- IT之家
-- 今日头条
-- 虎扑
-- 哔哩哔哩
-- 快手
-- 雪球
-- 格隆汇
-- 法布财经
-- 金十数据
-- 牛客
-- 少数派
-- 稀土掘金
-- 凤凰网
-- 虫部落
-- 联合早报
-- 酷安
-- 远景论坛
-- 参考消息
-- 卫星通讯社
-- 百度贴吧
-- 靠谱新闻
-- 以及更多...
+- `澎湃新闻`: The Paper
+- `百度热搜`: Baidu trending searches
+- `财联社`: Cailian Press
+- `微博`: Weibo
+- `抖音`: Douyin
+- `知乎`: Zhihu
+- `36氪`: 36Kr
+- `华尔街见闻`: Wallstreetcn
+- `IT之家`: IT Home
+- `今日头条`: Toutiao
+- `虎扑`: Hupu
+- `哔哩哔哩`: Bilibili
+- `快手`: Kuaishou
+- `雪球`: Xueqiu
+- `格隆汇`: Gelonghui
+- `法布财经`: Fabu Finance
+- `金十数据`: Jin10 Data
+- `牛客`: Nowcoder
+- `少数派`: Sspai
+- `稀土掘金`: Juejin
+- `凤凰网`: iFeng
+- `虫部落`: Chongbuluo
+- `联合早报`: Lianhe Zaobao
+- `酷安`: Coolapk
+- `远景论坛`: PCbeta forum
+- `参考消息`: Reference News
+- `卫星通讯社`: Sputnik
+- `百度贴吧`: Baidu Tieba
+- `靠谱新闻`: Kaopu News
 
-## 默认配置
+The plugin supports additional sources defined in its map.
 
-如果未配置新闻源，插件将使用以下默认配置：
+## Default configuration
+
+If you do not configure sources, the plugin uses The Paper, Baidu trending searches, and Cailian Press:
 
 ```
 澎湃新闻;百度热搜;财联社
 ```
 
-## 使用说明
+## Usage
 
-1. **配置新闻源**：在Web界面或配置文件中设置新闻源的中文名称，用分号分隔
-2. **调用插件**：用户可以说"播报新闻"或"获取新闻"
-3. **指定新闻源**：用户可以说"播报澎湃新闻"或"获取百度热搜"
-4. **获取详情**：用户可以说"详细介绍这条新闻"
+1. Configure the Chinese source names in the console or file, separated with semicolons.
+2. Ask for news. Chinese speech fixtures `播报新闻` and `获取新闻` mean “read the news” and “get news”.
+3. Name a source: `播报澎湃新闻` means “read The Paper news”; `获取百度热搜` means “get Baidu trending searches”.
+4. Ask for details: `详细介绍这条新闻` means “explain this news item in detail”.
 
-## 工作原理
+## How it works
 
-1. 插件接受中文名称作为参数（如"澎湃新闻"）
-2. 根据配置的新闻源列表，将中文名称转换为对应的英文ID（如"thepaper"）
-3. 使用英文ID调用API获取新闻数据
-4. 返回新闻内容给用户
+The plugin accepts a Chinese name such as `澎湃新闻`, maps it to its API ID such as `thepaper`, calls the API with that ID, and returns the news.
 
-## 注意事项
+## Notes
 
-1. 配置的中文名称必须与 CHANNEL_MAP 中定义的名称完全一致
-2. 配置更改后需要重启服务或重新加载配置
-3. 如果配置的新闻源无效，插件会自动使用默认新闻源
-4. 多个新闻源之间使用英文分号(;)分隔，不要使用中文分号(；)
+Names must match `CHANNEL_MAP` exactly. Restart the service or reload configuration after changes. Invalid sources fall back to the defaults. Use ASCII `;`, not the full-width Chinese semicolon `；`; the latter remains here as an invalid-input example.

@@ -8,19 +8,20 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import lombok.Data;
 
 /**
- * XSS 配置项
+ * XSS configuration options
  * Copyright (c) 人人开源 All rights reserved.
+ * Original copyright holder: Renren Open Source; the legal attribution above is retained.
  * Website: https://www.renren.io
  */
 @Data
 @ConfigurationProperties(prefix = "renren.xss")
 public class XssProperties {
     /**
-     * 是否开启 XSS
+     * Whether XSS filtering is enabled
      */
     private boolean enabled;
     /**
-     * 排除的URL列表
+     * Excluded URL list
      */
     private List<String> excludeUrls = Collections.emptyList();
 }

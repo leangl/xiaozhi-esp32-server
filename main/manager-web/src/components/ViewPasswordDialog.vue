@@ -22,7 +22,7 @@
     <div style="display: flex;margin: 15px 15px;gap: 7px;">
       <div class="dialog-btn" style="background: #e6ebff;border: 1px solid #adbdff;color: #5778ff;"
         @click="closeDialog">
-        关闭
+        {{ $t('button.close') }}
       </div>
       <div class="dialog-btn" style="background: #5778ff;color: white;" @click="copyPassword">
         复制密码

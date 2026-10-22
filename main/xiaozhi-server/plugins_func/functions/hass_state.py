@@ -1,4 +1,5 @@
 import httpx
+from config.service_policy import async_httpx_client
 from config.logger import setup_logging
 from plugins_func.functions.hass_init import initialize_hass_handler
 from plugins_func.register import register_function, ToolType, ActionResponse, Action
@@ -14,13 +15,13 @@ hass_get_state_function_desc = {
     "type": "function",
     "function": {
         "name": "hass_get_state",
-        "description": "获取homeassistant里设备的状态,包括查询灯光亮度、颜色、色温,媒体播放器的音量,设备的暂停、继续操作",
+        "description": "Get Home Assistant device state, including light brightness, color and color temperature, media-player volume, and device pause/resume state",
         "parameters": {
             "type": "object",
             "properties": {
                 "entity_id": {
                     "type": "string",
-                    "description": "需要操作的设备id,homeassistant里的entity_id",
+                    "description": "Target device's Home Assistant entity_id",
                 }
             },
             "required": ["entity_id"],
@@ -32,7 +33,7 @@ hass_set_state_function_desc = {
     "type": "function",
     "function": {
         "name": "hass_set_state",
-        "description": "设置homeassistant里设备的状态,包括开、关,调整灯光亮度、颜色、色温,调整播放器的音量,设备的暂停、继续、静音操作",
+        "description": "Set Home Assistant device state: turn on/off, adjust light brightness/color/color temperature or player volume, and pause/resume/mute devices",
         "parameters": {
             "type": "object",
             "properties": {
@@ -41,27 +42,27 @@ hass_set_state_function_desc = {
                     "properties": {
                         "type": {
                             "type": "string",
-                            "description": "需要操作的动作,打开设备:turn_on,关闭设备:turn_off,增加亮度:brightness_up,降低亮度:brightness_down,设置亮度:brightness_value,增加音量:volume_up,降低音量:volume_down,设置音量:volume_set,设置色温:set_kelvin,设置颜色:set_color,设备暂停:pause,设备继续:continue,静音/取消静音:volume_mute",
+                            "description": "Action: turn_on=on, turn_off=off, brightness_up=brighter, brightness_down=dimmer, brightness_value=set brightness, volume_up=louder, volume_down=quieter, volume_set=set volume, set_kelvin=set color temperature, set_color=set color, pause=pause, continue=resume, volume_mute=mute/unmute",
                         },
                         "input": {
                             "type": "integer",
-                            "description": "只有在设置音量,设置亮度时候才需要,有效值为1-100,对应音量和亮度的1%-100%",
+                            "description": "Required only when setting volume or brightness; 1-100 represents 1%-100%",
                         },
                         "is_muted": {
                             "type": "string",
-                            "description": "只有在设置静音操作时才需要,设置静音的时候该值为true,取消静音时该值为false",
+                            "description": "Required only for mute operations: true to mute, false to unmute",
                         },
                         "rgb_color": {
                             "type": "array",
                             "items": {"type": "integer"},
-                            "description": "只有在设置颜色时需要,这里填目标颜色的rgb值",
+                            "description": "Required only when setting color; supply the target RGB values",
                         },
                     },
                     "required": ["type"],
                 },
                 "entity_id": {
                     "type": "string",
-                    "description": "需要操作的设备id,homeassistant里的entity_id",
+                    "description": "Target device's Home Assistant entity_id",
                 },
             },
             "required": ["state", "entity_id"],
@@ -72,11 +73,12 @@ hass_set_state_function_desc = {
 
 @register_function("hass_get_state", hass_get_state_function_desc, ToolType.SYSTEM_CTL)
 async def hass_get_state(conn: "ConnectionHandler", entity_id=""):
+    # Keep Chinese failure results for the user; the shared error text also reaches logs.
     try:
         ha_response = await handle_hass_get_state(conn, entity_id)
         return ActionResponse(Action.REQLLM, ha_response, None)
     except httpx.TimeoutException:
-        logger.bind(tag=TAG).error("获取Home Assistant状态超时")
+        logger.bind(tag=TAG).error("Timed out getting Home Assistant state")
         return ActionResponse(Action.ERROR, "请求超时", None)
     except Exception as e:
         error_msg = f"执行Home Assistant操作失败"
@@ -86,13 +88,14 @@ async def hass_get_state(conn: "ConnectionHandler", entity_id=""):
 
 @register_function("hass_set_state", hass_set_state_function_desc, ToolType.SYSTEM_CTL)
 async def hass_set_state(conn: "ConnectionHandler", entity_id="", state=None):
+    # Keep Chinese failure results for the user; the shared error text also reaches logs.
     if state is None:
         state = {}
     try:
         ha_response = await handle_hass_set_state(conn, entity_id, state)
         return ActionResponse(Action.REQLLM, ha_response, None)
     except httpx.TimeoutException:
-        logger.bind(tag=TAG).error("设置Home Assistant状态超时")
+        logger.bind(tag=TAG).error("Timed out setting Home Assistant state")
         return ActionResponse(Action.ERROR, "请求超时", None)
     except Exception as e:
         error_msg = f"执行Home Assistant操作失败"
@@ -107,12 +110,14 @@ async def handle_hass_get_state(conn: "ConnectionHandler", entity_id):
     url = f"{base_url}/api/states/{entity_id}"
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
 
-    async with httpx.AsyncClient(timeout=httpx.Timeout(5.0, connect=3.0)) as client:
+    async with async_httpx_client("tool", timeout=httpx.Timeout(5.0, connect=3.0)) as client:
         response = await client.get(url, headers=headers)
 
+    # Chinese spoken labels describe state, current media, volume, color temperature,
+    # RGB color and brightness. Preserve them and status-code interpolation.
     if response.status_code == 200:
         responsetext = "设备状态:" + response.json()["state"] + " "
-        logger.bind(tag=TAG).info(f"api返回内容: {response.json()}")
+        logger.bind(tag=TAG).info(f"API response: {response.json()}")
 
         if "media_title" in response.json()["attributes"]:
             responsetext = (
@@ -149,13 +154,15 @@ async def handle_hass_get_state(conn: "ConnectionHandler", entity_id):
                 + str(response.json()["attributes"]["brightness"])
                 + " "
             )
-        logger.bind(tag=TAG).info(f"查询返回内容: {responsetext}")
+        logger.bind(tag=TAG).info(f"State query result: {responsetext}")
         return responsetext
     else:
         return f"切换失败，错误码: {response.status_code}"
 
 
 async def handle_hass_set_state(conn: "ConnectionHandler", entity_id, state):
+    # Preserve localized confirmations for on/off, brightness, color/temperature,
+    # volume, mute and pause/resume, plus localized errors for unsupported actions.
     ha_config = initialize_hass_handler(conn)
     api_key = ha_config.get("api_key")
     base_url = ha_config.get("base_url")
@@ -256,11 +263,11 @@ async def handle_hass_set_state(conn: "ConnectionHandler", entity_id, state):
     url = f"{base_url}/api/services/{domain}/{action}"
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
 
-    async with httpx.AsyncClient(timeout=httpx.Timeout(5.0, connect=3.0)) as client:
+    async with async_httpx_client("tool", timeout=httpx.Timeout(5.0, connect=3.0)) as client:
         response = await client.post(url, headers=headers, json=data)
 
     logger.bind(tag=TAG).info(
-        f"设置状态:{description},url:{url},return_code:{response.status_code}"
+        f"Set state: {description},url:{url},return_code:{response.status_code}"
     )
     if response.status_code == 200:
         return description

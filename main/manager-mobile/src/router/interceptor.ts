@@ -1,8 +1,8 @@
 /**
- * by 菲鸽 on 2024-03-06
- * 路由拦截，通常也是登录拦截
- * 可以设置路由白名单，或者黑名单，看业务需要选哪一个
- * 我这里应为大部分都可以随便进入，所以使用黑名单
+ * by 菲鸽 (original author attribution) on 2024-03-06
+ * Route interception, commonly used for login checks
+ * Choose an allowlist or denylist according to application requirements
+ * Use a denylist here because most pages are publicly accessible
  */
 import { useUserStore } from '@/store'
 import { needLoginPages as _needLoginPages, getLastPage, getNeedLoginPages } from '@/utils'
@@ -17,16 +17,16 @@ function isLogined() {
 
 const isDev = import.meta.env.DEV
 
-// 黑名单登录拦截器 - （适用于大部分页面不需要登录，少部分页面需要登录）
+// Denylist login interceptor: most pages are public and only a few require login
 const navigateToInterceptor = {
-  // 注意，这里的url是 '/' 开头的，如 '/pages/index/index'，跟 'pages.json' 里面的 path 不同
-  // 增加对相对路径的处理，BY 网友 @ideal
+  // URLs here start with '/', e.g. '/pages/index/index', unlike paths in pages.json
+  // Relative-path support contributed by @ideal
   invoke({ url }: { url: string }) {
     // console.log(url) // /pages/route-interceptor/index?name=feige&age=30
     let path = url.split('?')[0]
-    console.log('页面变动')
+    console.log('Page changed')
 
-    // 处理相对路径
+    // Handle relative paths
     if (!path.startsWith('/')) {
       const currentPath = getLastPage().route
       const normalizedCurrentPath = currentPath.startsWith('/') ? currentPath : `/${currentPath}`
@@ -35,7 +35,7 @@ const navigateToInterceptor = {
     }
 
     let needLoginPages: string[] = []
-    // 为了防止开发时出现BUG，这里每次都获取一下。生产环境可以移到函数外，性能更好
+    // Read on every call to avoid development issues; moving this outside the function can improve production performance
     if (isDev) {
       needLoginPages = getNeedLoginPages()
     }

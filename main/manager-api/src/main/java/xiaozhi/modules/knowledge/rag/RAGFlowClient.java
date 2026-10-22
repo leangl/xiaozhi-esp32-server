@@ -1,11 +1,9 @@
 package xiaozhi.modules.knowledge.rag;
 
-import java.time.Duration;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,20 +11,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 import java.util.Locale;
 import java.net.URLEncoder;
-import java.io.UnsupportedEncodingException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.net.URI;
-import java.io.OutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.function.Consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,10 +26,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import xiaozhi.common.exception.ErrorCode;
 import xiaozhi.common.exception.RenException;
+import xiaozhi.common.utils.ApprovedServicePolicy;
 
 /**
  * RAGFlow HTTP Client
- * 统一处理HTTP通信、鉴权、超时与错误解析
+ * Centralize HTTP communication, authentication, timeouts, and error parsing
  */
 @Slf4j
 public class RAGFlowClient {
@@ -47,7 +40,7 @@ public class RAGFlowClient {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    // 默认超时时间 (秒)
+    // Default timeout in seconds
     private static final int DEFAULT_TIMEOUT = 30;
 
     public RAGFlowClient(String baseUrl, String apiKey) {
@@ -55,88 +48,68 @@ public class RAGFlowClient {
     }
 
     public RAGFlowClient(String baseUrl, String apiKey, int timeoutSeconds) {
+        URI approved = approvedEndpoint(baseUrl);
+        if (approved.getRawQuery() != null) {
+            throw new RenException(ErrorCode.RAG_API_ERROR, "RAGFlow base URL must not contain a query");
+        }
         this.baseUrl = baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
         this.apiKey = apiKey;
         this.objectMapper = new ObjectMapper();
-        // [Reinforce] 兼容 RAGFlow 返回的 RFC 1123 日期格式 (如: Tue, 10 Feb 2026 10:27:35 GMT)
+        // [Reinforce] Accept RAGFlow RFC 1123 dates (for example, Tue, 10 Feb 2026 10:27:35 GMT)
         this.objectMapper
                 .setDateFormat(new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US));
         this.objectMapper.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-        // 优先从 Spring 上下文中获取池化的 RestTemplate Bean (Issue 3: 连接池化)
-        RestTemplate pooledTemplate = null;
-        try {
-            pooledTemplate = xiaozhi.common.utils.SpringContextUtils.getBean(RestTemplate.class);
-        } catch (Exception e) {
-            log.warn("无法从 SpringContext 获取池化 RestTemplate，将退化为简单连接模式: {}", e.getMessage());
-        }
-
-        if (false) { // Force new RestTemplate for debugging
-            this.restTemplate = pooledTemplate;
-            log.debug("RAGFlowClient 已成功挂载全局池化 RestTemplate");
-        } else {
-            // 兜底方案：配置超时并创建简单 RestTemplate
-            log.info("RAGFlowClient 初始化: 使用独立 RestTemplate (Debug Mode)");
-            SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-            factory.setConnectTimeout(timeoutSeconds * 1000);
-            factory.setReadTimeout(timeoutSeconds * 1000);
-            this.restTemplate = new RestTemplate(factory);
-        }
+        this.restTemplate = ApprovedServicePolicy.restTemplate("context");
+        // Retain the constructor's per-client timeout without relaxing the transport policy.
+        var factory = new org.springframework.http.client.JdkClientHttpRequestFactory(
+                xiaozhi.common.config.RestTemplateConfig.directHttpClient(java.time.Duration.ofSeconds(timeoutSeconds)));
+        factory.setReadTimeout(java.time.Duration.ofSeconds(timeoutSeconds));
+        this.restTemplate.setRequestFactory(factory);
     }
 
     /**
-     * 发送 GET 请求
+     * Send a GET request
      */
     public Map<String, Object> get(String endpoint, Map<String, Object> queryParams) {
         String url = buildUrl(endpoint, queryParams);
-        log.debug("GET {}", url);
         return execute(url, HttpMethod.GET, null);
     }
 
     /**
-     * 发送 POST 请求 (JSON)
+     * Send a POST request with JSON
      */
     public Map<String, Object> post(String endpoint, Object body) {
         String url = buildUrl(endpoint, null);
-        log.info("RAGFlow Client POST Request: URL={}, BodyType={}", url,
-                body != null ? body.getClass().getName() : "null");
-        try {
-            return execute(url, HttpMethod.POST, body);
-        } catch (Exception e) {
-            log.error("RAGFlow Client POST Failed: URL={}", url, e);
-            throw e;
-        }
+        return execute(url, HttpMethod.POST, body);
     }
 
     /**
-     * 发送 DELETE 请求
+     * Send a DELETE request
      */
     public Map<String, Object> delete(String endpoint, Object body) {
         String url = buildUrl(endpoint, null);
-        log.debug("DELETE {}", url);
         return execute(url, HttpMethod.DELETE, body);
     }
 
     /**
-     * 发送 PUT 请求
+     * Send a PUT request
      */
     public Map<String, Object> put(String endpoint, Object body) {
         String url = buildUrl(endpoint, null);
-        log.debug("PUT {}", url);
         return execute(url, HttpMethod.PUT, body);
     }
 
     /**
-     * 发送 Multipart 请求 (文件上传)
+     * Send a multipart file upload request
      */
     public Map<String, Object> postMultipart(String endpoint, MultiValueMap<String, Object> parts) {
         String url = buildUrl(endpoint, null);
-        log.debug("POST MULTIPART {}", url);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         headers.setBearerAuth(apiKey);
-        // 为了防止中文文件名乱码，某些环境可能需要设置 Charset，但在 Multipart 中通常由 Part header 控制
+        // Some environments require a charset for Chinese file names; multipart encoding is usually controlled by the part header
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(parts, headers);
 
@@ -147,7 +120,7 @@ public class RAGFlowClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(apiKey);
-        // 强制 UTF-8
+        // Force UTF-8
         headers.setAcceptCharset(Collections.singletonList(StandardCharsets.UTF_8));
 
         HttpEntity<Object> requestEntity = new HttpEntity<>(body, headers);
@@ -156,7 +129,8 @@ public class RAGFlowClient {
 
     private Map<String, Object> doExecute(String url, HttpMethod method, HttpEntity<?> requestEntity) {
         try {
-            ResponseEntity<String> response = restTemplate.exchange(url, method, requestEntity, String.class);
+            approvedEndpoint(url);
+            ResponseEntity<String> response = restTemplate.exchange(URI.create(url), method, requestEntity, String.class);
 
             if (!response.getStatusCode().is2xxSuccessful()) {
                 log.error("RAGFlow API Error Status: {}", response.getStatusCode());
@@ -173,30 +147,39 @@ public class RAGFlowClient {
 
             Integer code = (Integer) map.get("code");
             if (code != null && code != 0) {
-                String msg = (String) map.get("message");
-                log.error("RAGFlow Business Error: code={}, msg={}", code, msg);
-                throw new RenException(ErrorCode.RAG_API_ERROR, msg != null ? msg : "Unknown RAGFlow Error");
+                log.warn("RAGFlow returned an unsuccessful result");
+                throw new RenException(ErrorCode.RAG_API_ERROR, "RAGFlow operation failed");
             }
 
-            // 返回 data 字段，如果 data 不存在则返回整个 map (视具体情况，通常 RAGFlow 返回 code=0, data=...)
-            // 兼容性处理：如果 external caller 需要 check code，这里已经 check 过了。
-            // 统一返回 wrap 了 code 的 map 还是只返回 data?
-            // 根据分析报告，旧逻辑 check code==0 后取 data.
-            // 这里我们返回整个 Map，让 Adapter 决定怎么取，或者我们直接在这里剥离？
-            // 建议：为了灵活性，返回全量 Map，但在 Client 层做 code!=0 的抛错。
+            // Return data, or the whole map if absent (RAGFlow usually returns code=0, data=...)
+            // Compatibility: code has already been checked here for external callers
+            // Return the code-wrapped map, or only data?
+            // The previous logic checked code==0 before extracting data
+            // Return the full map for the adapter to interpret, or unwrap here?
+            // Recommendation: return the full map for flexibility, but throw on code!=0 in the client
             return map;
 
         } catch (RenException re) {
             throw re;
         } catch (Exception e) {
-            log.error("RAGFlow Client Execute Error! URL: {}, Method: {}, Body Type: {}", url, method,
-                    requestEntity.getBody() != null ? requestEntity.getBody().getClass().getName() : "null");
-            log.error("Full exception stack trace: ", e);
-            throw new RenException(ErrorCode.RAG_API_ERROR, "Request Failed: " + e.getMessage());
+            log.warn("RAGFlow request failed");
+            throw new RenException(ErrorCode.RAG_API_ERROR, "Request failed; check the reviewed RAGFlow configuration");
         }
     }
 
     private String buildUrl(String endpoint, Map<String, Object> queryParams) {
+        if (endpoint == null || endpoint.startsWith("//")) {
+            throw new RenException(ErrorCode.RAG_API_ERROR, "Invalid RAGFlow request path");
+        }
+        try {
+            URI path = URI.create(endpoint);
+            if (path.isAbsolute() || path.getRawAuthority() != null || path.getRawQuery() != null
+                    || path.getRawFragment() != null || endpoint.indexOf('\\') >= 0) {
+                throw new IllegalArgumentException();
+            }
+        } catch (RuntimeException e) {
+            throw new RenException(ErrorCode.RAG_API_ERROR, "Invalid RAGFlow request path");
+        }
         StringBuilder sb = new StringBuilder(baseUrl);
         if (!endpoint.startsWith("/")) {
             sb.append("/");
@@ -204,75 +187,59 @@ public class RAGFlowClient {
         sb.append(endpoint);
 
         if (queryParams != null && !queryParams.isEmpty()) {
-            sb.append("?");
             queryParams.forEach((k, v) -> {
                 if (v != null) {
-                    try {
-                        sb.append(k).append("=")
-                                .append(URLEncoder.encode(v.toString(),
-                                        StandardCharsets.UTF_8.name()))
-                                .append("&");
-                    } catch (UnsupportedEncodingException e) {
-                        log.warn("参数编码失败: k={}, v={}", k, v);
-                        sb.append(k).append("=").append(v).append("&");
-                    }
+                    sb.append(sb.indexOf("?") < 0 ? "?" : "&")
+                            .append(URLEncoder.encode(k, StandardCharsets.UTF_8)).append("=")
+                            .append(URLEncoder.encode(v.toString(), StandardCharsets.UTF_8));
                 }
             });
-            // 移除最后一个 &
-            sb.setLength(sb.length() - 1);
         }
-        return sb.toString();
+        String url = sb.toString();
+        approvedEndpoint(url);
+        return url;
+    }
+
+    private static URI approvedEndpoint(String url) {
+        try {
+            return ApprovedServicePolicy.validateEndpoint(url, "context");
+        } catch (IllegalArgumentException e) {
+            throw new RenException(ErrorCode.RAG_API_ERROR, "RAGFlow is unavailable; configure a reviewed loopback endpoint");
+        }
     }
 
     /**
-     * 发送流式 POST 请求 (SSE)
-     * 使用 Java 21 HttpClient 实现
+     * Send a streaming POST request (SSE)
+     * Uses the same guarded transport as ordinary requests.
      *
-     * @param endpoint API端点
-     * @param body     请求体
-     * @param onData   数据回调（每收到一行数据调用一次）
+     * @param endpoint API endpoint
+     * @param body request body
+     * @param onData callback invoked for each data line
      */
     public void postStream(String endpoint, Object body, Consumer<String> onData) {
         try {
             String url = buildUrl(endpoint, null);
-            log.debug("POST STREAM {}", url);
-
-            String jsonBody = objectMapper.writeValueAsString(body);
-
-            HttpClient httpClient = HttpClient.newBuilder()
-                    .connectTimeout(Duration.ofSeconds(DEFAULT_TIMEOUT))
-                    .build();
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + apiKey)
-                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody, StandardCharsets.UTF_8))
-                    .build();
-
-            // 发送请求并处理流式响应
-            httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream())
-                    .body()
-                    .transferTo(new OutputStream() {
-                        private final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
-                        @Override
-                        public void write(int b) throws IOException {
-                            if (b == '\n') {
-                                String line = buffer.toString(StandardCharsets.UTF_8);
-                                if (!line.trim().isEmpty()) {
-                                    onData.accept(line);
-                                }
-                                buffer.reset();
-                            } else {
-                                buffer.write(b);
-                            }
-                        }
-                    });
-
+            restTemplate.execute(URI.create(url), HttpMethod.POST, request -> {
+                request.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+                request.getHeaders().setBearerAuth(apiKey);
+                objectMapper.writeValue(request.getBody(), body);
+            }, response -> {
+                if (!response.getStatusCode().is2xxSuccessful()) {
+                    throw new RenException(ErrorCode.RAG_API_ERROR, "RAGFlow stream request failed");
+                }
+                try (var reader = new BufferedReader(new InputStreamReader(response.getBody(), StandardCharsets.UTF_8))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        if (!line.isBlank()) onData.accept(line);
+                    }
+                }
+                return null;
+            });
+        } catch (RenException e) {
+            throw e;
         } catch (Exception e) {
-            log.error("RAGFlow Stream Request Error", e);
-            throw new RenException(ErrorCode.RAG_API_ERROR, "Stream Request Failed: " + e.getMessage());
+            log.warn("RAGFlow stream request failed");
+            throw new RenException(ErrorCode.RAG_API_ERROR, "Stream request failed; check the reviewed RAGFlow configuration");
         }
     }
 }

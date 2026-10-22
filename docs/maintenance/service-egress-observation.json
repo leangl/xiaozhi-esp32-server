@@ -1,0 +1,34 @@
+{
+  "kind": "external-syscall-observation",
+  "date": "2026-10-21",
+  "scenario": "standalone-current-source-voice-smoke",
+  "observerImage": "sha256:4c00e2d4f8400245b73ba63b8ae7ee2a3a069c93069e9f701bf60e39fe8c82f4",
+  "result": "pass",
+  "commandReturnCode": 0,
+  "relevantCallCount": 116,
+  "numericIpAttemptCount": 83,
+  "deniedCount": 0,
+  "parseErrors": {},
+  "payloadBytesRecorded": 0,
+  "observedNumericTargets": [
+    "127.0.0.1:42813",
+    "127.0.0.1:45451",
+    "127.0.0.1:47990",
+    "127.0.0.1:47998",
+    "127.0.0.1:48008",
+    "127.0.0.1:48600"
+  ],
+  "policy": {
+    "af_unix_allowed": true,
+    "endpoints": [],
+    "mode": "fixture_loopback_any_port",
+    "port_coverage": "ANY non-DNS port on 127.0.0.1 and ::1; 53/853/5353/5355 denied"
+  },
+  "limits": [
+    "Numeric IP/port observation only; DNS questions and operator hostnames untested.",
+    "Only connect/sendto/sendmsg in the supplied command and ordinary descendants.",
+    "Not adversarial containment; io_uring/sendmmsg and trace-escaping code untested.",
+    "Unresolved connected sends fail closed; cached local-only UDP metadata is insufficient.",
+    "Only the exercised smoke path; full management/gateway and section 7.1 incomplete."
+  ]
+}

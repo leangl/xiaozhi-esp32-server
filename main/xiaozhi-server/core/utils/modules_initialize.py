@@ -1,6 +1,7 @@
 from typing import Dict, Any
 from config.logger import setup_logging
 from core.utils import tts, llm, intent, memory, vad, asr
+from config.provider_profile import ProviderProfileError, validate_config
 
 TAG = __name__
 logger = setup_logging()
@@ -17,23 +18,25 @@ def initialize_modules(
     init_intent=False,
 ) -> Dict[str, Any]:
     """
-    初始化所有模块组件
+    Initialize all requested module components.
 
     Args:
-        config: 配置字典
+        config: Configuration dictionary.
 
     Returns:
-        Dict[str, Any]: 包含所有初始化后的模块的字典
+        Dict[str, Any]: Dictionary containing the initialized modules.
     """
+    # Fail before constructing any provider or reading a local memory file.
+    validate_config(config, require_ready=True, partial=bool(config.get("read_config_from_api")))
     modules = {}
 
-    # 初始化TTS模块
+    # Initialize TTS.
     if init_tts:
         select_tts_module = config["selected_module"]["TTS"]
         modules["tts"] = initialize_tts(config)
-        logger.bind(tag=TAG).info(f"初始化组件: tts成功 {select_tts_module}")
+        logger.bind(tag=TAG).info(f"Component initialized: tts {select_tts_module}")
 
-    # 初始化LLM模块
+    # Initialize LLM.
     if init_llm:
         select_llm_module = config["selected_module"]["LLM"]
         llm_type = (
@@ -45,9 +48,9 @@ def initialize_modules(
             llm_type,
             config["LLM"][select_llm_module],
         )
-        logger.bind(tag=TAG).info(f"初始化组件: llm成功 {select_llm_module}")
+        logger.bind(tag=TAG).info(f"Component initialized: llm {select_llm_module}")
 
-    # 初始化Intent模块
+    # Initialize Intent.
     if init_intent:
         select_intent_module = config["selected_module"]["Intent"]
         intent_type = (
@@ -59,9 +62,9 @@ def initialize_modules(
             intent_type,
             config["Intent"][select_intent_module],
         )
-        logger.bind(tag=TAG).info(f"初始化组件: intent成功 {select_intent_module}")
+        logger.bind(tag=TAG).info(f"Component initialized: intent {select_intent_module}")
 
-    # 初始化Memory模块
+    # Initialize Memory.
     if init_memory:
         select_memory_module = config["selected_module"]["Memory"]
         memory_type = (
@@ -74,9 +77,9 @@ def initialize_modules(
             config["Memory"][select_memory_module],
             config.get("summaryMemory", None),
         )
-        logger.bind(tag=TAG).info(f"初始化组件: memory成功 {select_memory_module}")
+        logger.bind(tag=TAG).info(f"Component initialized: memory {select_memory_module}")
 
-    # 初始化VAD模块
+    # Initialize VAD.
     if init_vad:
         select_vad_module = config["selected_module"]["VAD"]
         vad_type = (
@@ -88,17 +91,20 @@ def initialize_modules(
             vad_type,
             config["VAD"][select_vad_module],
         )
-        logger.bind(tag=TAG).info(f"初始化组件: vad成功 {select_vad_module}")
+        logger.bind(tag=TAG).info(f"Component initialized: vad {select_vad_module}")
 
-    # 初始化ASR模块
+    # Initialize ASR.
     if init_asr:
         select_asr_module = config["selected_module"]["ASR"]
         modules["asr"] = initialize_asr(config)
-        logger.bind(tag=TAG).info(f"初始化组件: asr成功 {select_asr_module}")
+        logger.bind(tag=TAG).info(f"Component initialized: asr {select_asr_module}")
     return modules
 
 
 def initialize_tts(config):
+    validate_config(config, partial=bool(config.get("read_config_from_api")))
+    if not config.get("selected_module", {}).get("TTS"):
+        raise ProviderProfileError("TTS selection is unavailable; explicitly configure a supported provider")
     select_tts_module = config["selected_module"]["TTS"]
     tts_config = config["TTS"][select_tts_module].copy()
     tts_config.setdefault("tts_timeout", config.get("tts_timeout", 15))
@@ -116,6 +122,9 @@ def initialize_tts(config):
 
 
 def initialize_asr(config):
+    validate_config(config, partial=bool(config.get("read_config_from_api")))
+    if not config.get("selected_module", {}).get("ASR"):
+        raise ProviderProfileError("ASR selection is unavailable; explicitly configure a supported provider")
     select_asr_module = config["selected_module"]["ASR"]
     asr_type = (
         select_asr_module
@@ -127,26 +136,26 @@ def initialize_asr(config):
         config["ASR"][select_asr_module],
         str(config.get("delete_audio", True)).lower() in ("true", "1", "yes"),
     )
-    logger.bind(tag=TAG).info("ASR模块初始化完成")
+    logger.bind(tag=TAG).info("ASR module initialization completed")
     return new_asr
 
 
 def initialize_voiceprint(asr_instance, config):
-    """初始化声纹识别功能"""
+    """Initialize voiceprint recognition."""
     voiceprint_config = config.get("voiceprint")
     if not voiceprint_config:
         return False  
 
-    # 应用配置
+    # Apply configuration.
     if not voiceprint_config.get("url") or not voiceprint_config.get("speakers"):
-        logger.bind(tag=TAG).warning("声纹识别配置不完整")
+        logger.bind(tag=TAG).warning("Incomplete voiceprint recognition configuration")
         return False
         
     try:
         asr_instance.init_voiceprint(voiceprint_config)
-        logger.bind(tag=TAG).info("ASR模块声纹识别功能已动态启用")
-        logger.bind(tag=TAG).info(f"配置说话人数量: {len(voiceprint_config['speakers'])}")
+        logger.bind(tag=TAG).info("ASR voiceprint recognition enabled dynamically")
+        logger.bind(tag=TAG).info(f"Configured speaker count: {len(voiceprint_config['speakers'])}")
         return True
     except Exception as e:
-        logger.bind(tag=TAG).error(f"动态初始化声纹识别功能失败: {str(e)}")
+        logger.bind(tag=TAG).error(f"Failed to initialize voiceprint recognition dynamically: {str(e)}")
         return False

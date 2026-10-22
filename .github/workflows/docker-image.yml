@@ -3,86 +3,94 @@ name: Docker Image CI
 on:
   push:
     tags:
-      - 'v*.*.*'  # 只在以 v 开头的标签推送时触发，例如 v1.0.0
+      - 'v*.*.*'
   workflow_dispatch:
-  workflow_run:
-    workflows: ["Build Base Image"]
-    types:
-      - completed
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
+  base:
+    uses: ./.github/workflows/build-base-image.yml
   release:
-    name: Release Docker images
+    needs: base
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: write
-      id-token: write
-      issues: write
     steps:
-      - name: Check Disk Space
-        run: |
-          df -h
-          docker system df
-
-      - name: Clean up Docker resources
-        run: |
-          docker system prune -af
-          docker builder prune -af
-
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          driver-opts: |
-            network=host
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+          python-version: '3.10'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Validate explicit web inputs before any package install
+        env:
+          NODE_IMAGE: ${{ vars.NODE_IMAGE }}
+          MAVEN_IMAGE: ${{ vars.MAVEN_IMAGE }}
+          RUNTIME_IMAGE: ${{ vars.RUNTIME_IMAGE }}
+          NPM_REGISTRY: ${{ vars.NPM_REGISTRY }}
+        run: |
+          python tools/build-inputs.py images --node-image "$NODE_IMAGE" --maven-image "$MAVEN_IMAGE" --runtime-image "$RUNTIME_IMAGE"
+          test "$NPM_REGISTRY" = https://registry.npmjs.org
+          node tools/build-npm-lock.mjs main/manager-web/package-lock.json
+      - name: Record source inputs (not an installed SBOM)
+        run: python tools/build-inputs.py report > source-inputs.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: backend-source-inputs
+          path: source-inputs.json
+      - name: Owned repository identity
+        id: identity
+        env:
+          REPOSITORY: ${{ github.repository }}
+        run: echo "repository=ghcr.io/${REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.TOKEN }}
-
-      - name: Extract version from tag
-        id: get_version
-        run: |
-          if [[ "$GITHUB_REF" =~ ^refs/tags/v([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
-            echo "VERSION=${BASH_REMATCH[1]}" >> $GITHUB_ENV
-            echo "IS_VERSION=true" >> $GITHUB_ENV
-          else
-            echo "VERSION=latest" >> $GITHUB_ENV
-            echo "IS_VERSION=false" >> $GITHUB_ENV
-          fi
-
-      # 构建 xiaozhi-server 镜像
-      - name: Build and push xiaozhi-server
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build server from the base produced from the same checkout
+        id: server
         uses: docker/build-push-action@v6
         with:
           context: .
           file: Dockerfile-server
           push: true
-          tags: |
-            ${{ env.IS_VERSION == 'true' && format('ghcr.io/{0}:server_{1},ghcr.io/{0}:server_latest', github.repository, env.VERSION) || format('ghcr.io/{0}:server_latest', github.repository) }}
+          pull: true
+          no-cache: true
           platforms: linux/amd64,linux/arm64
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          tags: ${{ steps.identity.outputs.repository }}:server-${{ github.sha }}
+          provenance: mode=max
           build-args: |
-            BUILDKIT_PROGRESS=plain
-
-      # 构建 manager-api 镜像
-      - name: Build and push manager-web
+            SERVER_BASE_IMAGE=${{ needs.base.outputs.image }}
+      - name: Build management services from source
+        id: web
         uses: docker/build-push-action@v6
         with:
           context: .
           file: Dockerfile-web
           push: true
-          tags: |
-            ${{ env.IS_VERSION == 'true' && format('ghcr.io/{0}:web_{1},ghcr.io/{0}:web_latest', github.repository, env.VERSION) || format('ghcr.io/{0}:web_latest', github.repository) }}
+          pull: true
+          no-cache: true
           platforms: linux/amd64,linux/arm64
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          tags: ${{ steps.identity.outputs.repository }}:web-${{ github.sha }}
+          provenance: mode=max
           build-args: |
-            BUILDKIT_PROGRESS=plain
+            NODE_IMAGE=${{ vars.NODE_IMAGE }}
+            MAVEN_IMAGE=${{ vars.MAVEN_IMAGE }}
+            RUNTIME_IMAGE=${{ vars.RUNTIME_IMAGE }}
+            NPM_REGISTRY=${{ vars.NPM_REGISTRY }}
+      - name: Record produced image digests
+        env:
+          BASE: ${{ needs.base.outputs.image }}
+          SERVER_DIGEST: ${{ steps.server.outputs.digest }}
+          WEB_DIGEST: ${{ steps.web.outputs.digest }}
+          REPOSITORY: ${{ steps.identity.outputs.repository }}
+        run: |
+          printf '%s\n' "$BASE" "$REPOSITORY@$SERVER_DIGEST" "$REPOSITORY@$WEB_DIGEST" > image-digests.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: backend-image-digests
+          path: image-digests.txt

@@ -1,7 +1,8 @@
 import openai
 import json
+from config.service_policy import httpx_client, validate_endpoint
+from config.provider_profile import validate_provider_config
 from config.logger import setup_logging
-from core.utils.util import check_model_key
 from core.providers.vllm.base import VLLMProviderBase
 
 TAG = __name__
@@ -10,12 +11,14 @@ logger = setup_logging()
 
 class VLLMProvider(VLLMProviderBase):
     def __init__(self, config):
+        validate_provider_config("VLLM", config, "openai", require_ready=True)
         self.model_name = config.get("model_name")
-        self.api_key = config.get("api_key")
+        self.api_key = config.get("api_key") or "local-only"
         if "base_url" in config:
             self.base_url = config.get("base_url")
         else:
             self.base_url = config.get("url")
+        validate_endpoint(self.base_url, "vllm")
 
         param_defaults = {
             "max_tokens": (500, int),
@@ -34,13 +37,11 @@ class VLLMProvider(VLLMProviderBase):
             except (ValueError, TypeError):
                 setattr(self, param, default)
 
-        model_key_msg = check_model_key("VLLM", self.api_key)
-        if model_key_msg:
-            logger.bind(tag=TAG).error(model_key_msg)
-        self.client = openai.OpenAI(api_key=self.api_key, base_url=self.base_url)
+        self.client = openai.OpenAI(api_key=self.api_key, base_url=self.base_url,
+                                    http_client=httpx_client("vllm"))
 
     def response(self, question, base64_image):
-        question = question + "(请使用中文回复)"
+        question = question + "(Please reply in Chinese)"
         try:
             messages = [
                 {
@@ -63,6 +64,6 @@ class VLLMProvider(VLLMProviderBase):
 
             return response.choices[0].message.content
 
-        except Exception as e:
-            logger.bind(tag=TAG).error(f"Error in response generation: {e}")
-            raise
+        except Exception:
+            logger.bind(tag=TAG).error("Vision response failed; verify approved VLLM configuration and availability")
+            raise RuntimeError("Approved vision service request failed") from None

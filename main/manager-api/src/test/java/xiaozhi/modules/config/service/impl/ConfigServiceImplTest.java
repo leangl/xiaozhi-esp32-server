@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -32,6 +33,82 @@ import xiaozhi.modules.timbre.service.TimbreService;
 import xiaozhi.modules.voiceclone.service.VoiceCloneService;
 
 class ConfigServiceImplTest {
+
+    @Test
+    void cachedProviderConfigurationIsRejectedBeforeReturningSecretsToRuntime() {
+        RedisUtils redisUtils = mock(RedisUtils.class);
+        when(redisUtils.get(RedisKeys.getServerConfigKey())).thenReturn(Map.of("ASR", Map.of("alias",
+                Map.of("type", "openai", "base_url", "https://unknown.example/secret", "api_key", "synthetic-secret"))));
+        ConfigServiceImpl service = newService(mock(SysParamsService.class), redisUtils);
+        var error = assertThrows(xiaozhi.common.exception.RenException.class, () -> service.getConfig(true));
+        org.junit.jupiter.api.Assertions.assertFalse(error.getMessage().contains("secret"));
+        org.junit.jupiter.api.Assertions.assertTrue(error.getMessage().startsWith("ASR configuration is unavailable"));
+    }
+
+    @Test
+    void removedPluginSystemParametersAreNotAdvertisedAsRuntimeTools() {
+        SysParamsService params = mock(SysParamsService.class);
+        when(params.list(anyMap())).thenReturn(List.of(parameter("plugins.get_weather.api_key", "secret", "string"),
+                parameter("plugins.play_music.music_dir", "./music", "string")));
+        ConfigServiceImpl service = newService(params, mock(RedisUtils.class));
+        Map<String, Object> config = new HashMap<>();
+        ReflectionTestUtils.invokeMethod(service, "buildConfig", config);
+        assertEquals(Map.of("play_music", Map.of("music_dir", "./music")), config.get("plugins"));
+    }
+
+    @Test
+    void staleOptionalToolsAndContextBecomeInertWithoutBlockingUnrelatedCachedConfiguration() {
+        RedisUtils redis = mock(RedisUtils.class);
+        Map<String, Object> cached = new HashMap<>();
+        cached.put("features", Map.of("enabled", true));
+        cached.put("plugins", Map.of("hass_state", Map.of("base_url", "https://unknown.example", "api_key", "synthetic-secret"),
+                "play_music", Map.of("music_dir", "./music")));
+        cached.put("context_providers", List.of(Map.of("url", "https://unknown.example", "headers", Map.of("Authorization", "secret"))));
+        when(redis.get(RedisKeys.getServerConfigKey())).thenReturn(cached);
+        var result = newService(mock(SysParamsService.class), redis).getConfig(true);
+        assertEquals(Map.of("play_music", Map.of("music_dir", "./music")), result.get("plugins"));
+        assertEquals(List.of(), result.get("context_providers"));
+        assertEquals(Map.of("enabled", true), result.get("features"));
+        org.junit.jupiter.api.Assertions.assertFalse(result.toString().contains("secret"));
+        assertEquals(2, ((Map<?, ?>) cached.get("plugins")).size());
+    }
+
+    @Test
+    void cachedPolicyValidModelStillRequiresEnabledCurrentCatalogRow() {
+        RedisUtils redis = mock(RedisUtils.class);
+        when(redis.get(RedisKeys.getServerConfigKey())).thenReturn(Map.of("ASR", Map.of("disabled",
+                Map.of("type", "openai", "base_url", "http://localhost:9999/v1"))));
+        ConfigServiceImpl service = newService(mock(SysParamsService.class), redis);
+        var models = (ModelConfigService) ReflectionTestUtils.getField(service, "modelConfigService");
+        var disabled = new xiaozhi.modules.model.entity.ModelConfigEntity();
+        disabled.setModelType("ASR");
+        disabled.setIsEnabled(0);
+        disabled.setConfigJson(new cn.hutool.json.JSONObject().set("type", "openai").set("base_url", "http://localhost:9999/v1"));
+        when(models.getModelByIdFromCache("disabled")).thenReturn(disabled);
+        assertThrows(xiaozhi.common.exception.RenException.class, () -> service.getConfig(true));
+    }
+
+    @Test
+    void alreadyInstantiatedAsrHintCannotBypassUnavailableAssistantSelection() {
+        ConfigServiceImpl service = newService(mock(SysParamsService.class), mock(RedisUtils.class));
+        var devices = (DeviceService) ReflectionTestUtils.getField(service, "deviceService");
+        var agents = (AgentService) ReflectionTestUtils.getField(service, "agentService");
+        var models = (ModelConfigService) ReflectionTestUtils.getField(service, "modelConfigService");
+        var device = new xiaozhi.modules.device.entity.DeviceEntity();
+        device.setAgentId("agent");
+        when(devices.getDeviceByMacAddress("synthetic-mac")).thenReturn(device);
+        var agent = new xiaozhi.modules.agent.vo.AgentInfoVO();
+        agent.setAsrModelId("legacy-asr");
+        when(agents.getAgentById("agent")).thenReturn(agent);
+        var legacy = new xiaozhi.modules.model.entity.ModelConfigEntity();
+        legacy.setModelType("ASR");
+        legacy.setIsEnabled(1);
+        legacy.setConfigJson(new cn.hutool.json.JSONObject().set("type", "fun_local"));
+        when(models.getModelByIdFromCache("legacy-asr")).thenReturn(legacy);
+        assertThrows(xiaozhi.common.exception.RenException.class,
+                () -> service.getAgentModels("synthetic-mac", Map.of("ASR", "legacy-asr")));
+        org.mockito.Mockito.verifyNoInteractions(ReflectionTestUtils.getField(service, "timbreService"));
+    }
 
     @Test
     void cachedServerConfigIsCheckedAsAStringKeyedMapWithoutChangingNestedValues() {

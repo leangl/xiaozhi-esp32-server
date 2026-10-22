@@ -2,50 +2,50 @@ export default class BlockingQueue {
     #items   = [];
     #waiters = [];          // {resolve, reject, min, timer, onTimeout}
 
-    /* 空队列一次性闸门 */
+    /* One-shot barrier for an empty queue */
     #emptyPromise = null;
     #emptyResolve = null;
 
-    /* 生产者：把数据塞进去 */
+    /* Producer: enqueue data */
     enqueue(item, ...restItems) {
         if (restItems.length === 0) {
             this.#items.push(item);
         }
-        // 如果有额外参数，批量处理所有项
+        // Handle additional arguments as a batch
         else {
             const items = [item, ...restItems].filter(i => i);
             if (items.length === 0) return;
             this.#items.push(...items);
         }
-        // 若有空队列闸门，一次性放行所有等待者
+        // Release all callers waiting on the empty-queue barrier
         if (this.#emptyResolve) {
             this.#emptyResolve();
             this.#emptyResolve = null;
             this.#emptyPromise = null;
         }
 
-        // 唤醒所有正在等的 waiter
+        // Wake all pending waiters
         this.#wakeWaiters();
     }
 
-    /* 消费者：min 条或 timeout ms 先到谁 */
+    /* Consumer: wait for min items or timeout milliseconds */
     async dequeue(min = 1, timeout = Infinity, onTimeout = null) {
-        // 1. 若空，等第一次数据到达（所有调用共享同一个 promise）
+        // 1. If empty, wait for the first item (all callers share one promise)
         if (this.#items.length === 0) {
             await this.#waitForFirstItem();
         }
 
-        // 立即满足
+        // Ready immediately
         if (this.#items.length >= min) {
             return this.#flush();
         }
 
-        // 需要等待
+        // Wait for more items
         return new Promise((resolve, reject) => {
             let timer = null;
             const waiter = { resolve, reject, min, onTimeout, timer };
 
-            // 超时逻辑
+            // Timeout handling
             if (Number.isFinite(timeout)) {
                 waiter.timer = setTimeout(() => {
                     this.#removeWaiter(waiter);
@@ -58,7 +58,7 @@ export default class BlockingQueue {
         });
     }
 
-    /* 空队列闸门生成器 */
+    /* Create the empty-queue barrier */
     #waitForFirstItem() {
         if (!this.#emptyPromise) {
             this.#emptyPromise = new Promise(r => (this.#emptyResolve = r));
@@ -66,7 +66,7 @@ export default class BlockingQueue {
         return this.#emptyPromise;
     }
 
-    /* 内部：每次数据变动后，检查哪些 waiter 已满足 */
+    /* Internal: check satisfied waiters after each data change */
     #wakeWaiters() {
         for (let i = this.#waiters.length - 1; i >= 0; i--) {
             const w = this.#waiters[i];
@@ -91,12 +91,12 @@ export default class BlockingQueue {
         return snapshot;
     }
 
-    /* 当前缓存长度（不含等待者） */
+    /* Current buffered item count (excluding waiters) */
     get length() {
         return this.#items.length;
     }
 
-    /* 清空队列（保持对象引用，不影响等待者） */
+    /* Clear items while retaining the array reference and pending waiters */
     clear() {
         this.#items.length = 0;
     }

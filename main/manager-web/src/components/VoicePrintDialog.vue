@@ -41,7 +41,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: '添加说话人'
+      default() { return this.$t('voicePrintDialog.addSpeaker'); }
     },
     visible: {
       type: Boolean,
@@ -70,13 +70,13 @@ export default {
       ],
       rules: {
         introduce: [
-          { required: true, message: '请输入描述', trigger: "blur" }
+          { required: true, message: this.$t('voicePrintDialog.requiredDescription'), trigger: "blur" }
         ],
         sourceName: [
-          { required: true, message: '请输入名称', trigger: "blur" }
+          { required: true, message: this.$t('voicePrintDialog.requiredName'), trigger: "blur" }
         ],
         audioId: [
-          { required: true, message: '请选择音频向量', trigger: "change" }
+          { required: true, message: this.$t('voicePrintDialog.requiredAudioVector'), trigger: "change" }
         ]
       }
     };
@@ -100,7 +100,7 @@ export default {
     },
     playAudio(audioId) {
       if (this.playingAudioId === audioId) {
-        // 如果正在播放当前音频，则停止播放
+        // Stop playback if the current audio is already playing
         if (this.audioElement) {
           this.audioElement.pause();
           this.audioElement = null;
@@ -109,17 +109,17 @@ export default {
         return;
       }
 
-      // 停止当前正在播放的音频
+      // Stop the currently playing audio
       if (this.audioElement) {
         this.audioElement.pause();
         this.audioElement = null;
       }
 
-      // 先获取音频下载ID
+      // Get the audio download ID first
       this.playingAudioId = audioId;
       api.agent.getAudioId(audioId, (res) => {
         if (res.data && res.data.data) {
-          // 使用获取到的下载ID播放音频
+          // Play audio using the download ID
           this.audioElement = new Audio(api.getServiceUrl() + `/agent/play/${res.data.data}`);
 
           this.audioElement.onended = () => {

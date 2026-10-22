@@ -1,38 +1,27 @@
-# 上下文源使用教程
+# Context provider guide
 
-## 概述
+## Overview
 
-`上下文源`，就是为小智系统提示词的上下文添加【数据源】。
+A context provider adds an external data source to Xiaozhi's system-prompt context. At wake-up, it fetches external data and injects it into the LLM's system prompt, giving the assistant the current state of something in the world.
 
-`上下文源` 在小智在唤醒那一刻，获取外部系统的数据，并将其动态注入到大模型的系统提示词（System Prompt）中。
-让其做到唤醒时感知世界某个事物的状态。
+Context providers supply data on each wake-up. Memory supplies earlier conversation content; MCP/function calling fetches a capability or knowledge when needed.
 
-它和MCP、记忆有本质的区别：`上下文源`是强制让小智感知世界的数据；`记忆(Mem)`是让他知道之前聊了什么内容；`MCP(function_call)`是当需要调用某项能力/知识的时候使用调用。
+Examples include health sensors (temperature, blood pressure, oxygen saturation), live business-system data (server load, tasks, stock information), and text available through HTTP APIs.
 
-通过这个功能，在小智唤醒的一刹那，“感知”到：
-- 人体健康传感器状态（体温、血压、血氧状态等）
-- 业务系统的实时数据（服务器负载、待办数据、股票信息等）
-- 任何可以通过 HTTP API 获取的文本信息
+For fresh updates after wake-up, combine a context provider with MCP tools.
 
-**注意**：该功能只是方便小智在唤醒的时候感知事物的状态，而如果想要小智唤醒后实时获取事物的状态，建议在此功能上再结合MCP工具的调用。
+## How it works
 
-## 工作原理
+Configure one or more HTTP API URLs. During prompt construction, the system checks for `{{ dynamic_context }}`, requests all configured APIs, formats their responses as Markdown lists, and replaces that placeholder.
 
-1. **配置源**：用户配置一个或多个 HTTP API 地址。
-2. **触发请求**：当系统构建 Prompt 时，如果发现模板中包含 `{{ dynamic_context }}` 占位符，会请求所有配置的 API。
-3. **自动注入**：系统会自动将 API 返回的数据格式化为 Markdown 列表，替换 `{{ dynamic_context }}` 占位符。
+## API contract
 
-## 接口规范
+Use `GET`. The system adds a `device-id` request header. Return JSON containing `code` and `data`.
 
-为了让小智正确解析数据，您的 API 需要满足以下规范：
+### Dictionary response
 
-- **请求方式**：`GET`
-- **请求头**：系统会自动添加 `device-id` 字段到 Request Header。
-- **响应格式**：必须返回 JSON 格式，且包含 `code` 和 `data` 字段。
+This original multilingual fixture means: living-room temperature 26°C, living-room humidity 45%, and front door closed. Chinese keys and values remain unchanged as API/locale example data:
 
-### 响应示例
-
-**情况 1：返回键值对**
 ```json
 {
   "code": 0,
@@ -44,7 +33,9 @@
   }
 }
 ```
-*注入效果：*
+
+Injected form:
+
 ```markdown
 <context>
 - **客厅温度：** 26℃
@@ -53,7 +44,10 @@
 </context>
 ```
 
-**情况 2：返回列表**
+### List response
+
+This fixture says “you have 10 pending tasks” and “the car is traveling at 100 km/h”:
+
 ```json
 {
   "code": 0,
@@ -63,7 +57,9 @@
   ]
 }
 ```
-*注入效果：*
+
+Injected form:
+
 ```markdown
 <context>
 - 您有10个待办事项
@@ -71,22 +67,18 @@
 </context>
 ```
 
-## 配置指南
+## Configuration
 
-### 方式 1：智控台配置（全模块部署）
+### Method 1: Full-module console
 
-1. 登录智控台，进入**角色配置**页面。
-2. 找到**上下文源**配置项（点击“编辑源”按钮）。
-3. 点击**添加**，输入您的 API 地址。
-4. 如果 API 需要鉴权，可以在**请求头**部分添加 `Authorization` 或其他 Header。
-5. 保存配置。
+Open **Role Configuration > Context Providers** using **Edit Sources**. Click **Add**, enter the API URL, add `Authorization` or other headers if required, and save.
 
-### 方式 2：配置文件配置（单模块部署）
+### Method 2: Server-only configuration
 
-编辑 `xiaozhi-server/data/.config.yaml` 文件，添加 `context_providers` 配置段：
+Add `context_providers` to `xiaozhi-server/data/.config.yaml`:
 
 ```yaml
-# 上下文源配置
+# Context provider configuration
 context_providers:
   - url: "http://api.example.com/data"
     headers:
@@ -94,29 +86,31 @@ context_providers:
   - url: "http://another-api.com/data"
 ```
 
-## 启用功能
+## Enable the feature
 
-默认情况下，系统的提示词模板文件（`data/.agent-base-prompt.txt`）中已经预置了 `{{ dynamic_context }}` 占位符，您无需手动添加。
-
-**示例：**
+The default prompt template `data/.agent-base-prompt.txt` already includes `{{ dynamic_context }}`; you do not need to add it:
 
 ```markdown
 <context>
-【重要！以下信息已实时提供，无需调用工具查询，请直接使用：】
-- **设备ID：** {{device_id}}
-- **当前时间：** {{current_time}}
+[Important: this information is provided in real time. Use it directly without querying tools.]
+- **Device ID:** {{device_id}}
+- **Current time:** {{current_time}}
 ...
 {{ dynamic_context }}
 </context>
 ```
 
-**注意**：如果您不需要使用此功能，可以选择**不配置任何上下文源**，也可以从提示词模板文件中**删除** `{{ dynamic_context }}` 占位符。
+To disable this feature, leave the provider list empty or remove `{{ dynamic_context }}` from the prompt template.
 
-## 附录：Mock 测试服务示例
+## Appendix: Mock API server
 
-为了方便您测试和开发，我们提供了一个简单的 Python Mock Server 脚本。您可以运行此脚本在本地模拟 API 接口。
+Use this local `mock_api_server.py` example for testing. Its Chinese response data remains as multilingual fixtures, while comments and diagnostics are in English.
 
-**mock_api_server.py**
+- `/health`: test device ID, heart rate 80 bpm, blood pressure 120/80 mmHg, and a “good” state.
+- `/news/list`: headlines about Python 3.14, AI assistants, and tomorrow's heavy rain.
+- `/weather/simple`: clear becoming cloudy, 20–25°C, good air quality, suitable for travel.
+- `/device/info`: header-based lookup, device ID, 85% battery, firmware v2.0.1.
+- Unknown paths: HTTP 404 with the original `error` fixture value `接口不存在` (“endpoint does not exist”).
 
 ```python
 import http.server
@@ -124,12 +118,12 @@ import socketserver
 import json
 from urllib.parse import urlparse, parse_qs
 
-# 设置端口号
+# Listening port
 PORT = 8081
 
 class MockRequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
-        # 解析路径和参数
+        # Parse the path and query parameters
         parsed_path = urlparse(self.path)
         path = parsed_path.path
         query = parse_qs(parsed_path.query)
@@ -137,11 +131,11 @@ class MockRequestHandler(http.server.SimpleHTTPRequestHandler):
         response_data = {}
         status_code = 200
 
-        print(f"收到请求: {path}, 参数: {query}")
+        print(f"Received request: {path}, parameters: {query}")
 
-        # Case 1: 模拟健康数据 (返回字典 Dict)
-        # 路径参数风格: /health
-        # device_id 从 Header 获取
+        # Case 1: Mock health data (dictionary response)
+        # Path endpoint: /health
+        # Read device_id from the request header
         if path == "/health":
             device_id = self.headers.get("device-id", "unknown_device")
             print(f"device_id: {device_id}")
@@ -156,8 +150,8 @@ class MockRequestHandler(http.server.SimpleHTTPRequestHandler):
                 }
             }
 
-        # Case 2: 模拟新闻列表 (返回列表 List)
-        # 无参数: /news/list
+        # Case 2: Mock news (list response)
+        # No parameters: /news/list
         elif path == "/news/list":
             response_data = {
                 "code": 0,
@@ -169,8 +163,8 @@ class MockRequestHandler(http.server.SimpleHTTPRequestHandler):
                 ]
             }
 
-        # Case 3: 模拟天气简报 (返回字符串 String)
-        # 无参数: /weather/simple
+        # Case 3: Mock weather summary (string response)
+        # No parameters: /weather/simple
         elif path == "/weather/simple":
             response_data = {
                 "code": 0,
@@ -178,9 +172,9 @@ class MockRequestHandler(http.server.SimpleHTTPRequestHandler):
                 "data": "今日晴转多云，气温 20-25 度，空气质量优，适合出行。"
             }
 
-        # Case 4: 模拟设备详情 (Query参数风格)
-        # 参数风格: /device/info
-        # device_id 从 Header 获取
+        # Case 4: Mock device details (query-parameter style)
+        # Endpoint: /device/info
+        # Read device_id from the request header
         elif path == "/device/info":
             device_id = self.headers.get("device-id", "unknown_device")
             response_data = {
@@ -199,26 +193,26 @@ class MockRequestHandler(http.server.SimpleHTTPRequestHandler):
             status_code = 404
             response_data = {"error": "接口不存在"}
 
-        # 发送响应
+        # Send the response
         self.send_response(status_code)
         self.send_header('Content-type', 'application/json; charset=utf-8')
         self.end_headers()
         self.wfile.write(json.dumps(response_data, ensure_ascii=False).encode('utf-8'))
 
-# 启动服务
-# 允许地址重用，防止快速重启报错
+# Start the service
+# Allow address reuse to avoid errors after quick restarts
 socketserver.TCPServer.allow_reuse_address = True
 with socketserver.TCPServer(("", PORT), MockRequestHandler) as httpd:
     print(f"==================================================")
-    print(f"Mock API Server 已启动: http://localhost:{PORT}")
-    print(f"可用接口列表:")
-    print(f"1. [字典] http://localhost:{PORT}/health")
-    print(f"2. [列表] http://localhost:{PORT}/news/list")
-    print(f"3. [文本] http://localhost:{PORT}/weather/simple")
-    print(f"4. [参数] http://localhost:{PORT}/device/info")
+    print(f"Mock API Server started: http://localhost:{PORT}")
+    print(f"Available endpoints:")
+    print(f"1. [dictionary] http://localhost:{PORT}/health")
+    print(f"2. [list] http://localhost:{PORT}/news/list")
+    print(f"3. [text] http://localhost:{PORT}/weather/simple")
+    print(f"4. [parameters] http://localhost:{PORT}/device/info")
     print(f"==================================================")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print("\n服务已停止")
+        print("\nService stopped")
 ```

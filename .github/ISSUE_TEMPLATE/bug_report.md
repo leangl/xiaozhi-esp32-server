@@ -1,32 +1,32 @@
 ---
-name: Bug 报告（Bug Report）
-about: 反馈项目中的缺陷或问题
-title: "[Bug] 简短描述问题"
+name: Bug Report
+about: Report a defect or problem in the project
+title: "[Bug] Briefly describe the problem"
 labels: bug
 assignees: ''
 ---
 
-## 🐛 问题描述
-<!-- 清晰简洁地描述问题是什么 -->
+## 🐛 Problem description
+<!-- Clearly and concisely describe the problem. -->
 
-## 🖥️ 环境信息
-- 部署方式: 全模块部署 还是 单Server部署
-- 版本号: 例如 0.3.x
+## 🖥️ Environment
+- Deployment mode: full stack or voice server only
+- Version: for example, 0.3.x
 
-## 🔍 告诉我们，应该怎么复现这个问题
-<!-- 这个很重要，方便我们快速定位 -->
-1. 打开 '...'
-2. 点击 '...'
-3. 滚动到 '...'
-4. 看到错误
+## 🔍 Steps to reproduce
+<!-- Include enough detail to reproduce and locate the problem. -->
+1. Open '...'
+2. Click '...'
+3. Scroll to '...'
+4. Observe the error
 
-## 🤔 你原本希望是怎么样的
-<!-- 简要描述预期的正确行为 -->
+## 🤔 Expected behavior
+<!-- Briefly describe the correct behavior you expected. -->
 
-## 😯 提供一些截图
-<!-- 如果适用，添加问题的截图 -->
-1. 比如日志截图，越多越好
-2. 比如界面反应
+## 😯 Screenshots
+<!-- If applicable, attach screenshots demonstrating the problem. -->
+1. Relevant log screenshots
+2. The application's response
 
-## 📋 其他信息
-<!-- 在此添加关于此问题的任何其他上下文信息 -->
+## 📋 Additional context
+<!-- Add any other relevant information here. -->

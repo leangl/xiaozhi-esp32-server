@@ -11,8 +11,9 @@ import xiaozhi.common.exception.ErrorCode;
 import xiaozhi.common.exception.RenException;
 
 /**
- * Redis切面处理类
+ * Redis aspect handler
  * Copyright (c) 人人开源 All rights reserved.
+ * Original copyright holder: Renren Open Source; the legal attribution above is retained.
  * Website: https://www.renren.io
  */
 @Slf4j
@@ -20,7 +21,7 @@ import xiaozhi.common.exception.RenException;
 @Component
 public class RedisAspect {
     /**
-     * 是否开启redis缓存 true开启 false关闭
+     * Enable Redis caching: true to enable, false to disable
      */
     @Value("${renren.redis.open}")
     private boolean open;

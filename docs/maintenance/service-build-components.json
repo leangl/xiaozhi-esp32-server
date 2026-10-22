@@ -1,0 +1,2267 @@
+{
+  "kind": "owned-image-component-inventory",
+  "date": "2026-10-21",
+  "voiceOs": {
+    "imageId": "sha256:f19225fab54bf448cb8076e599a260a4935f55bdaeef29d0380ef900c3de2ed4",
+    "method": "dpkg-query installed packages",
+    "components": [
+      {
+        "name": "adduser",
+        "version": "3.134"
+      },
+      {
+        "name": "apt",
+        "version": "2.6.1"
+      },
+      {
+        "name": "base-files",
+        "version": "12.4+deb12u15"
+      },
+      {
+        "name": "base-passwd",
+        "version": "3.6.1"
+      },
+      {
+        "name": "bash",
+        "version": "5.2.15-2+b13"
+      },
+      {
+        "name": "bsdutils",
+        "version": "1:2.38.1-5+deb12u3"
+      },
+      {
+        "name": "ca-certificates",
+        "version": "20250419~deb12u1"
+      },
+      {
+        "name": "coreutils",
+        "version": "9.1-1"
+      },
+      {
+        "name": "dash",
+        "version": "0.5.12-2"
+      },
+      {
+        "name": "debconf",
+        "version": "1.5.82"
+      },
+      {
+        "name": "debian-archive-keyring",
+        "version": "2023.3+deb12u2"
+      },
+      {
+        "name": "debianutils",
+        "version": "5.7-0.5~deb12u1"
+      },
+      {
+        "name": "diffutils",
+        "version": "1:3.8-4"
+      },
+      {
+        "name": "dpkg",
+        "version": "1.21.23"
+      },
+      {
+        "name": "e2fsprogs",
+        "version": "1.47.0-2+b2"
+      },
+      {
+        "name": "ffmpeg",
+        "version": "7:5.1.9-0+deb12u1"
+      },
+      {
+        "name": "findutils",
+        "version": "4.9.0-4"
+      },
+      {
+        "name": "fontconfig",
+        "version": "2.14.1-4"
+      },
+      {
+        "name": "fontconfig-config",
+        "version": "2.14.1-4"
+      },
+      {
+        "name": "fonts-dejavu-core",
+        "version": "2.37-6"
+      },
+      {
+        "name": "gcc-12-base:arm64",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "name": "gpgv",
+        "version": "2.2.40-1.1+deb12u2"
+      },
+      {
+        "name": "grep",
+        "version": "3.8-5"
+      },
+      {
+        "name": "gzip",
+        "version": "1.12-1"
+      },
+      {
+        "name": "hostname",
+        "version": "3.23+nmu1"
+      },
+      {
+        "name": "init-system-helpers",
+        "version": "1.65.2+deb12u1"
+      },
+      {
+        "name": "libacl1:arm64",
+        "version": "2.3.1-3"
+      },
+      {
+        "name": "libaom3:arm64",
+        "version": "3.6.0-1+deb12u3"
+      },
+      {
+        "name": "libapt-pkg6.0:arm64",
+        "version": "2.6.1"
+      },
+      {
+        "name": "libasound2:arm64",
+        "version": "1.2.8-1+b1"
+      },
+      {
+        "name": "libasound2-data",
+        "version": "1.2.8-1"
+      },
+      {
+        "name": "libass9:arm64",
+        "version": "1:0.17.1-1+deb12u1"
+      },
+      {
+        "name": "libasyncns0:arm64",
+        "version": "0.8-6+b3"
+      },
+      {
+        "name": "libattr1:arm64",
+        "version": "1:2.5.1-4"
+      },
+      {
+        "name": "libaudit-common",
+        "version": "1:3.0.9-1"
+      },
+      {
+        "name": "libaudit1:arm64",
+        "version": "1:3.0.9-1"
+      },
+      {
+        "name": "libavc1394-0:arm64",
+        "version": "0.5.4-5"
+      },
+      {
+        "name": "libavcodec59:arm64",
+        "version": "7:5.1.9-0+deb12u1"
+      },
+      {
+        "name": "libavdevice59:arm64",
+        "version": "7:5.1.9-0+deb12u1"
+      },
+      {
+        "name": "libavfilter8:arm64",
+        "version": "7:5.1.9-0+deb12u1"
+      },
+      {
+        "name": "libavformat59:arm64",
+        "version": "7:5.1.9-0+deb12u1"
+      },
+      {
+        "name": "libavutil57:arm64",
+        "version": "7:5.1.9-0+deb12u1"
+      },
+      {
+        "name": "libblas3:arm64",
+        "version": "3.11.0-2"
+      },
+      {
+        "name": "libblkid1:arm64",
+        "version": "2.38.1-5+deb12u3"
+      },
+      {
+        "name": "libbluray2:arm64",
+        "version": "1:1.3.4-1"
+      },
+      {
+        "name": "libbrotli1:arm64",
+        "version": "1.0.9-2+b6"
+      },
+      {
+        "name": "libbs2b0:arm64",
+        "version": "3.1.0+dfsg-7"
+      },
+      {
+        "name": "libbsd0:arm64",
+        "version": "0.11.7-2"
+      },
+      {
+        "name": "libbz2-1.0:arm64",
+        "version": "1.0.8-5+b1"
+      },
+      {
+        "name": "libc-bin",
+        "version": "2.36-9+deb12u14"
+      },
+      {
+        "name": "libc-l10n",
+        "version": "2.36-9+deb12u14"
+      },
+      {
+        "name": "libc6:arm64",
+        "version": "2.36-9+deb12u14"
+      },
+      {
+        "name": "libcaca0:arm64",
+        "version": "0.99.beta20-3+deb12u1"
+      },
+      {
+        "name": "libcairo-gobject2:arm64",
+        "version": "1.16.0-7"
+      },
+      {
+        "name": "libcairo2:arm64",
+        "version": "1.16.0-7"
+      },
+      {
+        "name": "libcap-ng0:arm64",
+        "version": "0.8.3-1+b3"
+      },
+      {
+        "name": "libcap2:arm64",
+        "version": "1:2.66-4+deb12u3+b1"
+      },
+      {
+        "name": "libcdio-cdda2:arm64",
+        "version": "10.2+2.0.1-1"
+      },
+      {
+        "name": "libcdio-paranoia2:arm64",
+        "version": "10.2+2.0.1-1"
+      },
+      {
+        "name": "libcdio19:arm64",
+        "version": "2.1.0-4"
+      },
+      {
+        "name": "libchromaprint1:arm64",
+        "version": "1.5.1-2+b1"
+      },
+      {
+        "name": "libcjson1:arm64",
+        "version": "1.7.15-1+deb12u4"
+      },
+      {
+        "name": "libcodec2-1.0:arm64",
+        "version": "1.0.5-1"
+      },
+      {
+        "name": "libcom-err2:arm64",
+        "version": "1.47.0-2+b2"
+      },
+      {
+        "name": "libcrypt1:arm64",
+        "version": "1:4.4.33-2"
+      },
+      {
+        "name": "libdatrie1:arm64",
+        "version": "0.2.13-2+b1"
+      },
+      {
+        "name": "libdav1d6:arm64",
+        "version": "1.0.0-2+deb12u1"
+      },
+      {
+        "name": "libdb5.3:arm64",
+        "version": "5.3.28+dfsg2-1"
+      },
+      {
+        "name": "libdbus-1-3:arm64",
+        "version": "1.14.10-1~deb12u1"
+      },
+      {
+        "name": "libdc1394-25:arm64",
+        "version": "2.2.6-4"
+      },
+      {
+        "name": "libdebconfclient0:arm64",
+        "version": "0.270"
+      },
+      {
+        "name": "libdecor-0-0:arm64",
+        "version": "0.1.1-2"
+      },
+      {
+        "name": "libdeflate0:arm64",
+        "version": "1.14-1"
+      },
+      {
+        "name": "libdrm-amdgpu1:arm64",
+        "version": "2.4.114-1+b1"
+      },
+      {
+        "name": "libdrm-common",
+        "version": "2.4.114-1"
+      },
+      {
+        "name": "libdrm-nouveau2:arm64",
+        "version": "2.4.114-1+b1"
+      },
+      {
+        "name": "libdrm-radeon1:arm64",
+        "version": "2.4.114-1+b1"
+      },
+      {
+        "name": "libdrm2:arm64",
+        "version": "2.4.114-1+b1"
+      },
+      {
+        "name": "libedit2:arm64",
+        "version": "3.1-20221030-2"
+      },
+      {
+        "name": "libelf1:arm64",
+        "version": "0.188-2.1"
+      },
+      {
+        "name": "libepoxy0:arm64",
+        "version": "1.5.10-1"
+      },
+      {
+        "name": "libexpat1:arm64",
+        "version": "2.5.0-1+deb12u4"
+      },
+      {
+        "name": "libext2fs2:arm64",
+        "version": "1.47.0-2+b2"
+      },
+      {
+        "name": "libffi8:arm64",
+        "version": "3.4.4-1"
+      },
+      {
+        "name": "libflac12:arm64",
+        "version": "1.4.2+ds-2"
+      },
+      {
+        "name": "libflite1:arm64",
+        "version": "2.2-5"
+      },
+      {
+        "name": "libfontconfig1:arm64",
+        "version": "2.14.1-4"
+      },
+      {
+        "name": "libfreetype6:arm64",
+        "version": "2.12.1+dfsg-5+deb12u4"
+      },
+      {
+        "name": "libfribidi0:arm64",
+        "version": "1.0.8-2.1"
+      },
+      {
+        "name": "libgbm1:arm64",
+        "version": "22.3.6-1+deb12u2"
+      },
+      {
+        "name": "libgcc-s1:arm64",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "name": "libgcrypt20:arm64",
+        "version": "1.10.1-3+deb12u1"
+      },
+      {
+        "name": "libgdbm6:arm64",
+        "version": "1.23-3"
+      },
+      {
+        "name": "libgdk-pixbuf-2.0-0:arm64",
+        "version": "2.42.10+dfsg-1+deb12u4"
+      },
+      {
+        "name": "libgdk-pixbuf2.0-common",
+        "version": "2.42.10+dfsg-1+deb12u4"
+      },
+      {
+        "name": "libgfortran5:arm64",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "name": "libgl1:arm64",
+        "version": "1.6.0-1"
+      },
+      {
+        "name": "libgl1-mesa-dri:arm64",
+        "version": "22.3.6-1+deb12u2"
+      },
+      {
+        "name": "libglapi-mesa:arm64",
+        "version": "22.3.6-1+deb12u2"
+      },
+      {
+        "name": "libglib2.0-0:arm64",
+        "version": "2.74.6-2+deb12u9"
+      },
+      {
+        "name": "libglvnd0:arm64",
+        "version": "1.6.0-1"
+      },
+      {
+        "name": "libglx-mesa0:arm64",
+        "version": "22.3.6-1+deb12u2"
+      },
+      {
+        "name": "libglx0:arm64",
+        "version": "1.6.0-1"
+      },
+      {
+        "name": "libgme0:arm64",
+        "version": "0.6.3-6"
+      },
+      {
+        "name": "libgmp10:arm64",
+        "version": "2:6.2.1+dfsg1-1.1"
+      },
+      {
+        "name": "libgnutls30:arm64",
+        "version": "3.7.9-2+deb12u7"
+      },
+      {
+        "name": "libgomp1:arm64",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "name": "libgpg-error0:arm64",
+        "version": "1.46-1"
+      },
+      {
+        "name": "libgraphite2-3:arm64",
+        "version": "1.3.14-1+deb12u1"
+      },
+      {
+        "name": "libgsm1:arm64",
+        "version": "1.0.22-1"
+      },
+      {
+        "name": "libgssapi-krb5-2:arm64",
+        "version": "1.20.1-2+deb12u5"
+      },
+      {
+        "name": "libharfbuzz0b:arm64",
+        "version": "6.0.0+dfsg-3"
+      },
+      {
+        "name": "libhogweed6:arm64",
+        "version": "3.8.1-2"
+      },
+      {
+        "name": "libhwy1:arm64",
+        "version": "1.0.3-3+deb12u1"
+      },
+      {
+        "name": "libicu72:arm64",
+        "version": "72.1-3+deb12u1"
+      },
+      {
+        "name": "libidn2-0:arm64",
+        "version": "2.3.3-1+b1"
+      },
+      {
+        "name": "libiec61883-0:arm64",
+        "version": "1.2.0-6+b1"
+      },
+      {
+        "name": "libjack-jackd2-0:arm64",
+        "version": "1.9.21~dfsg-3"
+      },
+      {
+        "name": "libjbig0:arm64",
+        "version": "2.1-6.1"
+      },
+      {
+        "name": "libjpeg62-turbo:arm64",
+        "version": "1:2.1.5-2"
+      },
+      {
+        "name": "libjxl0.7:arm64",
+        "version": "0.7.0-10+deb12u1"
+      },
+      {
+        "name": "libk5crypto3:arm64",
+        "version": "1.20.1-2+deb12u5"
+      },
+      {
+        "name": "libkeyutils1:arm64",
+        "version": "1.6.3-2"
+      },
+      {
+        "name": "libkrb5-3:arm64",
+        "version": "1.20.1-2+deb12u5"
+      },
+      {
+        "name": "libkrb5support0:arm64",
+        "version": "1.20.1-2+deb12u5"
+      },
+      {
+        "name": "liblapack3:arm64",
+        "version": "3.11.0-2"
+      },
+      {
+        "name": "liblcms2-2:arm64",
+        "version": "2.14-2+deb12u1"
+      },
+      {
+        "name": "liblerc4:arm64",
+        "version": "4.0.0+ds-2"
+      },
+      {
+        "name": "liblilv-0-0:arm64",
+        "version": "0.24.14-1"
+      },
+      {
+        "name": "libllvm15:arm64",
+        "version": "1:15.0.6-4+b1"
+      },
+      {
+        "name": "liblz4-1:arm64",
+        "version": "1.9.4-1"
+      },
+      {
+        "name": "liblzma5:arm64",
+        "version": "5.4.1-1+deb12u2"
+      },
+      {
+        "name": "libmbedcrypto7:arm64",
+        "version": "2.28.3-1"
+      },
+      {
+        "name": "libmd0:arm64",
+        "version": "1.0.4-2"
+      },
+      {
+        "name": "libmount1:arm64",
+        "version": "2.38.1-5+deb12u3"
+      },
+      {
+        "name": "libmp3lame0:arm64",
+        "version": "3.100-6"
+      },
+      {
+        "name": "libmpg123-0:arm64",
+        "version": "1.31.2-1+deb12u1"
+      },
+      {
+        "name": "libmysofa1:arm64",
+        "version": "1.3.1~dfsg0-1"
+      },
+      {
+        "name": "libncursesw6:arm64",
+        "version": "6.4-4"
+      },
+      {
+        "name": "libnettle8:arm64",
+        "version": "3.8.1-2"
+      },
+      {
+        "name": "libnorm1:arm64",
+        "version": "1.5.9+dfsg-2"
+      },
+      {
+        "name": "libnsl2:arm64",
+        "version": "1.3.0-2"
+      },
+      {
+        "name": "libnuma1:arm64",
+        "version": "2.0.16-1"
+      },
+      {
+        "name": "libogg0:arm64",
+        "version": "1.3.5-3"
+      },
+      {
+        "name": "libopenal-data",
+        "version": "1:1.19.1-2"
+      },
+      {
+        "name": "libopenal1:arm64",
+        "version": "1:1.19.1-2"
+      },
+      {
+        "name": "libopenjp2-7:arm64",
+        "version": "2.5.0-2+deb12u3"
+      },
+      {
+        "name": "libopenmpt0:arm64",
+        "version": "0.6.9-1"
+      },
+      {
+        "name": "libopus0:arm64",
+        "version": "1.3.1-3"
+      },
+      {
+        "name": "libp11-kit0:arm64",
+        "version": "0.24.1-2"
+      },
+      {
+        "name": "libpam-modules:arm64",
+        "version": "1.5.2-6+deb12u2"
+      },
+      {
+        "name": "libpam-modules-bin",
+        "version": "1.5.2-6+deb12u2"
+      },
+      {
+        "name": "libpam-runtime",
+        "version": "1.5.2-6+deb12u2"
+      },
+      {
+        "name": "libpam0g:arm64",
+        "version": "1.5.2-6+deb12u2"
+      },
+      {
+        "name": "libpango-1.0-0:arm64",
+        "version": "1.50.12+ds-1"
+      },
+      {
+        "name": "libpangocairo-1.0-0:arm64",
+        "version": "1.50.12+ds-1"
+      },
+      {
+        "name": "libpangoft2-1.0-0:arm64",
+        "version": "1.50.12+ds-1"
+      },
+      {
+        "name": "libpcre2-8-0:arm64",
+        "version": "10.42-1+deb12u2"
+      },
+      {
+        "name": "libpgm-5.3-0:arm64",
+        "version": "5.3.128~dfsg-2"
+      },
+      {
+        "name": "libpixman-1-0:arm64",
+        "version": "0.42.2-1"
+      },
+      {
+        "name": "libplacebo208:arm64",
+        "version": "4.208.0-3"
+      },
+      {
+        "name": "libpng16-16:arm64",
+        "version": "1.6.39-2+deb12u6"
+      },
+      {
+        "name": "libpocketsphinx3:arm64",
+        "version": "0.8+5prealpha+1-15"
+      },
+      {
+        "name": "libpostproc56:arm64",
+        "version": "7:5.1.9-0+deb12u1"
+      },
+      {
+        "name": "libpulse0:arm64",
+        "version": "16.1+dfsg1-2+b1"
+      },
+      {
+        "name": "librabbitmq4:arm64",
+        "version": "0.11.0-1+deb12u3"
+      },
+      {
+        "name": "librav1e0:arm64",
+        "version": "0.5.1-6"
+      },
+      {
+        "name": "libraw1394-11:arm64",
+        "version": "2.1.2-2"
+      },
+      {
+        "name": "libreadline8:arm64",
+        "version": "8.2-1.3"
+      },
+      {
+        "name": "librist4:arm64",
+        "version": "0.2.7+dfsg-1"
+      },
+      {
+        "name": "librsvg2-2:arm64",
+        "version": "2.54.7+dfsg-1~deb12u1"
+      },
+      {
+        "name": "librubberband2:arm64",
+        "version": "3.1.2+dfsg0-1"
+      },
+      {
+        "name": "libsamplerate0:arm64",
+        "version": "0.2.2-3"
+      },
+      {
+        "name": "libsdl2-2.0-0:arm64",
+        "version": "2.26.5+dfsg-1"
+      },
+      {
+        "name": "libseccomp2:arm64",
+        "version": "2.5.4-1+deb12u1"
+      },
+      {
+        "name": "libselinux1:arm64",
+        "version": "3.4-1+b6"
+      },
+      {
+        "name": "libsemanage-common",
+        "version": "3.4-1"
+      },
+      {
+        "name": "libsemanage2:arm64",
+        "version": "3.4-1+b5"
+      },
+      {
+        "name": "libsensors-config",
+        "version": "1:3.6.0-7.1"
+      },
+      {
+        "name": "libsensors5:arm64",
+        "version": "1:3.6.0-7.1"
+      },
+      {
+        "name": "libsepol2:arm64",
+        "version": "3.4-2.1"
+      },
+      {
+        "name": "libserd-0-0:arm64",
+        "version": "0.30.16-1"
+      },
+      {
+        "name": "libshine3:arm64",
+        "version": "3.1.1-2"
+      },
+      {
+        "name": "libslang2:arm64",
+        "version": "2.3.3-3"
+      },
+      {
+        "name": "libsmartcols1:arm64",
+        "version": "2.38.1-5+deb12u3"
+      },
+      {
+        "name": "libsnappy1v5:arm64",
+        "version": "1.1.9-3"
+      },
+      {
+        "name": "libsndfile1:arm64",
+        "version": "1.2.0-1+deb12u1"
+      },
+      {
+        "name": "libsndio7.0:arm64",
+        "version": "1.9.0-0.3+b2"
+      },
+      {
+        "name": "libsodium23:arm64",
+        "version": "1.0.18-1+deb12u1"
+      },
+      {
+        "name": "libsord-0-0:arm64",
+        "version": "0.16.14+git221008-1"
+      },
+      {
+        "name": "libsoxr0:arm64",
+        "version": "0.1.3-4"
+      },
+      {
+        "name": "libspeex1:arm64",
+        "version": "1.2.1-2"
+      },
+      {
+        "name": "libsphinxbase3:arm64",
+        "version": "0.8+5prealpha+1-16"
+      },
+      {
+        "name": "libsqlite3-0:arm64",
+        "version": "3.40.1-2+deb12u2"
+      },
+      {
+        "name": "libsratom-0-0:arm64",
+        "version": "0.6.14-1"
+      },
+      {
+        "name": "libsrt1.5-gnutls:arm64",
+        "version": "1.5.1-1+deb12u1"
+      },
+      {
+        "name": "libss2:arm64",
+        "version": "1.47.0-2+b2"
+      },
+      {
+        "name": "libssh-gcrypt-4:arm64",
+        "version": "0.10.6-0+deb12u3"
+      },
+      {
+        "name": "libssl3:arm64",
+        "version": "3.0.22-1~deb12u1"
+      },
+      {
+        "name": "libstdc++6:arm64",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "name": "libsvtav1enc1:arm64",
+        "version": "1.4.1+dfsg-1"
+      },
+      {
+        "name": "libswresample4:arm64",
+        "version": "7:5.1.9-0+deb12u1"
+      },
+      {
+        "name": "libswscale6:arm64",
+        "version": "7:5.1.9-0+deb12u1"
+      },
+      {
+        "name": "libsystemd0:arm64",
+        "version": "252.39-1~deb12u2"
+      },
+      {
+        "name": "libtasn1-6:arm64",
+        "version": "4.19.0-2+deb12u1"
+      },
+      {
+        "name": "libthai-data",
+        "version": "0.1.29-1"
+      },
+      {
+        "name": "libthai0:arm64",
+        "version": "0.1.29-1"
+      },
+      {
+        "name": "libtheora0:arm64",
+        "version": "1.1.1+dfsg.1-16.1+deb12u1"
+      },
+      {
+        "name": "libtiff6:arm64",
+        "version": "4.5.0-6+deb12u4"
+      },
+      {
+        "name": "libtinfo6:arm64",
+        "version": "6.4-4"
+      },
+      {
+        "name": "libtirpc-common",
+        "version": "1.3.3+ds-1"
+      },
+      {
+        "name": "libtirpc3:arm64",
+        "version": "1.3.3+ds-1"
+      },
+      {
+        "name": "libtwolame0:arm64",
+        "version": "0.4.0-2"
+      },
+      {
+        "name": "libudev1:arm64",
+        "version": "252.39-1~deb12u2"
+      },
+      {
+        "name": "libudfread0:arm64",
+        "version": "1.1.2-1"
+      },
+      {
+        "name": "libunistring2:arm64",
+        "version": "1.0-2"
+      },
+      {
+        "name": "libusb-1.0-0:arm64",
+        "version": "2:1.0.26-1"
+      },
+      {
+        "name": "libuuid1:arm64",
+        "version": "2.38.1-5+deb12u3"
+      },
+      {
+        "name": "libva-drm2:arm64",
+        "version": "2.17.0-1"
+      },
+      {
+        "name": "libva-x11-2:arm64",
+        "version": "2.17.0-1"
+      },
+      {
+        "name": "libva2:arm64",
+        "version": "2.17.0-1"
+      },
+      {
+        "name": "libvdpau1:arm64",
+        "version": "1.5-2"
+      },
+      {
+        "name": "libvidstab1.1:arm64",
+        "version": "1.1.0-2+b1"
+      },
+      {
+        "name": "libvorbis0a:arm64",
+        "version": "1.3.7-1"
+      },
+      {
+        "name": "libvorbisenc2:arm64",
+        "version": "1.3.7-1"
+      },
+      {
+        "name": "libvorbisfile3:arm64",
+        "version": "1.3.7-1"
+      },
+      {
+        "name": "libvpx7:arm64",
+        "version": "1.12.0-1+deb12u5"
+      },
+      {
+        "name": "libvulkan1:arm64",
+        "version": "1.3.239.0-1"
+      },
+      {
+        "name": "libwayland-client0:arm64",
+        "version": "1.21.0-1"
+      },
+      {
+        "name": "libwayland-cursor0:arm64",
+        "version": "1.21.0-1"
+      },
+      {
+        "name": "libwayland-egl1:arm64",
+        "version": "1.21.0-1"
+      },
+      {
+        "name": "libwayland-server0:arm64",
+        "version": "1.21.0-1"
+      },
+      {
+        "name": "libwebp7:arm64",
+        "version": "1.2.4-0.2+deb12u1"
+      },
+      {
+        "name": "libwebpmux3:arm64",
+        "version": "1.2.4-0.2+deb12u1"
+      },
+      {
+        "name": "libx11-6:arm64",
+        "version": "2:1.8.4-2+deb12u2"
+      },
+      {
+        "name": "libx11-data",
+        "version": "2:1.8.4-2+deb12u2"
+      },
+      {
+        "name": "libx11-xcb1:arm64",
+        "version": "2:1.8.4-2+deb12u2"
+      },
+      {
+        "name": "libx264-164:arm64",
+        "version": "2:0.164.3095+gitbaee400-3"
+      },
+      {
+        "name": "libx265-199:arm64",
+        "version": "3.5-2+b1"
+      },
+      {
+        "name": "libxau6:arm64",
+        "version": "1:1.0.9-1"
+      },
+      {
+        "name": "libxcb-dri2-0:arm64",
+        "version": "1.15-1"
+      },
+      {
+        "name": "libxcb-dri3-0:arm64",
+        "version": "1.15-1"
+      },
+      {
+        "name": "libxcb-glx0:arm64",
+        "version": "1.15-1"
+      },
+      {
+        "name": "libxcb-present0:arm64",
+        "version": "1.15-1"
+      },
+      {
+        "name": "libxcb-randr0:arm64",
+        "version": "1.15-1"
+      },
+      {
+        "name": "libxcb-render0:arm64",
+        "version": "1.15-1"
+      },
+      {
+        "name": "libxcb-shape0:arm64",
+        "version": "1.15-1"
+      },
+      {
+        "name": "libxcb-shm0:arm64",
+        "version": "1.15-1"
+      },
+      {
+        "name": "libxcb-sync1:arm64",
+        "version": "1.15-1"
+      },
+      {
+        "name": "libxcb-xfixes0:arm64",
+        "version": "1.15-1"
+      },
+      {
+        "name": "libxcb1:arm64",
+        "version": "1.15-1"
+      },
+      {
+        "name": "libxcursor1:arm64",
+        "version": "1:1.2.1-1"
+      },
+      {
+        "name": "libxdmcp6:arm64",
+        "version": "1:1.1.2-3"
+      },
+      {
+        "name": "libxext6:arm64",
+        "version": "2:1.3.4-1+b1"
+      },
+      {
+        "name": "libxfixes3:arm64",
+        "version": "1:6.0.0-2"
+      },
+      {
+        "name": "libxi6:arm64",
+        "version": "2:1.8-1+b1"
+      },
+      {
+        "name": "libxkbcommon0:arm64",
+        "version": "1.5.0-1"
+      },
+      {
+        "name": "libxml2:arm64",
+        "version": "2.9.14+dfsg-1.3~deb12u6"
+      },
+      {
+        "name": "libxrandr2:arm64",
+        "version": "2:1.5.2-2+b1"
+      },
+      {
+        "name": "libxrender1:arm64",
+        "version": "1:0.9.10-1.1"
+      },
+      {
+        "name": "libxshmfence1:arm64",
+        "version": "1.3-1"
+      },
+      {
+        "name": "libxss1:arm64",
+        "version": "1:1.2.3-1"
+      },
+      {
+        "name": "libxv1:arm64",
+        "version": "2:1.0.11-1.1"
+      },
+      {
+        "name": "libxvidcore4:arm64",
+        "version": "2:1.3.7-1"
+      },
+      {
+        "name": "libxxf86vm1:arm64",
+        "version": "1:1.1.4-1+b2"
+      },
+      {
+        "name": "libxxhash0:arm64",
+        "version": "0.8.1-1"
+      },
+      {
+        "name": "libz3-4:arm64",
+        "version": "4.8.12-3.1"
+      },
+      {
+        "name": "libzimg2:arm64",
+        "version": "3.0.4+ds1-1"
+      },
+      {
+        "name": "libzmq5:arm64",
+        "version": "4.3.4-6"
+      },
+      {
+        "name": "libzstd1:arm64",
+        "version": "1.5.4+dfsg2-5"
+      },
+      {
+        "name": "libzvbi-common",
+        "version": "0.2.41-1+deb12u1"
+      },
+      {
+        "name": "libzvbi0:arm64",
+        "version": "0.2.41-1+deb12u1"
+      },
+      {
+        "name": "locales",
+        "version": "2.36-9+deb12u14"
+      },
+      {
+        "name": "login",
+        "version": "1:4.13+dfsg1-1+deb12u2"
+      },
+      {
+        "name": "logsave",
+        "version": "1.47.0-2+b2"
+      },
+      {
+        "name": "mawk",
+        "version": "1.3.4.20200120-3.1"
+      },
+      {
+        "name": "mount",
+        "version": "2.38.1-5+deb12u3"
+      },
+      {
+        "name": "ncurses-base",
+        "version": "6.4-4"
+      },
+      {
+        "name": "ncurses-bin",
+        "version": "6.4-4"
+      },
+      {
+        "name": "netbase",
+        "version": "6.4"
+      },
+      {
+        "name": "ocl-icd-libopencl1:arm64",
+        "version": "2.3.1-1"
+      },
+      {
+        "name": "openssl",
+        "version": "3.0.22-1~deb12u1"
+      },
+      {
+        "name": "passwd",
+        "version": "1:4.13+dfsg1-1+deb12u2"
+      },
+      {
+        "name": "perl-base",
+        "version": "5.36.0-7+deb12u4"
+      },
+      {
+        "name": "readline-common",
+        "version": "8.2-1.3"
+      },
+      {
+        "name": "sed",
+        "version": "4.9-1+deb12u1"
+      },
+      {
+        "name": "shared-mime-info",
+        "version": "2.2-1"
+      },
+      {
+        "name": "sysvinit-utils",
+        "version": "3.06-4"
+      },
+      {
+        "name": "tar",
+        "version": "1.34+dfsg-1.2+deb12u1"
+      },
+      {
+        "name": "tzdata",
+        "version": "2026c-0+deb12u1"
+      },
+      {
+        "name": "usr-is-merged",
+        "version": "37~deb12u1"
+      },
+      {
+        "name": "util-linux",
+        "version": "2.38.1-5+deb12u3"
+      },
+      {
+        "name": "util-linux-extra",
+        "version": "2.38.1-5+deb12u3"
+      },
+      {
+        "name": "x11-common",
+        "version": "1:7.7+23"
+      },
+      {
+        "name": "xkb-data",
+        "version": "2.35.1-1"
+      },
+      {
+        "name": "zlib1g:arm64",
+        "version": "1:1.2.13.dfsg-1"
+      }
+    ]
+  },
+  "managerOs": {
+    "imageId": "sha256:4d878489095ceebb9ba02add0f423b1c5e97ba6f39c15a511d0349df6569235c",
+    "method": "apk list --installed",
+    "components": [
+      {
+        "packageRelease": "apk-tools-3.0.8-r0",
+        "arch": "aarch64",
+        "license": "(GPL-2.0-only)"
+      },
+      {
+        "packageRelease": "bash-5.3.9-r2",
+        "arch": "aarch64",
+        "license": "(GPL-3.0-or-later)"
+      },
+      {
+        "packageRelease": "brotli-libs-1.2.0-r1",
+        "arch": "aarch64",
+        "license": "(MIT)"
+      },
+      {
+        "packageRelease": "busybox-1.38.0-r5",
+        "arch": "aarch64",
+        "license": "(GPL-2.0-only)"
+      },
+      {
+        "packageRelease": "busybox-binsh-1.38.0-r5",
+        "arch": "aarch64",
+        "license": "(GPL-2.0-only)"
+      },
+      {
+        "packageRelease": "ca-certificates-bundle-20260909-r0",
+        "arch": "aarch64",
+        "license": "(MPL-2.0"
+      },
+      {
+        "packageRelease": "distro-baselayout-3.7.2-r1",
+        "arch": "aarch64",
+        "license": "(GPL-2.0-only)"
+      },
+      {
+        "packageRelease": "distro-baselayout-data-3.7.2-r1",
+        "arch": "aarch64",
+        "license": "(GPL-2.0-only)"
+      },
+      {
+        "packageRelease": "distro-keys-1.0-r4",
+        "arch": "aarch64",
+        "license": "(MIT)"
+      },
+      {
+        "packageRelease": "distro-release-25-r2",
+        "arch": "aarch64",
+        "license": "(MIT)"
+      },
+      {
+        "packageRelease": "encodings-1.1.0-r0",
+        "arch": "aarch64",
+        "license": "(Public"
+      },
+      {
+        "packageRelease": "font-dejavu-2.37-r6",
+        "arch": "aarch64",
+        "license": "(Bitstream-Vera)"
+      },
+      {
+        "packageRelease": "font-dejavu-core-2.37-r6",
+        "arch": "aarch64",
+        "license": "(Bitstream-Vera)"
+      },
+      {
+        "packageRelease": "font-dejavu-extra-2.37-r6",
+        "arch": "aarch64",
+        "license": "(Bitstream-Vera)"
+      },
+      {
+        "packageRelease": "fontconfig-2.18.1-r0",
+        "arch": "aarch64",
+        "license": "(MIT)"
+      },
+      {
+        "packageRelease": "freetype-2.14.3-r1",
+        "arch": "aarch64",
+        "license": "(FTL"
+      },
+      {
+        "packageRelease": "glibc-2.43.0-r11",
+        "arch": "aarch64",
+        "license": "(GPL-2.0"
+      },
+      {
+        "packageRelease": "glibc-utils-2.43.0-r11",
+        "arch": "aarch64",
+        "license": "(GPL-2.0"
+      },
+      {
+        "packageRelease": "java-common-1.0-r3",
+        "arch": "aarch64",
+        "license": "(GPL-2.0-or-later)"
+      },
+      {
+        "packageRelease": "libapk-3.0.8-r0",
+        "arch": "aarch64",
+        "license": "(GPL-2.0-only)"
+      },
+      {
+        "packageRelease": "libbz2-1.0.8-r7",
+        "arch": "aarch64",
+        "license": "(bzip2-1.0.6)"
+      },
+      {
+        "packageRelease": "libcrypto3-3.5.9-r0",
+        "arch": "aarch64",
+        "license": "(Apache-2.0)"
+      },
+      {
+        "packageRelease": "liberica21-container-jre-21.0.12.1_p1-r0",
+        "arch": "aarch64",
+        "license": "(GPL-2.0"
+      },
+      {
+        "packageRelease": "libexpat-2.9.0-r0",
+        "arch": "aarch64",
+        "license": "(MIT)"
+      },
+      {
+        "packageRelease": "libfontenc-1.1.9-r0",
+        "arch": "aarch64",
+        "license": "(MIT)"
+      },
+      {
+        "packageRelease": "libncursesw-6.6_p20260822-r0",
+        "arch": "aarch64",
+        "license": "(X11)"
+      },
+      {
+        "packageRelease": "libpng-1.6.59-r0",
+        "arch": "aarch64",
+        "license": "(Libpng)"
+      },
+      {
+        "packageRelease": "libssl3-3.5.9-r0",
+        "arch": "aarch64",
+        "license": "(Apache-2.0)"
+      },
+      {
+        "packageRelease": "libxcrypt-4.5.2-r0",
+        "arch": "aarch64",
+        "license": "(LGPL)"
+      },
+      {
+        "packageRelease": "mkfontscale-1.2.4-r0",
+        "arch": "aarch64",
+        "license": "(MIT)"
+      },
+      {
+        "packageRelease": "ncurses-terminfo-base-6.6_p20260822-r0",
+        "arch": "aarch64",
+        "license": "(X11)"
+      },
+      {
+        "packageRelease": "nginx-1.30.4-r3",
+        "arch": "aarch64",
+        "license": "(BSD-2-Clause)"
+      },
+      {
+        "packageRelease": "pcre2-10.49-r0",
+        "arch": "aarch64",
+        "license": "(BSD-3-Clause)"
+      },
+      {
+        "packageRelease": "readline-8.3.3-r0",
+        "arch": "aarch64",
+        "license": "(GPL-3.0-or-later)"
+      },
+      {
+        "packageRelease": "ssl_client-1.38.0-r5",
+        "arch": "aarch64",
+        "license": "(GPL-2.0-only)"
+      },
+      {
+        "packageRelease": "zlib-1.3.2-r1",
+        "arch": "aarch64",
+        "license": "(Zlib)"
+      }
+    ]
+  },
+  "gatewayNpm": {
+    "imageId": "sha256:239eecfb752004c8a23590f8120174461b46eba98c9e8b9e12b5bb22117b1e25",
+    "method": "reviewed package-lock.json",
+    "components": [
+      {
+        "path": "node_modules/accepts",
+        "version": "1.3.8",
+        "integrity": "sha512-PYAthTa2m2VKxuvSD3DPC/Gy+U+sOA1LAuT8mkmRuvw+NACSaeXEQ+NHcVF7rONl6qcaxV3Uuemwawk+7+SJLw=="
+      },
+      {
+        "path": "node_modules/array-flatten",
+        "version": "1.1.1",
+        "integrity": "sha512-PCVAQswWemu6UdxsDFFX/+gVeYqKAod3D3UVm91jHwynguOwAvYPhx8nNlM++NqRcK6CxxpUafjmhIdKiHibqg=="
+      },
+      {
+        "path": "node_modules/body-parser",
+        "version": "1.20.8",
+        "integrity": "sha512-JNcyFQ64OiijEkPzUBTCe+hyPXUD/3LEldGQ6iF5LR1w00mx9o7xtDWHXBY2iItjdCFGoilOLNQbH943ut7pHA=="
+      },
+      {
+        "path": "node_modules/body-parser/node_modules/debug",
+        "version": "2.6.9",
+        "integrity": "sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA=="
+      },
+      {
+        "path": "node_modules/body-parser/node_modules/ms",
+        "version": "2.0.0",
+        "integrity": "sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A=="
+      },
+      {
+        "path": "node_modules/bytes",
+        "version": "3.1.2",
+        "integrity": "sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg=="
+      },
+      {
+        "path": "node_modules/call-bind-apply-helpers",
+        "version": "1.0.2",
+        "integrity": "sha512-Sp1ablJ0ivDkSzjcaJdxEunN5/XvksFJ2sMBFfq6x0ryhQV/2b/KwFe21cMpmHtPOSij8K99/wSfoEuTObmuMQ=="
+      },
+      {
+        "path": "node_modules/call-bound",
+        "version": "1.0.4",
+        "integrity": "sha512-+ys997U96po4Kx/ABpBCqhA9EuxJaQWDQg7295H4hBphv3IZg0boBKuwYpt4YXp6MZ5AmZQnU/tyMTlRpaSejg=="
+      },
+      {
+        "path": "node_modules/content-disposition",
+        "version": "0.5.4",
+        "integrity": "sha512-FveZTNuGw04cxlAiWbzi6zTAL/lhehaWbTtgluJh4/E95DqMwTmha3KZN1aAWA8cFIhHzMZUvLevkw5Rqk+tSQ=="
+      },
+      {
+        "path": "node_modules/content-type",
+        "version": "1.0.5",
+        "integrity": "sha512-nTjqfcBFEipKdXCv4YDQWCfmcLZKm81ldF0pAopTvyrFGVbcR6P/VAAd5G7N+0tTr8QqiU0tFadD6FK4NtJwOA=="
+      },
+      {
+        "path": "node_modules/cookie",
+        "version": "0.7.2",
+        "integrity": "sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w=="
+      },
+      {
+        "path": "node_modules/cookie-signature",
+        "version": "1.0.7",
+        "integrity": "sha512-NXdYc3dLr47pBkpUCHtKSwIOQXLVn8dZEuywboCOJY/osA0wFSLlSawr3KN8qXJEyX66FcONTH8EIlVuK0yyFA=="
+      },
+      {
+        "path": "node_modules/debug",
+        "version": "4.4.3",
+        "integrity": "sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA=="
+      },
+      {
+        "path": "node_modules/depd",
+        "version": "2.0.0",
+        "integrity": "sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw=="
+      },
+      {
+        "path": "node_modules/destroy",
+        "version": "1.2.0",
+        "integrity": "sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg=="
+      },
+      {
+        "path": "node_modules/dotenv",
+        "version": "16.6.1",
+        "integrity": "sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow=="
+      },
+      {
+        "path": "node_modules/dunder-proto",
+        "version": "1.0.1",
+        "integrity": "sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A=="
+      },
+      {
+        "path": "node_modules/ee-first",
+        "version": "1.1.1",
+        "integrity": "sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow=="
+      },
+      {
+        "path": "node_modules/encodeurl",
+        "version": "2.0.0",
+        "integrity": "sha512-Q0n9HRi4m6JuGIV1eFlmvJB7ZEVxu93IrMyiMsGC0lrMJMWzRgx6WGquyfQgZVb31vhGgXnfmPNNXmxnOkRBrg=="
+      },
+      {
+        "path": "node_modules/es-define-property",
+        "version": "1.0.1",
+        "integrity": "sha512-e3nRfgfUZ4rNGL232gUgX06QNyyez04KdjFrF+LTRoOXmrOgFKDg4BCdsjW8EnT69eqdYGmRpJwiPVYNrCaW3g=="
+      },
+      {
+        "path": "node_modules/es-errors",
+        "version": "1.3.0",
+        "integrity": "sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw=="
+      },
+      {
+        "path": "node_modules/es-object-atoms",
+        "version": "1.1.2",
+        "integrity": "sha512-HWcBoN6NileqtSydK2FqHbS/LoDd2pqrnQHLyJzBj4kOp/ky2MWMN694xOfkK8/SnUsW2DH7EfyVlydKCsm1Zw=="
+      },
+      {
+        "path": "node_modules/escape-html",
+        "version": "1.0.3",
+        "integrity": "sha512-NiSupZ4OeuGwr68lGIeym/ksIZMJodUGOSCZ/FSnTxcrekbvqrgdUxlJOMpijaKZVjAJrWrGs/6Jy8OMuyj9ow=="
+      },
+      {
+        "path": "node_modules/etag",
+        "version": "1.8.1",
+        "integrity": "sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg=="
+      },
+      {
+        "path": "node_modules/express",
+        "version": "4.22.3",
+        "integrity": "sha512-Bdcs4+3qlpVlx2NRn6fgX2Ue2/gGRaPeawebgclM0ERSCqDpA+owF1fdPwjJUTAJWMTuAaxjDf+hzb0/4eKvvw=="
+      },
+      {
+        "path": "node_modules/express/node_modules/debug",
+        "version": "2.6.9",
+        "integrity": "sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA=="
+      },
+      {
+        "path": "node_modules/express/node_modules/ms",
+        "version": "2.0.0",
+        "integrity": "sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A=="
+      },
+      {
+        "path": "node_modules/finalhandler",
+        "version": "1.3.2",
+        "integrity": "sha512-aA4RyPcd3badbdABGDuTXCMTtOneUCAYH/gxoYRTZlIJdF0YPWuGqiAsIrhNnnqdXGswYk6dGujem4w80UJFhg=="
+      },
+      {
+        "path": "node_modules/finalhandler/node_modules/debug",
+        "version": "2.6.9",
+        "integrity": "sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA=="
+      },
+      {
+        "path": "node_modules/finalhandler/node_modules/ms",
+        "version": "2.0.0",
+        "integrity": "sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A=="
+      },
+      {
+        "path": "node_modules/forwarded",
+        "version": "0.2.0",
+        "integrity": "sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow=="
+      },
+      {
+        "path": "node_modules/fresh",
+        "version": "0.5.2",
+        "integrity": "sha512-zJ2mQYM18rEFOudeV4GShTGIQ7RbzA7ozbU9I/XBpm7kqgMywgmylMwXHxZJmkVoYkna9d2pVXVXPdYTP9ej8Q=="
+      },
+      {
+        "path": "node_modules/function-bind",
+        "version": "1.1.2",
+        "integrity": "sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA=="
+      },
+      {
+        "path": "node_modules/get-intrinsic",
+        "version": "1.3.0",
+        "integrity": "sha512-9fSjSaos/fRIVIp+xSJlE6lfwhES7LNtKaCBIamHsjr2na1BiABJPo0mOjjz8GJDURarmCPGqaiVg5mfjb98CQ=="
+      },
+      {
+        "path": "node_modules/get-proto",
+        "version": "1.0.1",
+        "integrity": "sha512-sTSfBjoXBp89JvIKIefqw7U2CCebsc74kiY6awiGogKtoSGbgjYE/G/+l9sF3MWFPNc9IcoOC4ODfKHfxFmp0g=="
+      },
+      {
+        "path": "node_modules/gopd",
+        "version": "1.2.0",
+        "integrity": "sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg=="
+      },
+      {
+        "path": "node_modules/has-symbols",
+        "version": "1.1.0",
+        "integrity": "sha512-1cDNdwJ2Jaohmb3sg4OmKaMBwuC48sYni5HUw2DvsC8LjGTLK9h+eb1X6RyuOHe4hT0ULCW68iomhjUoKUqlPQ=="
+      },
+      {
+        "path": "node_modules/hasown",
+        "version": "2.0.4",
+        "integrity": "sha512-T2UbfbBEF32wiepXIsMlTW9+dDYC6wMh/t/vYA4tuOMKqWz/n3vr1NFSxQiyP+zk2mXsoMA/i/7qV6LKut1t1A=="
+      },
+      {
+        "path": "node_modules/http-errors",
+        "version": "2.0.1",
+        "integrity": "sha512-4FbRdAX+bSdmo4AUFuS0WNiPz8NgFt+r8ThgNWmlrjQjt1Q7ZR9+zTlce2859x4KSXrwIsaeTqDoKQmtP8pLmQ=="
+      },
+      {
+        "path": "node_modules/iconv-lite",
+        "version": "0.4.24",
+        "integrity": "sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA=="
+      },
+      {
+        "path": "node_modules/inherits",
+        "version": "2.0.4",
+        "integrity": "sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ=="
+      },
+      {
+        "path": "node_modules/ipaddr.js",
+        "version": "1.9.1",
+        "integrity": "sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g=="
+      },
+      {
+        "path": "node_modules/libopus-wasm",
+        "version": "0.2.0",
+        "integrity": "sha512-x/2Gu1/C6L3IICY09zyfp984AWiOYjn53u4WfdY3yh+3KTzMN8Xkm77q3lenWMVIk5SnSzjGEkQT+VQMFHLBHQ=="
+      },
+      {
+        "path": "node_modules/math-intrinsics",
+        "version": "1.1.0",
+        "integrity": "sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g=="
+      },
+      {
+        "path": "node_modules/media-typer",
+        "version": "0.3.0",
+        "integrity": "sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ=="
+      },
+      {
+        "path": "node_modules/merge-descriptors",
+        "version": "1.0.3",
+        "integrity": "sha512-gaNvAS7TZ897/rVaZ0nMtAyxNyi/pdbjbAwUpFQpN70GqnVfOiXpeUUMKRBmzXaSQ8DdTX4/0ms62r2K+hE6mQ=="
+      },
+      {
+        "path": "node_modules/methods",
+        "version": "1.1.2",
+        "integrity": "sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w=="
+      },
+      {
+        "path": "node_modules/mime",
+        "version": "1.6.0",
+        "integrity": "sha512-x0Vn8spI+wuJ1O6S7gnbaQg8Pxh4NNHb7KSINmEWKiPE4RKOplvijn+NkmYmmRgP68mc70j2EbeTFRsrswaQeg=="
+      },
+      {
+        "path": "node_modules/mime-db",
+        "version": "1.52.0",
+        "integrity": "sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg=="
+      },
+      {
+        "path": "node_modules/mime-types",
+        "version": "2.1.35",
+        "integrity": "sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw=="
+      },
+      {
+        "path": "node_modules/ms",
+        "version": "2.1.3",
+        "integrity": "sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA=="
+      },
+      {
+        "path": "node_modules/negotiator",
+        "version": "0.6.3",
+        "integrity": "sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg=="
+      },
+      {
+        "path": "node_modules/object-inspect",
+        "version": "1.13.4",
+        "integrity": "sha512-W67iLl4J2EXEGTbfeHCffrjDfitvLANg0UlX3wFUUSTx92KXRFegMHUVgSqE+wvhAbi4WqjGg9czysTV2Epbew=="
+      },
+      {
+        "path": "node_modules/on-finished",
+        "version": "2.4.1",
+        "integrity": "sha512-oVlzkg3ENAhCk2zdv7IJwd/QUD4z2RxRwpkcGY8psCVcCYZNq4wYnVWALHM+brtuJjePWiYF/ClmuDr8Ch5+kg=="
+      },
+      {
+        "path": "node_modules/parseurl",
+        "version": "1.3.3",
+        "integrity": "sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ=="
+      },
+      {
+        "path": "node_modules/path-to-regexp",
+        "version": "0.1.13",
+        "integrity": "sha512-A/AGNMFN3c8bOlvV9RreMdrv7jsmF9XIfDeCd87+I8RNg6s78BhJxMu69NEMHBSJFxKidViTEdruRwEk/WIKqA=="
+      },
+      {
+        "path": "node_modules/proxy-addr",
+        "version": "2.0.8",
+        "integrity": "sha512-5nnx0yGyVUcY6t9RnWcARWtwT9F1D8O9rt08htPvnd49W1IgZtmLkhu9WfMzQj1cFxjHIO6connUNVW5k7AVyQ=="
+      },
+      {
+        "path": "node_modules/qs",
+        "version": "6.16.1",
+        "integrity": "sha512-5Px6J7rfHBAGUhNQ3es4YzcOdBBw0SDcVtThJml4RdnKw4tKs2epA0kPZ+K8X+WiHktT93RHVcQ/3ym5aTCgtg=="
+      },
+      {
+        "path": "node_modules/range-parser",
+        "version": "1.2.1",
+        "integrity": "sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg=="
+      },
+      {
+        "path": "node_modules/raw-body",
+        "version": "2.5.3",
+        "integrity": "sha512-s4VSOf6yN0rvbRZGxs8Om5CWj6seneMwK3oDb4lWDH0UPhWcxwOWw5+qk24bxq87szX1ydrwylIOp2uG1ojUpA=="
+      },
+      {
+        "path": "node_modules/safe-buffer",
+        "version": "5.2.1",
+        "integrity": "sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ=="
+      },
+      {
+        "path": "node_modules/safer-buffer",
+        "version": "2.1.2",
+        "integrity": "sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg=="
+      },
+      {
+        "path": "node_modules/send",
+        "version": "0.19.2",
+        "integrity": "sha512-VMbMxbDeehAxpOtWJXlcUS5E8iXh6QmN+BkRX1GARS3wRaXEEgzCcB10gTQazO42tpNIya8xIyNx8fll1OFPrg=="
+      },
+      {
+        "path": "node_modules/send/node_modules/debug",
+        "version": "2.6.9",
+        "integrity": "sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA=="
+      },
+      {
+        "path": "node_modules/send/node_modules/debug/node_modules/ms",
+        "version": "2.0.0",
+        "integrity": "sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A=="
+      },
+      {
+        "path": "node_modules/serve-static",
+        "version": "1.16.3",
+        "integrity": "sha512-x0RTqQel6g5SY7Lg6ZreMmsOzncHFU7nhnRWkKgWuMTu5NN0DR5oruckMqRvacAN9d5w6ARnRBXl9xhDCgfMeA=="
+      },
+      {
+        "path": "node_modules/setprototypeof",
+        "version": "1.2.0",
+        "integrity": "sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw=="
+      },
+      {
+        "path": "node_modules/side-channel",
+        "version": "1.1.1",
+        "integrity": "sha512-6x6dK6zJdpTzF4sQeNYxwtvBzf6Eg4GtlesS94HOvTudUeyK2WXAaIfmDgsyslYrRBeFIlsi54AYsFGUuhmvrQ=="
+      },
+      {
+        "path": "node_modules/side-channel-list",
+        "version": "1.0.1",
+        "integrity": "sha512-mjn/0bi/oUURjc5Xl7IaWi/OJJJumuoJFQJfDDyO46+hBWsfaVM65TBHq2eoZBhzl9EchxOijpkbRC8SVBQU0w=="
+      },
+      {
+        "path": "node_modules/side-channel-map",
+        "version": "1.0.1",
+        "integrity": "sha512-VCjCNfgMsby3tTdo02nbjtM/ewra6jPHmpThenkTYh8pG9ucZ/1P8So4u4FGBek/BjpOVsDCMoLA/iuBKIFXRA=="
+      },
+      {
+        "path": "node_modules/side-channel-weakmap",
+        "version": "1.0.2",
+        "integrity": "sha512-WPS/HvHQTYnHisLo9McqBHOJk2FkHO/tlpvldyrnem4aeQp4hai3gythswg6p01oSoTl58rcpiFAjF2br2Ak2A=="
+      },
+      {
+        "path": "node_modules/statuses",
+        "version": "2.0.2",
+        "integrity": "sha512-DvEy55V3DB7uknRo+4iOGT5fP1slR8wQohVdknigZPMpMstaKJQWhwiYBACJE3Ul2pTnATihhBYnRhZQHGBiRw=="
+      },
+      {
+        "path": "node_modules/toidentifier",
+        "version": "1.0.1",
+        "integrity": "sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA=="
+      },
+      {
+        "path": "node_modules/type-is",
+        "version": "1.6.18",
+        "integrity": "sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g=="
+      },
+      {
+        "path": "node_modules/unpipe",
+        "version": "1.0.0",
+        "integrity": "sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ=="
+      },
+      {
+        "path": "node_modules/utils-merge",
+        "version": "1.0.1",
+        "integrity": "sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA=="
+      },
+      {
+        "path": "node_modules/vary",
+        "version": "1.1.2",
+        "integrity": "sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg=="
+      },
+      {
+        "path": "node_modules/ws",
+        "version": "8.22.0",
+        "integrity": "sha512-Ydggc987+RO0AnWtZ/7Wq9FtNvcrL1b/RO0ud9mWjUPgDrsAAwQSF51sm2hm1XofbU/4jkpGEsLFsZZxU+1DOg=="
+      }
+    ]
+  },
+  "limits": [
+    "Installed image components are a snapshot, not a build-enforced OS dependency lock.",
+    "Maven build plugins/test artifacts and OS package license provenance are not certified.",
+    "Frontend and Python exact resolution inputs remain their source-controlled lockfiles."
+  ],
+  "managerJava": {
+    "imageId": "sha256:4d878489095ceebb9ba02add0f423b1c5e97ba6f39c15a511d0349df6569235c",
+    "method": "BOOT-INF/lib entries in the owned candidate JAR; bytes SHA256",
+    "components": [
+      {
+        "path": "BOOT-INF/lib/shiro-core-2.0.2-jakarta.jar",
+        "sha256": "ae92b758d2a0f9fbad661a0dad68cc10c6ca4691f85663316ea49c3798ff3d33"
+      },
+      {
+        "path": "BOOT-INF/lib/shiro-lang-2.0.2.jar",
+        "sha256": "fd782008400dfae36d50fd7d88618d424545dec6d3eb5534216ea64962068d39"
+      },
+      {
+        "path": "BOOT-INF/lib/shiro-cache-2.0.2.jar",
+        "sha256": "19b511240227e1e7d5cec063f57583f16a912ad52b6e5e1aa3233293259f110c"
+      },
+      {
+        "path": "BOOT-INF/lib/shiro-crypto-hash-2.0.2.jar",
+        "sha256": "da5ccbf698a4a43b42c75626e37f01a0b9ec19068c828a70d3944c1358d8b727"
+      },
+      {
+        "path": "BOOT-INF/lib/shiro-crypto-core-2.0.2.jar",
+        "sha256": "6f8ecd605ff3dcca7b24df78600733752c7b01d9a6e066513780c682e3006ded"
+      },
+      {
+        "path": "BOOT-INF/lib/shiro-hashes-argon2-2.0.2.jar",
+        "sha256": "6e2a5833b6063954cf3917bfe4b28d17a532e86e115542c607b7059719085531"
+      },
+      {
+        "path": "BOOT-INF/lib/shiro-hashes-bcrypt-2.0.2.jar",
+        "sha256": "918d58eb9f9e70532d9e079ef7ba6b2ecb73c35a6d37065a001afe808c4d3ee4"
+      },
+      {
+        "path": "BOOT-INF/lib/shiro-crypto-cipher-2.0.2.jar",
+        "sha256": "f28b8b02fecd7f426ab4091ca24587674849213885105cc5b764b55a5e8f71dd"
+      },
+      {
+        "path": "BOOT-INF/lib/shiro-config-core-2.0.2.jar",
+        "sha256": "42647b5635daab5483aba0a5cd7c976b7ea31bb996ccfc7d2ff6ca4fd803c045"
+      },
+      {
+        "path": "BOOT-INF/lib/shiro-config-ogdl-2.0.2.jar",
+        "sha256": "551c4d7ad4d26cfb15d92d6af3edc95e751e43273ed53361098d6954b9f4d8e9"
+      },
+      {
+        "path": "BOOT-INF/lib/commons-beanutils-1.9.4.jar",
+        "sha256": "7d938c81789028045c08c065e94be75fc280527620d5bd62b519d5838532368a"
+      },
+      {
+        "path": "BOOT-INF/lib/commons-collections-3.2.2.jar",
+        "sha256": "eeeae917917144a68a741d4c0dff66aa5c5c5fd85593ff217bced3fc8ca783b8"
+      },
+      {
+        "path": "BOOT-INF/lib/shiro-event-2.0.2.jar",
+        "sha256": "e2130732e57dc572511878ec38e775c9094fefc5e72859b05a4c1d5572757e0e"
+      },
+      {
+        "path": "BOOT-INF/lib/shiro-spring-2.0.2-jakarta.jar",
+        "sha256": "5214bacea5a26e69ddaf67b697b2116f62e6489c5f0aaa525912675b1c6b8dea"
+      },
+      {
+        "path": "BOOT-INF/lib/shiro-web-2.0.2-jakarta.jar",
+        "sha256": "e7f5c1e24f88da15b021babbcb98fcb997c406191dc3e3a438f7148438d53c1f"
+      },
+      {
+        "path": "BOOT-INF/lib/encoder-1.3.1.jar",
+        "sha256": "c9c56c8970c7cb11b231913ba5190ce930f8fd4fac2bd918810642dc3848e757"
+      },
+      {
+        "path": "BOOT-INF/lib/easy-captcha-1.6.2.jar",
+        "sha256": "43f722ae4fcea59480769146a87e25a543edf952b72b3a74dec57eac89f8376a"
+      },
+      {
+        "path": "BOOT-INF/lib/spring-messaging-6.2.3.jar",
+        "sha256": "fb55723dcf1abb21d7e0906b13fa067754ee5a8bfc86f412abd5bf4da550cafd"
+      },
+      {
+        "path": "BOOT-INF/lib/spring-websocket-6.2.3.jar",
+        "sha256": "f260fe8f77d870fac2d4e2375339cba2704a297dfb1c5c5001262dc8c1562582"
+      },
+      {
+        "path": "BOOT-INF/lib/guava-33.6.0-jre.jar",
+        "sha256": "dc573e1fca4fd5454f4a5fd3d7da2df03002876a4175bafc14a95980dd7713b3"
+      },
+      {
+        "path": "BOOT-INF/lib/failureaccess-1.0.3.jar",
+        "sha256": "cbfc3906b19b8f55dd7cfd6dfe0aa4532e834250d7f080bd8d211a3e246b59cb"
+      },
+      {
+        "path": "BOOT-INF/lib/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar",
+        "sha256": "b372a037d4230aa57fbeffdef30fd6123f9c0c2db85d0aced00c91b974f33f99"
+      },
+      {
+        "path": "BOOT-INF/lib/jspecify-1.0.0.jar",
+        "sha256": "1fad6e6be7557781e4d33729d49ae1cdc8fdda6fe477bb0cc68ce351eafdfbab"
+      },
+      {
+        "path": "BOOT-INF/lib/error_prone_annotations-2.47.0.jar",
+        "sha256": "5364bc6f22e72e98195e406a58d3ba1c09ffa11dea0729592cb870dc2de4056d"
+      },
+      {
+        "path": "BOOT-INF/lib/j2objc-annotations-3.1.jar",
+        "sha256": "84d3a150518485f8140ea99b8a985656749629f6433c92b80c75b36aba3b099b"
+      },
+      {
+        "path": "BOOT-INF/lib/spring-boot-3.4.3.jar",
+        "sha256": "418a6afd2920afe62fc5c09cc46b485a7a6fdd09e167f0aed5a2347809eb560c"
+      },
+      {
+        "path": "BOOT-INF/lib/logback-classic-1.5.16.jar",
+        "sha256": "f985a33a68d900badec5b0c3c613ab9db66415d2cf378987357ded9da5370e32"
+      },
+      {
+        "path": "BOOT-INF/lib/logback-core-1.5.16.jar",
+        "sha256": "f15e206b98ca25294506d2dadfe5ce2a6da9df9cf7c85d8e7191f99a422df3c9"
+      },
+      {
+        "path": "BOOT-INF/lib/log4j-to-slf4j-2.24.3.jar",
+        "sha256": "c7f2b0c612a4eb05b1587d1c880eb4cf5f4f53850676a8ede8da2b8fabb4f73f"
+      },
+      {
+        "path": "BOOT-INF/lib/log4j-api-2.24.3.jar",
+        "sha256": "5b4a0a0cd0e751ded431c162442bdbdd53328d1f8bb2bae5fc1bbeee0f66d80f"
+      },
+      {
+        "path": "BOOT-INF/lib/jul-to-slf4j-2.0.16.jar",
+        "sha256": "0f2ec396ea29c9a440890d1f09fdb82fdd574b47b298435764235451c193861d"
+      },
+      {
+        "path": "BOOT-INF/lib/jakarta.annotation-api-2.1.1.jar",
+        "sha256": "5f65fdaf424eee2b55e1d882ba9bb376be93fb09b37b808be6e22e8851c909fe"
+      },
+      {
+        "path": "BOOT-INF/lib/jakarta.xml.bind-api-4.0.2.jar",
+        "sha256": "0d6bcfe47763e85047acf7c398336dc84ff85ebcad0a7cb6f3b9d3e981245406"
+      },
+      {
+        "path": "BOOT-INF/lib/jakarta.activation-api-2.1.3.jar",
+        "sha256": "01b176d718a169263e78290691fc479977186bcc6b333487325084d6586f4627"
+      },
+      {
+        "path": "BOOT-INF/lib/spring-core-6.2.3.jar",
+        "sha256": "49531684df2304f0e611f775faba79273c77504eb7d856592d830e2389e9eb14"
+      },
+      {
+        "path": "BOOT-INF/lib/spring-jcl-6.2.3.jar",
+        "sha256": "8c65ec5ed648966a470e6b48b27cbebf5f1f412bd46b243e0111c5d5d96efe86"
+      },
+      {
+        "path": "BOOT-INF/lib/jakarta.servlet-api-6.0.0.jar",
+        "sha256": "c034eb1afb158987dbb53a5fea0cadf611c8dae8daadd59c44d9d5ab70129cef"
+      },
+      {
+        "path": "BOOT-INF/lib/jackson-datatype-jdk8-2.18.2.jar",
+        "sha256": "f30d77f5826b9e9813342e84ab412095ed4ed5cf4fef6f93cebb848cb0fd0294"
+      },
+      {
+        "path": "BOOT-INF/lib/jackson-module-parameter-names-2.18.2.jar",
+        "sha256": "67a6a4b6b91f3d450df21e77417f400be663be0cf528e48349ccc381cf74b3b0"
+      },
+      {
+        "path": "BOOT-INF/lib/tomcat-embed-core-10.1.36.jar",
+        "sha256": "c8ef6b5410ea931a41d068150431add43b59e4795053fe49a4511d6aaff64ce4"
+      },
+      {
+        "path": "BOOT-INF/lib/tomcat-embed-websocket-10.1.36.jar",
+        "sha256": "f5b4b2031714af64470b37b9c8c83124dd1c505e143b1282a54546dcd5b70ff3"
+      },
+      {
+        "path": "BOOT-INF/lib/spring-web-6.2.3.jar",
+        "sha256": "773f1ca4dd26a1ebbfcd6a20e3eb52745eaad705e2b0317734ea06d8979aff20"
+      },
+      {
+        "path": "BOOT-INF/lib/micrometer-observation-1.14.4.jar",
+        "sha256": "28dd4b001c14fc13b0bc48535621214916518895924e3ce528a604205b1ff0a1"
+      },
+      {
+        "path": "BOOT-INF/lib/micrometer-commons-1.14.4.jar",
+        "sha256": "6bb0f56fb88f65ddb4b080e3d80165eeb1740f2227ba0b8ac386109969f7e9bf"
+      },
+      {
+        "path": "BOOT-INF/lib/spring-webmvc-6.2.3.jar",
+        "sha256": "7a2e49cc891286c14d995a0c5ffa1cafb4b55eebfa1cfa3733cf12014fdd9f00"
+      },
+      {
+        "path": "BOOT-INF/lib/spring-expression-6.2.3.jar",
+        "sha256": "e901e26baaa0e333ce2cc4f29d910d630c1f7a6c6cb99ac7a3c411a506b5b780"
+      },
+      {
+        "path": "BOOT-INF/lib/spring-aop-6.2.3.jar",
+        "sha256": "5e6fc3da90c1943f2fce5f06ef04d586187ce0062fe186d80acd53109065205d"
+      },
+      {
+        "path": "BOOT-INF/lib/aspectjweaver-1.9.22.1.jar",
+        "sha256": "cd2dd01ec2424c05669df4d557f6c6cd7ed87b05257ee3c866b4c5b116b18a78"
+      },
+      {
+        "path": "BOOT-INF/lib/spring-context-support-6.2.3.jar",
+        "sha256": "e8853046c113b3b789eda52b946a9323aef1ea2f569a313bf158fac5554bd986"
+      },
+      {
+        "path": "BOOT-INF/lib/spring-beans-6.2.3.jar",
+        "sha256": "4e289d6c0aa3ea74633005dae06d7cc827510e5b840d68bfcebdcf0bdd363f44"
+      },
+      {
+        "path": "BOOT-INF/lib/spring-context-6.2.3.jar",
+        "sha256": "53feea6d8c61a25089d8c474c4f92ebd24f0ef7eb52ecdaf46f11e9a253fdb4e"
+      },
+      {
+        "path": "BOOT-INF/lib/lettuce-core-6.4.2.RELEASE.jar",
+        "sha256": "7add1bbaa54805a6b3fd0fbf206ef87cd17c288677c410173cbb9f6d0c8d601a"
+      },
+      {
+        "path": "BOOT-INF/lib/netty-common-4.1.118.Final.jar",
+        "sha256": "65cce901ecf0f9d6591cc7750772614ab401a84415dc9aec9da4d046f0f9a77c"
+      },
+      {
+        "path": "BOOT-INF/lib/netty-handler-4.1.118.Final.jar",
+        "sha256": "26e3f8a5e859fd62cf3c13dc6d75e4e18879f000a5d0ad7f58f8679675d23dae"
+      },
+      {
+        "path": "BOOT-INF/lib/netty-resolver-4.1.118.Final.jar",
+        "sha256": "3170c225972c18b6850d28add60db15bb28d83c4e3d5b686ca220e0bd7273c8a"
+      },
+      {
+        "path": "BOOT-INF/lib/netty-buffer-4.1.118.Final.jar",
+        "sha256": "0eea4e8666a9636a28722661d8ba5fa8564477e75fec6dd2ff3e324e361f8b3c"
+      },
+      {
+        "path": "BOOT-INF/lib/netty-transport-native-unix-common-4.1.118.Final.jar",
+        "sha256": "69b16793d7b41ea76a762bd2bd144fc4f7c39c156a7a59ebf69baeb560fb10b7"
+      },
+      {
+        "path": "BOOT-INF/lib/netty-codec-4.1.118.Final.jar",
+        "sha256": "4abd215fd1ed7ce86509d169cc9cbede5042176c265a79b3b70602b017226c3f"
+      },
+      {
+        "path": "BOOT-INF/lib/netty-transport-4.1.118.Final.jar",
+        "sha256": "ab3751e717daef9c8d91e4d74728a48730bd8530b72e2466b222b2ea3fb07db9"
+      },
+      {
+        "path": "BOOT-INF/lib/reactor-core-3.7.3.jar",
+        "sha256": "47f446f44bd1b6816ef9bf5c3ba9eae55441fbb089828f1307a39504455749a8"
+      },
+      {
+        "path": "BOOT-INF/lib/reactive-streams-1.0.4.jar",
+        "sha256": "f75ca597789b3dac58f61857b9ac2e1034a68fa672db35055a8fb4509e325f28"
+      },
+      {
+        "path": "BOOT-INF/lib/spring-data-redis-3.4.3.jar",
+        "sha256": "3e8d9262d52ef3c3016e326512701821c98c0e3ba1c90df91810dd475e98fd49"
+      },
+      {
+        "path": "BOOT-INF/lib/spring-data-keyvalue-3.4.3.jar",
+        "sha256": "cb10d4ef42760e39e74245b6fb2f099ca6c7e462fbde4ea472642c3c20a109ae"
+      },
+      {
+        "path": "BOOT-INF/lib/spring-data-commons-3.4.3.jar",
+        "sha256": "6e8de4e188503e7d6247e10fb0779e230619304aa77aaa870fa5ed9c9cde460c"
+      },
+      {
+        "path": "BOOT-INF/lib/spring-tx-6.2.3.jar",
+        "sha256": "ed384ae15dda3060ff8dfe788ed3edac354e3aa558ee5afe76bb799eb4c160db"
+      },
+      {
+        "path": "BOOT-INF/lib/spring-oxm-6.2.3.jar",
+        "sha256": "1608aefc753febb66003106f5430fc0bfbf91d48ba712235f4cf4e30438e8b8e"
+      },
+      {
+        "path": "BOOT-INF/lib/tomcat-embed-el-10.1.36.jar",
+        "sha256": "d15d7c3b8912d1200897d0619ce3f7f5d5619534ee28c2049afbde823e5d1d22"
+      },
+      {
+        "path": "BOOT-INF/lib/hibernate-validator-8.0.2.Final.jar",
+        "sha256": "2f2224a5a19bdcfa73540e9ff5c971b6c425ad80415876f305259fe873a15b2f"
+      },
+      {
+        "path": "BOOT-INF/lib/jakarta.validation-api-3.0.2.jar",
+        "sha256": "291c25e6910cc6a7ebd96d4c6baebf6d7c37676c5482c2d96146e901b62c1fc9"
+      },
+      {
+        "path": "BOOT-INF/lib/jboss-logging-3.6.1.Final.jar",
+        "sha256": "5e08a4b092dc85b337f0910a740571d8720cfa565fabd880a8caf94a657ca416"
+      },
+      {
+        "path": "BOOT-INF/lib/classmate-1.7.0.jar",
+        "sha256": "cb868f231c5cceb89d795ea00e6e1b7a93b8f4ac1ce1d8be76dde322dff4a046"
+      },
+      {
+        "path": "BOOT-INF/lib/mysql-connector-j-9.1.0.jar",
+        "sha256": "8776e2ebc46072c9a47ea59d98298c4273bd9f16a7b26b5dfa4744535aa26c62"
+      },
+      {
+        "path": "BOOT-INF/lib/druid-spring-boot-3-starter-1.2.20.jar",
+        "sha256": "3e169bc254400bc76309cfdea7921cd58ec5e7ce738b4179ff52147803cc0c09"
+      },
+      {
+        "path": "BOOT-INF/lib/druid-1.2.20.jar",
+        "sha256": "d3922dceb45a7445c1acdc8c7550541333667ff27d2b8911d376109d9810d287"
+      },
+      {
+        "path": "BOOT-INF/lib/slf4j-api-2.0.16.jar",
+        "sha256": "a12578dde1ba00bd9b816d388a0b879928d00bab3c83c240f7013bf4196c579a"
+      },
+      {
+        "path": "BOOT-INF/lib/spring-boot-autoconfigure-3.4.3.jar",
+        "sha256": "17fbd45747f26aff523b4e489198ce5bc2b490de459b6612526fbbcbdf373747"
+      },
+      {
+        "path": "BOOT-INF/lib/liquibase-core-4.20.0.jar",
+        "sha256": "c78cf089ed18a8ca3329b960e2400b13ea4b21fd86ef2fb6c151fc587baaeecd"
+      },
+      {
+        "path": "BOOT-INF/lib/jaxb-api-2.3.1.jar",
+        "sha256": "88b955a0df57880a26a74708bc34f74dcaf8ebf4e78843a28b50eae945732b06"
+      },
+      {
+        "path": "BOOT-INF/lib/javax.activation-api-1.2.0.jar",
+        "sha256": "43fdef0b5b6ceb31b0424b208b930c74ab58fac2ceeb7b3f6fd3aeb8b5ca4393"
+      },
+      {
+        "path": "BOOT-INF/lib/snakeyaml-2.3.jar",
+        "sha256": "63a76fe66b652360bd4c2c107e6f0258daa7d4bb492008ba8c26fcd230ff9146"
+      },
+      {
+        "path": "BOOT-INF/lib/opencsv-5.7.1.jar",
+        "sha256": "d05a7bd25fd62bf27803d71b80f98ad2d929420072648c09a26d45344d25d6b8"
+      },
+      {
+        "path": "BOOT-INF/lib/commons-text-1.10.0.jar",
+        "sha256": "770cd903fa7b604d1f7ef7ba17f84108667294b2b478be8ed1af3bffb4ae0018"
+      },
+      {
+        "path": "BOOT-INF/lib/commons-collections4-4.4.jar",
+        "sha256": "1df8b9430b5c8ed143d7815e403e33ef5371b2400aadbe9bda0883762e0846d1"
+      },
+      {
+        "path": "BOOT-INF/lib/mybatis-plus-spring-boot3-starter-3.5.17.jar",
+        "sha256": "20db937818dc0e96d00e39b6c87556e29c80ecfe7794b1667df9e2b06c30241b"
+      },
+      {
+        "path": "BOOT-INF/lib/mybatis-plus-3.5.17.jar",
+        "sha256": "705c760bbc52387fb566c8db6b58f5e904c6c12ce9a2dc3e3d572b284cb92f8d"
+      },
+      {
+        "path": "BOOT-INF/lib/mybatis-plus-core-3.5.17.jar",
+        "sha256": "f1796f941c1035f0382c135e3274528913f52d8651c6d26c52bfa1a7e522b332"
+      },
+      {
+        "path": "BOOT-INF/lib/mybatis-plus-annotation-3.5.17.jar",
+        "sha256": "372bcc91fe6b9071f7b85f95262957835b6975813179cac97392817771a8b56e"
+      },
+      {
+        "path": "BOOT-INF/lib/mybatis-plus-spring-3.5.17.jar",
+        "sha256": "285a96eac3bc9006e2e0d9c847bd09e9857e0a40542a3fa82e36dc0ddfc34f3a"
+      },
+      {
+        "path": "BOOT-INF/lib/mybatis-3.5.19.jar",
+        "sha256": "93eea616ae355751bd5fbabb57f0732713fbe79f3196f33c51a0aeeb4255862a"
+      },
+      {
+        "path": "BOOT-INF/lib/mybatis-spring-3.0.5.jar",
+        "sha256": "5a9bcbc3e6d7586a1a301177b9a355a4c46080c0c6a568b8c434fae027fa3e3b"
+      },
+      {
+        "path": "BOOT-INF/lib/mybatis-plus-spring-boot-autoconfigure-3.5.17.jar",
+        "sha256": "86990fbd8cca5c2a7132ad33bf145b7820108958826323c044f88e2f51c21973"
+      },
+      {
+        "path": "BOOT-INF/lib/mybatis-plus-spring-boot-native-image-3.5.17.jar",
+        "sha256": "530a1b83e4d4d7600d07fcdafa898f3e2770bbd2cf95aa49fce039f2945ab8d1"
+      },
+      {
+        "path": "BOOT-INF/lib/HikariCP-5.1.0.jar",
+        "sha256": "a47a6ee62379694ee52c30036f0931b72f9aee2a801d590341ed82bd839e2134"
+      },
+      {
+        "path": "BOOT-INF/lib/spring-jdbc-6.2.3.jar",
+        "sha256": "70cd72def816f29d10ba2e8808a552f43e1321850a2ef5793b79901e74adc3cc"
+      },
+      {
+        "path": "BOOT-INF/lib/mybatis-plus-jsqlparser-4.9-3.5.17.jar",
+        "sha256": "1ee3b0027c40650b63630aaaa87c4be2dbf02d838064c43eb751ba64a44d34f9"
+      },
+      {
+        "path": "BOOT-INF/lib/jsqlparser-4.9.jar",
+        "sha256": "54bd92662fbc084f4fc6d46728d066841cac3a8a2fae4a82925c9caeac19f754"
+      },
+      {
+        "path": "BOOT-INF/lib/mybatis-plus-jsqlparser-common-3.5.17.jar",
+        "sha256": "003640b765ab7c5af5009b7c864516160ad255d6934531b46446c25fd67c0d95"
+      },
+      {
+        "path": "BOOT-INF/lib/mybatis-plus-extension-3.5.17.jar",
+        "sha256": "18dd448c8849e78849f344a4c34f70d48e66852c450db6b0a6894d2f7c701b0e"
+      },
+      {
+        "path": "BOOT-INF/lib/hutool-all-5.8.46.jar",
+        "sha256": "34029074b16794da21b5f7e0c2e323613be28b8b7255a86f79ba387fad20d175"
+      },
+      {
+        "path": "BOOT-INF/lib/jsoup-1.22.2.jar",
+        "sha256": "596785996d3c6df16f544c232d10a9a1d88783b2a4740cf5251cb616f2be704d"
+      },
+      {
+        "path": "BOOT-INF/lib/knife4j-openapi3-jakarta-spring-boot-starter-4.6.0.jar",
+        "sha256": "a858df93adcd071fd6b4eb36ee45ebb702ccdfd1902d701cec290e13da24e9f0"
+      },
+      {
+        "path": "BOOT-INF/lib/knife4j-core-4.6.0.jar",
+        "sha256": "535743af8cf69eacf7b447bb60e76883a4c8a9d81cb81d6ba6ae7e6a91cb7e10"
+      },
+      {
+        "path": "BOOT-INF/lib/knife4j-openapi3-ui-4.6.0.jar",
+        "sha256": "e11f758c5a1b1e1a30b347edb3d1241c85a07ae0c3bef283ac56adcb97f4451e"
+      },
+      {
+        "path": "BOOT-INF/lib/bcprov-jdk18on-1.78.jar",
+        "sha256": "1bf721b09758b3f55f2a5c875b6178ec6c41dddad854b0dead4b27a236f1943a"
+      },
+      {
+        "path": "BOOT-INF/lib/springdoc-openapi-starter-webmvc-ui-2.8.8.jar",
+        "sha256": "c95e5dffd1cb0c46a73a168a5f3a4dc58c700f46af80faebc365a35a3ff6ada9"
+      },
+      {
+        "path": "BOOT-INF/lib/springdoc-openapi-starter-webmvc-api-2.8.8.jar",
+        "sha256": "1c1d5cf3f9f40597b92c9c6158b70a187ec19f90787f2b4b5cc673aa88dd6ee0"
+      },
+      {
+        "path": "BOOT-INF/lib/springdoc-openapi-starter-common-2.8.8.jar",
+        "sha256": "d61a0aa8a042cb5a6e82b597cb42ade7f829435052b96dcab3ceb0eee9d78ef6"
+      },
+      {
+        "path": "BOOT-INF/lib/swagger-core-jakarta-2.2.30.jar",
+        "sha256": "af6e6d5ce2ce865a022bab9cc8652bdfbcb2dc45796387bcb1f3c5c2ad3fa12d"
+      },
+      {
+        "path": "BOOT-INF/lib/swagger-annotations-jakarta-2.2.30.jar",
+        "sha256": "2a3f16f20c6567e3e5e9a146acef8d6aa71cab68baea621556ac2d37978e06e2"
+      },
+      {
+        "path": "BOOT-INF/lib/swagger-models-jakarta-2.2.30.jar",
+        "sha256": "e96d031483cbda22deeaa5157bc73d6d46bfcca2d2e955ab56a198b2ae55693e"
+      },
+      {
+        "path": "BOOT-INF/lib/jackson-dataformat-yaml-2.18.2.jar",
+        "sha256": "381a1c0711e4bb88561a6c0008b5a945465628ca07764ccd66a0d97ee07ad612"
+      },
+      {
+        "path": "BOOT-INF/lib/swagger-ui-5.21.0.jar",
+        "sha256": "ff28488064018b988092fc90076f9c1ef15b1ed85ccfda83ed7ac91d5dc835ae"
+      },
+      {
+        "path": "BOOT-INF/lib/webjars-locator-lite-1.0.1.jar",
+        "sha256": "a216c101379f6654bd65e50bf2c9d8a3575bc7d6e8de2898286ac49c56d9ae99"
+      },
+      {
+        "path": "BOOT-INF/lib/commons-lang3-3.20.0.jar",
+        "sha256": "69e5c9fa35da7a51a5fd2099dfe56a2d8d32cf233e2f6d770e796146440263f4"
+      },
+      {
+        "path": "BOOT-INF/lib/lombok-1.18.36.jar",
+        "sha256": "73b6b05b6a2d365b700bab08d30f94de9d336490bc0acce5b6181fef48cbf18e"
+      },
+      {
+        "path": "BOOT-INF/lib/jackson-datatype-jsr310-2.18.2.jar",
+        "sha256": "e2d202d4606e23aeaf8a5a9632db06f5fefd5b63d251c3f503f9faaa78530e5c"
+      },
+      {
+        "path": "BOOT-INF/lib/jackson-annotations-2.18.2.jar",
+        "sha256": "581bd61000ef7648943f781ca05689e56d03f6052748365a8e2b3a9b5d3fa32f"
+      },
+      {
+        "path": "BOOT-INF/lib/jackson-core-2.18.2.jar",
+        "sha256": "d8054ae7c0d1c2d2f55d28e46026ebe5892881f3fab5f439233184381c3b4a1f"
+      },
+      {
+        "path": "BOOT-INF/lib/jackson-databind-2.18.2.jar",
+        "sha256": "4b364e6850dc89172fcf1d4dd26b8ff5488eda44ff4657e22dd265203dd5ab3c"
+      },
+      {
+        "path": "BOOT-INF/lib/spring-boot-jarmode-tools-3.4.3.jar",
+        "sha256": "ad5c6d96d536f0d2c0f1e03dac37c9fb4e49d7e9321ce38a17c723cab15d2a9b"
+      }
+    ]
+  }
+}

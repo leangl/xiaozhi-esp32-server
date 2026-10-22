@@ -1,5 +1,6 @@
-"""呼叫设备工具"""
+"""Device-to-device calling tool."""
 import httpx
+from config.service_policy import async_httpx_client, validate_endpoint, ServicePolicyError
 from config.logger import setup_logging
 from plugins_func.register import register_function, ToolType, ActionResponse, Action
 from typing import TYPE_CHECKING
@@ -15,18 +16,20 @@ call_device_function_desc = {
     "function": {
         "name": "call_device",
         "description": (
-            "用于设备之间建立语音通话连接。"
-            "当用户说出以下意图时调用此工具：\n"
-            "1. 主动呼叫：用户说”呼叫XX/打电话给XX/连线XX/打给XX/帮我呼叫XX”时调用，nickname取XX。"
-            "例如：”呼叫张三”→nickname=”张三”、”帮我连线小陈”→nickname=”小陈”；\n"
-            "2. 接听来电：系统刚提示”您收到来自XX的来电，是否接听？”后，用户说”接听/接通/同意接听/同意连线/同意对话”时调用，"
-            "nickname取提示中的XX。\n"
-            "如果用户输入不是明确接听，也不是明确拒绝，不得调用call_device，必须先追问一次"
+            "Establish a voice call between devices. "
+            "Call this tool for the following intents:\n"
+            "1. Outgoing call: for Chinese requests such as 呼叫XX/打电话给XX/连线XX/打给XX/帮我呼叫XX "
+            "(call/connect to XX), set nickname to XX. "
+            "Examples: 呼叫张三 -> nickname=张三; 帮我连线小陈 -> nickname=小陈.\n"
+            "2. Answering: immediately after the system asks 您收到来自XX的来电，是否接听？ "
+            "(incoming call from XX; answer?), accept Chinese replies such as 接听/接通/同意接听/同意连线/同意对话 "
+            "(answer/connect/agree), and use XX from that prompt as nickname.\n"
+            "If the reply neither clearly accepts nor clearly rejects the call, do not call call_device; ask for clarification once."
         ),
         "parameters": {
             "type": "object",
             "properties": {
-                "nickname": {"type": "string", "description": "目标设备的备注名，例如：小陈、小翁"},
+                "nickname": {"type": "string", "description": "Target device's saved alias, for example 小陈 or 小翁 (Chinese personal-name aliases)"},
             },
             "required": ["nickname"],
         },
@@ -35,7 +38,8 @@ call_device_function_desc = {
 
 
 async def _request_api(url: str, params: dict, headers: dict):
-    async with httpx.AsyncClient(timeout=httpx.Timeout(10.0, connect=3.0)) as client:
+    validate_endpoint(url, "tool")
+    async with async_httpx_client("tool", timeout=httpx.Timeout(10.0, connect=3.0)) as client:
         return await client.get(url, params=params, headers=headers)
 
 
@@ -44,12 +48,13 @@ def _failed_reply(msg: str) -> ActionResponse:
 
 
 def _is_answering(conn: "ConnectionHandler") -> bool:
-    """检查是否为接听模式（conn.incoming_call 不为空）"""
+    """Check answering mode: conn.incoming_call is not None."""
     return hasattr(conn, 'incoming_call') and conn.incoming_call is not None
 
 
 @register_function("call_device", call_device_function_desc, ToolType.SYSTEM_CTL)
 async def call_device(conn: "ConnectionHandler", nickname: str):
+    # Keep the Chinese spoken call/error replies and nickname interpolation unchanged.
     caller_mac = conn.headers.get("device-id")
     if not caller_mac:
         return _failed_reply("无法获取本机MAC地址")
@@ -58,18 +63,18 @@ async def call_device(conn: "ConnectionHandler", nickname: str):
     api_url = api_config.get("url")
     api_secret = api_config.get("secret")
     if not api_url or not api_secret:
-        logger.bind(tag=TAG).error("manager-api配置缺失")   
+        logger.bind(tag=TAG).error("manager-api configuration is missing")
         return _failed_reply("配置错误，请稍后再试")
 
     headers = {"Authorization": f"Bearer {api_secret}"}
 
-    # 区分是主动呼叫还是接听来电
+    # Distinguish outgoing calls from incoming-call answers.
     is_answer = _is_answering(conn)
-    params = {"callerMac": caller_mac, "nickname": nickname}   
+    params = {"callerMac": caller_mac, "nickname": nickname}
     if is_answer:
         params["answer"] = "true"
 
-    # 查询通讯录并发起呼叫
+    # Look up the address book and initiate the call.
     try:
         resp = await _request_api(
             f"{api_url}/device/address-book/call",
@@ -77,8 +82,8 @@ async def call_device(conn: "ConnectionHandler", nickname: str):
             headers=headers,
         )
         result = resp.json()
-    except httpx.HTTPError as e:
-        logger.bind(tag=TAG).error(f"呼叫请求失败: {e}")
+    except (httpx.HTTPError, ServicePolicyError):
+        logger.bind(tag=TAG).error("Call service unavailable; review manager-api configuration")
         return _failed_reply("呼叫失败，请稍后再试")
 
     if result.get("code") != 0:

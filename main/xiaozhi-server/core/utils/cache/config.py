@@ -1,5 +1,5 @@
 """
-缓存配置管理
+Cache configuration management.
 """
 
 from enum import Enum
@@ -9,7 +9,7 @@ from .strategies import CacheStrategy
 
 
 class CacheType(Enum):
-    """缓存类型枚举"""
+    """Supported cache types."""
 
     LOCATION = "location"
     WEATHER = "weather"
@@ -18,49 +18,49 @@ class CacheType(Enum):
     IP_INFO = "ip_info"
     CONFIG = "config"
     DEVICE_PROMPT = "device_prompt"
-    VOICEPRINT_HEALTH = "voiceprint_health"  # 声纹识别健康检查
-    AUDIO_DATA = "audio_data"  # 音频数据缓存
+    VOICEPRINT_HEALTH = "voiceprint_health"  # Voiceprint recognition health checks.
+    AUDIO_DATA = "audio_data"  # Audio data cache.
 
 
 @dataclass
 class CacheConfig:
-    """缓存配置类"""
+    """Cache configuration."""
 
     strategy: CacheStrategy = CacheStrategy.TTL
-    ttl: Optional[float] = 300  # 默认5分钟
-    max_size: Optional[int] = 1000  # 默认最大1000条
-    cleanup_interval: float = 60  # 清理间隔（秒）
+    ttl: Optional[float] = 300  # Default: five minutes.
+    max_size: Optional[int] = 1000  # Default: at most 1,000 entries.
+    cleanup_interval: float = 60  # Cleanup interval, in seconds.
 
     @classmethod
     def for_type(cls, cache_type: CacheType) -> "CacheConfig":
-        """根据缓存类型返回预设配置"""
+        """Return preset configuration for a cache type."""
         configs = {
             CacheType.LOCATION: cls(
-                strategy=CacheStrategy.TTL, ttl=None, max_size=1000  # 手动失效
+                strategy=CacheStrategy.TTL, ttl=None, max_size=1000  # Manual invalidation.
             ),
             CacheType.IP_INFO: cls(
-                strategy=CacheStrategy.TTL, ttl=86400, max_size=1000  # 24小时
+                strategy=CacheStrategy.TTL, ttl=86400, max_size=1000  # 24 hours.
             ),
             CacheType.WEATHER: cls(
-                strategy=CacheStrategy.TTL, ttl=28800, max_size=1000  # 8小时
+                strategy=CacheStrategy.TTL, ttl=28800, max_size=1000  # Eight hours.
             ),
             CacheType.LUNAR: cls(
-                strategy=CacheStrategy.TTL, ttl=2592000, max_size=365  # 30天过期
+                strategy=CacheStrategy.TTL, ttl=2592000, max_size=365  # Expires after 30 days.
             ),
             CacheType.INTENT: cls(
-                strategy=CacheStrategy.TTL_LRU, ttl=600, max_size=1000  # 10分钟
+                strategy=CacheStrategy.TTL_LRU, ttl=600, max_size=1000  # Ten minutes.
             ),
             CacheType.CONFIG: cls(
-                strategy=CacheStrategy.FIXED_SIZE, ttl=None, max_size=20  # 手动失效
+                strategy=CacheStrategy.FIXED_SIZE, ttl=None, max_size=20  # Manual invalidation.
             ),
             CacheType.DEVICE_PROMPT: cls(
-                strategy=CacheStrategy.TTL, ttl=None, max_size=1000  # 手动失效
+                strategy=CacheStrategy.TTL, ttl=None, max_size=1000  # Manual invalidation.
             ),
             CacheType.VOICEPRINT_HEALTH: cls(
-                strategy=CacheStrategy.TTL, ttl=600, max_size=100  # 10分钟过期
+                strategy=CacheStrategy.TTL, ttl=600, max_size=100  # Expires after ten minutes.
             ),
             CacheType.AUDIO_DATA: cls(
-                strategy=CacheStrategy.TTL, ttl=600, max_size=100  # 10分钟过期
+                strategy=CacheStrategy.TTL, ttl=600, max_size=100  # Expires after ten minutes.
             ),
         }
         return configs.get(cache_type, cls())

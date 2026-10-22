@@ -7,15 +7,16 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 /**
- * 智能体创建DTO
- * 专用于新增智能体，不包含id、agentCode和sort字段，这些字段由系统自动生成/设置默认值
+ * Agent creation DTO
+ * For agent creation only; id, agentCode, and sort are generated or assigned defaults by the system
  */
 @Data
-@Schema(description = "智能体创建对象")
+@Schema(description = "Agent creation object")
+// The Chinese agent-name example is user-language sample data (customer service assistant).
 public class AgentCreateDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Schema(description = "智能体名称", example = "客服助手")
-    @NotBlank(message = "智能体名称不能为空")
+    @Schema(description = "Agent name", example = "客服助手")
+    @NotBlank(message = "Agent name must not be empty")
     private String agentName;
 }

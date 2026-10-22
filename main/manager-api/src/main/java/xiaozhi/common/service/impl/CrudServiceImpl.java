@@ -17,8 +17,9 @@ import xiaozhi.common.service.CrudService;
 import xiaozhi.common.utils.ConvertUtils;
 
 /**
- * CRUD基础服务类
+ * Base CRUD service implementation
  * Copyright (c) 人人开源 All rights reserved.
+ * Original copyright holder: Renren Open Source; the legal attribution above is retained.
  * Website: https://www.renren.io
  */
 public abstract class CrudServiceImpl<M extends BaseMapper<T>, T, D> extends BaseServiceImpl<M, T>
@@ -59,7 +60,7 @@ public abstract class CrudServiceImpl<M extends BaseMapper<T>, T, D> extends Bas
         T entity = ConvertUtils.sourceToTarget(dto, currentModelClass());
         insert(entity);
 
-        // copy主键值到dto
+        // Copy the primary key value to the DTO
         BeanUtils.copyProperties(entity, dto);
     }
 

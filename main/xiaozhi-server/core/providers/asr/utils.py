@@ -12,7 +12,7 @@ EMOTION_EMOJI_MAP = {
     "FEARFUL": "😰",
     "DISGUSTED": "🤢",
     "SURPRISED": "😲",
-    "EMO_UNKNOWN": "😶",  # 未知情绪默认用中性表情
+    "EMO_UNKNOWN": "😶",  # Default unknown emotions to a neutral expression
 }
 # EVENT_EMOJI_MAP = {
 #     "<|BGM|>": "🎼",
@@ -27,17 +27,17 @@ EMOTION_EMOJI_MAP = {
 
 def lang_tag_filter(text: str) -> dict:
     """
-    解析 FunASR 识别结果，按顺序提取标签和纯文本内容
+    Parse FunASR recognition results, extracting tags and plain text in order
 
     Args:
-        text: ASR 识别的原始文本，可能包含多种标签
+        text: Raw ASR text, possibly containing multiple tags
 
     Returns:
-        dict: {"language": "zh", "emotion": "SAD", "emoji": "😔", "content": "你好"} 如果有标签，
-              {"content": "纯文本"} 如果没有标签
+        dict: {"language": "zh", "emotion": "SAD", "emoji": "😔", "content": "你好"} when tags are present;
+              {"content": "纯文本"} when no tags are present (Chinese sample content is retained)
 
     Examples:
-        FunASR 输出格式：<|语种|><|情绪|><|事件|><|其他选项|>原文
+        FunASR format: <|language|><|emotion|><|event|><|other options|>original text
         >>> lang_tag_filter("<|zh|><|SAD|><|Speech|><|withitn|>你好啊，测试测试。")
         {"language": "zh", "emotion": "SAD", "emoji": "😔", "content": "你好啊，测试测试。"}
         >>> lang_tag_filter("<|en|><|HAPPY|><|Speech|><|withitn|>Hello hello.")
@@ -45,14 +45,14 @@ def lang_tag_filter(text: str) -> dict:
         >>> lang_tag_filter("plain text")
         {"content": "plain text"}
     """
-    # 提取所有标签（按顺序）
+    # Extract all tags in order
     tag_pattern = r"<\|([^|]+)\|>"
     all_tags = re.findall(tag_pattern, text)
 
-    # 移除所有 <|...|> 格式的标签，获取纯文本
+    # Remove all <|...|> tags to obtain plain text
     clean_text = re.sub(tag_pattern, "", text).strip()
-    # SenseVoice 对日语等偶尔按词输出空格（如「今日 の こと を」），去掉中日文字符之间的空格；
-    # 韩文、英文的词间空格不受影响
+    # SenseVoice sometimes inserts spaces between Japanese words; remove spaces between Chinese/Japanese characters
+    # Preserve spaces between Korean and English words
     clean_text = re.sub(
         r"(?<=[\u3000-\u303f\u3040-\u30ff\u4e00-\u9fff\uff01-\uff60])\s+"
         r"(?=[\u3000-\u303f\u3040-\u30ff\u4e00-\u9fff\uff01-\uff60])",
@@ -60,14 +60,14 @@ def lang_tag_filter(text: str) -> dict:
         clean_text,
     )
 
-    # 保持返回结构一致，避免调用方把纯文本误当成字典访问。
+    # Keep the return structure consistent so callers do not treat plain text as a dictionary.
     if not all_tags:
         return {"content": clean_text}
 
-    # 按照 FunASR 的固定顺序提取标签，返回 dict
+    # Extract tags in the fixed FunASR order and return a dict
     language = all_tags[0] if len(all_tags) > 0 else "zh"
     emotion = all_tags[1] if len(all_tags) > 1 else "NEUTRAL"
-    # event = all_tags[2] if len(all_tags) > 2 else "Speech"  # 事件标签暂不使用
+    # event = all_tags[2] if len(all_tags) > 2 else "Speech"  # Event tag is currently unused
 
     result = {
         "content": clean_text,
@@ -76,10 +76,10 @@ def lang_tag_filter(text: str) -> dict:
         # "event": event,
     }
 
-    # 添加 emoji 映射
+    # Add emoji mappings
     if emotion in EMOTION_EMOJI_MAP:
         result["emotion"] = EMOTION_EMOJI_MAP[emotion]
-    # 事件标签暂不使用
+    # Event tag is currently unused
     # if event in EVENT_EMOJI_MAP:
     #     result["event"] = EVENT_EMOJI_MAP[event]
 

@@ -1,6 +1,5 @@
 package xiaozhi.modules.sys.service.impl;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +29,7 @@ import xiaozhi.modules.sys.redis.SysParamsRedis;
 import xiaozhi.modules.sys.service.SysParamsService;
 
 /**
- * 参数管理
+ * Parameter management
  */
 @AllArgsConstructor
 @Service
@@ -59,6 +58,8 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
 
         QueryWrapper<SysParamsEntity> wrapper = new QueryWrapper<>();
         wrapper.eq("param_type", 1);
+        // Retired credentials remain inert in storage, not editable offerings.
+        wrapper.notLikeRight("param_code", "aliyun.sms.");
         wrapper.nested(StringUtils.isNotBlank(paramCode), i -> i.like("param_code", paramCode)
                 .or()
                 .like("remark", paramCode));
@@ -76,6 +77,7 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void save(SysParamsDTO dto) {
+        detectingSMSParameters(dto.getParamCode(), dto.getParamValue());
         validateParamValue(dto);
 
         SysParamsEntity entity = ConvertUtils.sourceToTarget(dto, SysParamsEntity.class);
@@ -87,8 +89,8 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(SysParamsDTO dto) {
-        validateParamValue(dto);
         detectingSMSParameters(dto.getParamCode(), dto.getParamValue());
+        validateParamValue(dto);
         SysParamsEntity entity = ConvertUtils.sourceToTarget(dto, SysParamsEntity.class);
         updateById(entity);
 
@@ -96,7 +98,7 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
     }
 
     /**
-     * 校验参数值类型
+     * Validate the parameter value type
      */
     private void validateParamValue(SysParamsDTO dto) {
         if (dto == null) {
@@ -133,12 +135,12 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
                 break;
             case "json":
                 try {
-                    // 首先检查是否以 { 开头，以 } 结尾
+                    // First check for opening { and closing }
                     String trimmedValue = paramValue.trim();
                     if (!trimmedValue.startsWith("{") || !trimmedValue.endsWith("}")) {
                         throw new RenException(ErrorCode.PARAM_JSON_INVALID);
                     }
-                    // 然后尝试解析JSON
+                    // Then try parsing JSON
                     JsonUtils.parseObject(paramValue, Object.class);
                 } catch (Exception e) {
                     throw new RenException(ErrorCode.PARAM_JSON_INVALID);
@@ -152,14 +154,14 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(String[] ids) {
-        // 删除Redis数据
+        // Delete Redis data
         List<String> paramCodeList = baseDao.getParamCodeList(ids);
         String[] paramCodes = paramCodeList.toArray(new String[paramCodeList.size()]);
         if (paramCodes.length > 0) {
             sysParamsRedis.delete(paramCodes);
         }
 
-        // 删除
+        // Delete
         deleteBatchIds(Arrays.asList(ids));
     }
 
@@ -196,6 +198,7 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int updateValueByCode(String paramCode, String paramValue) {
+        detectingSMSParameters(paramCode, paramValue);
         int count = baseDao.updateValueByCode(paramCode, paramValue);
         sysParamsRedis.set(paramCode, paramValue);
         return count;
@@ -203,74 +206,60 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
 
     @Override
     public void initServerSecret() {
-        // 获取服务器密钥
+        // Get the server secret
         String secretParam = getValue(Constant.SERVER_SECRET, false);
         if (StringUtils.isBlank(secretParam) || "null".equals(secretParam)) {
             String newSecret = UUID.randomUUID().toString();
             updateValueByCode(Constant.SERVER_SECRET, newSecret);
         }
 
-        // 初始化SM2密钥对
+        // Initialize the SM2 key pair
         initSM2KeyPair();
     }
 
     /**
-     * 初始化SM2密钥对
+     * Initialize the SM2 key pair
      */
     private void initSM2KeyPair() {
-        // 获取SM2公钥
+        // Get the SM2 public key
         String publicKey = getValue(Constant.SM2_PUBLIC_KEY, false);
-        // 获取SM2私钥
+        // Get the SM2 private key
         String privateKey = getValue(Constant.SM2_PRIVATE_KEY, false);
 
-        // 如果公钥或私钥为空，则生成新的密钥对
+        // Generate a new pair if either public or private key is empty
         if (StringUtils.isBlank(publicKey) || StringUtils.isBlank(privateKey) || 
             "null".equals(publicKey) || "null".equals(privateKey)) {
             Map<String, String> keyPair = SM2Utils.createKey();
             String newPublicKey = keyPair.get(SM2Utils.KEY_PUBLIC_KEY);
             String newPrivateKey = keyPair.get(SM2Utils.KEY_PRIVATE_KEY);
 
-            // 更新数据库中的密钥对
+            // Update the key pair in the database
             updateValueByCode(Constant.SM2_PUBLIC_KEY, newPublicKey);
             updateValueByCode(Constant.SM2_PRIVATE_KEY, newPrivateKey);
         }
     }
 
     /**
-     * 检测短信参数是否符合要求
+     * Check SMS parameter requirements
      * 
-     * @param paramCode  参数编码
-     * @param paramValue 参数值
-     * @return 是否通过
+     * @param paramCode parameter code
+     * @param paramValue parameter value
+     * @return whether validation passed
      */
     private boolean detectingSMSParameters(String paramCode, String paramValue) {
-        // 判断是否是开启手机注册的参数编码，如果不是参数编码，着不需要检测其他短信参数，直接返回true
+        if (paramCode != null && paramCode.toLowerCase(java.util.Locale.ROOT).startsWith("aliyun.sms.")) {
+            throw new RenException(ErrorCode.MOBILE_REGISTER_DISABLED);
+        }
+        // If this is not the phone registration parameter, skip other SMS checks and return true
         if (!Constant.SysMSMParam.SERVER_ENABLE_MOBILE_REGISTER.getValue().equals(paramCode)) {
             return true;
         }
-        // 判断是否为关闭，如果是关闭短信注册，着不需要检测其他短信参数，直接返回true
+        // If SMS registration is being disabled, skip other SMS checks and return true
         if ("false".equalsIgnoreCase(paramValue)) {
             return true;
         }
-        // 检测短信关联参数是否为空
-        ArrayList<String> list = new ArrayList<String>();
-        list.add(Constant.SysMSMParam.SERVER_SMS_MAX_SEND_COUNT.getValue());
-        list.add(Constant.SysMSMParam.ALIYUN_SMS_ACCESS_KEY_ID.getValue());
-        list.add(Constant.SysMSMParam.ALIYUN_SMS_ACCESS_KEY_SECRET.getValue());
-        list.add(Constant.SysMSMParam.ALIYUN_SMS_SIGN_NAME.getValue());
-        list.add(Constant.SysMSMParam.ALIYUN_SMS_SMS_CODE_TEMPLATE_CODE.getValue());
-        StringBuilder str = new StringBuilder();
-        list.forEach(item -> {
-            if (!StringUtils.isNoneBlank(item)) {
-                str.append(",").append(item);
-            }
-        });
-        if (!str.isEmpty()) {
-            String promptStr = "%s这些参数不可以为空";
-            String substring = str.substring(1, str.length());
-            throw new RenException(promptStr.formatted(substring));
-        }
-        return true;
+        // No approved SMS replacement exists; do not accept an activation flag.
+        throw new RenException(ErrorCode.MOBILE_REGISTER_DISABLED);
     }
     @Override
     public String getSystemWebMenu(boolean fromCache) {
@@ -280,7 +269,7 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateSystemWebMenu(String configJson) {
-        // 获取当前配置
+        // Get the current configuration
         String currentConfig = getSystemWebMenu(false);
         Map<String, Object> currentMap = null;
         Map<String, Object> newMap = null;
@@ -296,7 +285,7 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
             throw new RenException(ErrorCode.PARAM_JSON_INVALID);
         }
 
-        // 检查addressBook功能是否被关闭
+        // Check whether addressBook has been disabled
         if (currentMap != null && newMap != null) {
             Map<?, ?> currentFeatures = Map.class.cast(currentMap.get("features"));
             Map<?, ?> newFeatures = Map.class.cast(newMap.get("features"));
@@ -318,14 +307,14 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
                     newEnabled = enabled != null ? Boolean.class.cast(enabled) : false;
                 }
 
-                // 如果之前是启用状态，现在被禁用，删除所有call_device插件
+                // Delete all call_device plugins if the feature changed from enabled to disabled
                 if (Boolean.TRUE.equals(currentEnabled) && !Boolean.TRUE.equals(newEnabled)) {
                     agentPluginMappingService.deleteByPluginId("SYSTEM_PLUGIN_CALL_DEVICE");
                 }
             }
         }
 
-        // 更新配置
+        // Update configuration
         updateValueByCode(Constant.SYSTEM_WEB_MENU, configJson);
     }
 }

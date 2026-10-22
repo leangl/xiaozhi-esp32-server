@@ -1,22 +1,25 @@
 # Dockerfile-server-base
-# 基础镜像，包含系统依赖和Python包
-FROM python:3.10-slim
+# Base image containing system dependencies and Python packages
+# Required input: reviewed docker.io/library/python image including @sha256 digest.
+ARG PYTHON_IMAGE
+FROM ${PYTHON_IMAGE}
+ARG PYTHON_IMAGE
+ENV HTTP_PROXY="" HTTPS_PROXY="" ALL_PROXY="" http_proxy="" https_proxy="" all_proxy=""
 
-# 安装系统依赖
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends libopus0 ffmpeg locales && \
+# Verify all exact Debian archives before the isolated offline installation.
+COPY tools/service-dependency-lock.py /opt/service-dependency-lock.py
+COPY tools/dependency-locks/voice-deb-arm64.lock /opt/voice-deb.lock
+RUN python /opt/service-dependency-lock.py fetch /opt/voice-deb.lock /opt/locked-deb --base "${PYTHON_IMAGE}"
+RUN --network=none python /opt/service-dependency-lock.py install-deb /opt/voice-deb.lock /opt/locked-deb --base "${PYTHON_IMAGE}" && \
     sed -i '/zh_CN.UTF-8/s/^# //g' /etc/locale.gen && \
     locale-gen && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* /opt/locked-deb
 
-# 配置pip使用国内镜像源（阿里云）并设置超时和重试
-RUN pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/ && \
-    pip config set global.trusted-host mirrors.aliyun.com && \
-    pip config set global.timeout 120 && \
-    pip config set install.retries 5
+# Dependency resolution uses only official PyPI with normal TLS verification.
+# --isolated below ignores inherited pip configuration and pip index variables.
 
-# 设置环境变量以确保正确的字符编码
+# Set locale variables for correct character encoding
 ENV LANG=zh_CN.UTF-8 \
     LC_ALL=zh_CN.UTF-8 \
     LANGUAGE=zh_CN:zh \
@@ -24,10 +27,15 @@ ENV LANG=zh_CN.UTF-8 \
 
 WORKDIR /opt/xiaozhi-esp32-server
 
-# 复制requirements.txt
-COPY main/xiaozhi-server/requirements.txt .
+# Copy the direct declaration and reviewed transitive artifact/hash lock.
+COPY main/xiaozhi-server/requirements.txt main/xiaozhi-server/requirements.lock ./
 
-# 安装Python依赖
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
-    # 阿里云 PyPI 镜像偶有元数据 404，加官方源作 fallback
-    pip install --no-cache-dir -r requirements.txt --default-timeout=120 --retries 5 --extra-index-url https://pypi.org/simple
+# Install Python dependencies
+# No unbounded bootstrap upgrade. The selected Python base supplies pip.
+# Refuse sdists so build isolation cannot fetch additional unlocked build tools.
+RUN env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY -u http_proxy -u https_proxy -u all_proxy \
+    PIP_CONFIG_FILE=/dev/null python -m pip --isolated install \
+    --index-url https://pypi.org/simple --no-cache-dir --only-binary=:all: \
+    --require-hashes -r requirements.lock \
+    --default-timeout=120 --retries 5 --report /opt/python-install-report.json && \
+    python -m pip freeze --all > /opt/python-installed.txt

@@ -64,7 +64,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: '新增参数'
+      default() { return this.$t('paramManagement.addParam'); }
     },
     visible: {
       type: Boolean,
@@ -114,11 +114,11 @@ export default {
         if (valid) {
           const submitData = { ...this.form };
 
-          // 如果是 array 类型，校验格式并转换
+          // Validate and convert array values
           if (submitData.valueType === 'array' && submitData.paramValue) {
             const lines = submitData.paramValue.split('\n').filter(line => line.trim());
 
-            // 检查除最后一行外的每行是否以分号结尾
+            // Check that each line except the last ends with a semicolon
             for (let i = 0; i < lines.length - 1; i++) {
               if (!lines[i].trim().endsWith(';')) {
                 this.$message.error('数组格式错误，需要使用英文分号结尾');
@@ -131,29 +131,29 @@ export default {
               .filter(item => item);
             submitData.paramValue = items.join(';');
           }
-          // 如果是 json 类型，压缩 JSON 格式后再提交
+          // Minify JSON values before submission
           else if (submitData.valueType === 'json' && submitData.paramValue) {
             try {
               const parsed = JSON.parse(submitData.paramValue);
               submitData.paramValue = JSON.stringify(parsed);
             } catch (e) {
-              // 如果解析失败，保持原值
+              // Keep the original value if parsing fails
             }
           }
 
-          this.saving = true; // 开始加载
+          this.saving = true; // Start loading
           this.$emit('submit', submitData);
         }
       });
     },
     cancel() {
-      this.saving = false; // 取消时重置状态
+      this.saving = false; // Reset state on cancellation
       this.dialogKey = Date.now();
       this.$emit('update:visible', false);
       this.$emit('cancel');
     },
 
-    // 提供给父组件调用以重置saving状态
+    // Expose a saving-state reset for the parent
     resetSaving() {
       this.saving = false;
     }
@@ -162,23 +162,23 @@ export default {
     visible(newVal) {
       if (newVal) {
         if (this.form.paramValue) {
-          // 如果是 json 类型，格式化显示
+          // Format JSON for display
           if (this.form.valueType === 'json') {
             try {
               const parsed = JSON.parse(this.form.paramValue);
               this.form.paramValue = JSON.stringify(parsed, null, 2);
             } catch (e) {
-              // 如果解析失败，保持原值
+              // Keep the original value if parsing fails
             }
           }
-          // 如果是 array 类型，将分号分隔的字符串转换为每行一个项目
+          // Convert semicolon-delimited array strings to one item per line
           else if (this.form.valueType === 'array') {
             const items = this.form.paramValue.split(';').filter(item => item.trim());
             this.form.paramValue = items.join(';\n');
           }
         }
       } else {
-        // 当对话框关闭时，重置saving状态
+        // Reset saving state when the dialog closes
         this.saving = false;
       }
     }

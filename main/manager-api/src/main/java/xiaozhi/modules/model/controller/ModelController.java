@@ -18,6 +18,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import xiaozhi.common.page.PageData;
 import xiaozhi.common.utils.ConvertUtils;
+import xiaozhi.common.utils.ApprovedProviderCatalog;
+import xiaozhi.common.utils.ApprovedServicePolicy;
 import xiaozhi.common.utils.Result;
 import xiaozhi.modules.agent.service.AgentTemplateService;
 import xiaozhi.modules.config.service.ConfigService;
@@ -35,7 +37,7 @@ import xiaozhi.modules.timbre.service.TimbreService;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/models")
-@Tag(name = "模型配置")
+@Tag(name = "Model configuration")
 public class ModelController {
 
     private final ModelProviderService modelProviderService;
@@ -45,7 +47,7 @@ public class ModelController {
     private final AgentTemplateService agentTemplateService;
 
     @GetMapping("/names")
-    @Operation(summary = "获取所有模型名称")
+    @Operation(summary = "Get all model names")
     @RequiresPermissions("sys:role:normal")
     public Result<List<ModelBasicInfoDTO>> getModelNames(@RequestParam String modelType,
             @RequestParam(required = false) String modelName) {
@@ -54,7 +56,7 @@ public class ModelController {
     }
 
     @GetMapping("/llm/names")
-    @Operation(summary = "获取LLM模型信息")
+    @Operation(summary = "Get LLM model information")
     @RequiresPermissions("sys:role:normal")
     public Result<List<LlmModelBasicInfoDTO>> getLlmModelCodeList(@RequestParam(required = false) String modelName) {
         List<LlmModelBasicInfoDTO> llmModelCodeList = modelConfigService.getLlmModelCodeList(modelName);
@@ -62,7 +64,7 @@ public class ModelController {
     }
 
     @GetMapping("/{modelType}/provideTypes")
-    @Operation(summary = "获取模型供应器列表")
+    @Operation(summary = "Get model providers")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<List<ModelProviderDTO>> getModelProviderList(@PathVariable String modelType) {
         List<ModelProviderDTO> modelProviderDTOS = modelProviderService.getListByModelType(modelType);
@@ -70,7 +72,7 @@ public class ModelController {
     }
 
     @GetMapping("/list")
-    @Operation(summary = "获取模型配置列表")
+    @Operation(summary = "Get model configurations")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<PageData<ModelConfigDTO>> getModelConfigList(
             @RequestParam(required = true) String modelType,
@@ -82,30 +84,28 @@ public class ModelController {
     }
 
     @PostMapping("/{modelType}/{provideCode}")
-    @Operation(summary = "新增模型配置")
+    @Operation(summary = "Add model configuration")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<ModelConfigDTO> addModelConfig(@PathVariable String modelType,
             @PathVariable String provideCode,
             @RequestBody ModelConfigBodyDTO modelConfigBodyDTO) {
         ModelConfigDTO modelConfigDTO = modelConfigService.add(modelType, provideCode, modelConfigBodyDTO);
-        configService.getConfig(false);
         return new Result<ModelConfigDTO>().ok(modelConfigDTO);
     }
 
     @PutMapping("/{modelType}/{provideCode}/{id}")
-    @Operation(summary = "编辑模型配置")
+    @Operation(summary = "Edit model configuration")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<ModelConfigDTO> editModelConfig(@PathVariable String modelType,
             @PathVariable String provideCode,
             @PathVariable String id,
             @RequestBody ModelConfigBodyDTO modelConfigBodyDTO) {
         ModelConfigDTO modelConfigDTO = modelConfigService.edit(modelType, provideCode, id, modelConfigBodyDTO);
-        configService.getConfig(false);
         return new Result<ModelConfigDTO>().ok(modelConfigDTO);
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "删除模型配置")
+    @Operation(summary = "Delete model configuration")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<Void> deleteModelConfig(@PathVariable String id) {
         modelConfigService.delete(id);
@@ -113,7 +113,7 @@ public class ModelController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "获取模型配置")
+    @Operation(summary = "Get model configuration")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<ModelConfigDTO> getModelConfig(@PathVariable String id) {
         ModelConfigEntity item = modelConfigService.selectById(id);
@@ -122,18 +122,19 @@ public class ModelController {
     }
 
     @PutMapping("/enable/{id}/{status}")
-    @Operation(summary = "启用/关闭模型配置")
+    @Operation(summary = "Enable/disable model configuration")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<Void> enableModelConfig(@PathVariable String id, @PathVariable Integer status) {
         ModelConfigEntity entity = modelConfigService.selectById(id);
         if (entity == null) {
-            return new Result<Void>().error("模型配置不存在");
+            return new Result<Void>().error("Model configuration does not exist");
         }
-        // 不能关闭默认模型
+        if (Integer.valueOf(1).equals(status)) ApprovedProviderCatalog.validate(entity);
+        // The default model cannot be disabled
         if (status == 0 && entity.getIsDefault() > 0) {
-            return new Result<Void>().error("默认模型配置不允许关闭");
+            return new Result<Void>().error("The default model configuration cannot be disabled");
         }
-        // 不更新ConfigJson字段
+        // Do not update ConfigJson
         entity.setConfigJson(null);
         entity.setIsEnabled(status);
         modelConfigService.updateById(entity);
@@ -141,34 +142,50 @@ public class ModelController {
     }
 
     @PutMapping("/default/{id}")
-    @Operation(summary = "设置默认模型")
+    @Operation(summary = "Set the default model")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<Void> setDefaultModel(@PathVariable String id) {
         ModelConfigEntity entity = modelConfigService.selectById(id);
         if (entity == null) {
-            return new Result<Void>().error("模型配置不存在");
+            return new Result<Void>().error("Model configuration does not exist");
         }
-        // 将其他模型设置为非默认
+        ApprovedProviderCatalog.validate(entity);
+        // Mark other models as non-default
         modelConfigService.setDefaultModel(entity.getModelType(), 0);
         entity.setIsEnabled(1);
         entity.setIsDefault(1);
-        // 不更新ConfigJson字段
+        // Do not update ConfigJson
         entity.setConfigJson(null);
         modelConfigService.updateById(entity);
 
-        // 更新模板表中对应的模型ID
+        // Update the corresponding model ID in the template table
         agentTemplateService.updateDefaultTemplateModelId(entity.getModelType(), entity.getId());
 
-        configService.getConfig(false);
         return new Result<Void>();
     }
 
     @GetMapping("/{modelId}/voices")
-    @Operation(summary = "获取模型音色")
+    @Operation(summary = "Get model voices")
     @RequiresPermissions("sys:role:normal")
     public Result<List<VoiceDTO>> getVoiceList(@PathVariable String modelId,
             @RequestParam(required = false) String voiceName) {
+        modelConfigService.requireSelectable(modelId, "tts");
         List<VoiceDTO> voiceList = timbreService.getVoiceNames(modelId, voiceName);
+        if (voiceList != null) {
+            voiceList = voiceList.stream().filter(voice -> !Boolean.TRUE.equals(voice.getIsClone())).map(voice -> {
+                VoiceDTO safe = ConvertUtils.sourceToTarget(voice, VoiceDTO.class);
+                String preview = safe.getVoiceDemo();
+                if (preview != null && !preview.isBlank()) {
+                    boolean relative = !preview.contains(":") && !preview.startsWith("//")
+                            && !preview.contains("\\") && !preview.contains("?") && !preview.contains("#");
+                    if (!relative) {
+                        try { ApprovedServicePolicy.validateEndpoint(preview, "tts"); }
+                        catch (RuntimeException unavailable) { safe.setVoiceDemo(null); }
+                    }
+                }
+                return safe;
+            }).toList();
+        }
         return new Result<List<VoiceDTO>>().ok(voiceList);
     }
 }

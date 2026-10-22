@@ -1,0 +1,130 @@
+{
+  "kind": "isolated-service-policy-rehearsal",
+  "date": "2026-10-21",
+  "project": "xiaozhi-policy-rehearsal",
+  "fixtureLabel": "service-policy-rehearsal-20261021",
+  "result": "partial-not-approved-for-cutover",
+  "images": {
+    "manager": "sha256:4d878489095ceebb9ba02add0f423b1c5e97ba6f39c15a511d0349df6569235c",
+    "voice": "sha256:ab62f1d79f99a77cb4ec46f340e98fe802e7192a7a22b67806a4f2752052f205",
+    "gateway": "sha256:239eecfb752004c8a23590f8120174461b46eba98c9e8b9e12b5bb22117b1e25"
+  },
+  "api": {
+    "initialRun": {
+      "passed": 19,
+      "failed": 3,
+      "httpRequests": 89
+    },
+    "historyReplay": {
+      "passed": 1,
+      "failed": 0,
+      "httpRequests": 10
+    },
+    "resolvedHarnessMismatch": "Existing code 401 denotes denied history access; focused replay passed all ten checks.",
+    "originalFindings": {
+      "managerImage": "sha256:ba9636ba3b5dd22082eaa914da660c4da51f6eae26c0a0596a039aabcfd99613",
+      "issues": ["Cross-user manual binding accepted", "Cross-user activation binding accepted"],
+      "prePatchBusinessBodiesMatchedBaseline": true
+    },
+    "confirmedOpenIssues": [],
+    "permissionFixRerun": {
+      "freshDatabase": true,
+      "passed": 22,
+      "failed": 0,
+      "httpRequests": 94,
+      "forbiddenBindingCreatesNoDevice": true,
+      "sameActivationCodeRemainsUsableByOwner": true,
+      "bothOwnerBindingPathsStillWork": true
+    }
+  },
+  "permissionUnitTests": {
+    "prePatch": {"executed": 14, "passed": 3, "failed": 11},
+    "postPatch": {"executed": 14, "passed": 14, "failed": 0},
+    "focusedDeviceSlice": {"executed": 22, "passed": 22, "failed": 0},
+    "expandedJavaSuite": {"executed": 339, "passed": 337, "baselineFailures": 2, "newFailures": 0}
+  },
+  "websocket": {
+    "result": "pass",
+    "scope": "managed-candidate-websocket",
+    "counts": {
+      "hello": 1,
+      "listen_start": 1,
+      "incoming_opus_packets": 20,
+      "listen_stop": 1,
+      "stt": 1,
+      "tts_start": 1,
+      "tts_text": 1,
+      "outgoing_opus_packets": 6,
+      "outgoing_pcm_samples": 5760,
+      "nonzero_audio_packets": 6,
+      "tts_stop": 1
+    },
+    "egress_proof": false
+  },
+  "mqttUdp": {
+    "result": "pass",
+    "scope": "managed-candidate-mqtt-udp",
+    "project": "xiaozhi-policy-rehearsal",
+    "fixture": "service-policy-rehearsal-20261021",
+    "counts": {
+      "mqtt_connack": 1,
+      "device_mcp_replies": 2,
+      "mqtt_suback": 1,
+      "hello": 1,
+      "listen_start": 1,
+      "listen_barrier": 1,
+      "incoming_opus_packets": 20,
+      "incoming_pcm_samples": 19200,
+      "audio_barrier": 1,
+      "listen_stop": 1,
+      "stt": 1,
+      "tts_start": 1,
+      "tts_text": 1,
+      "outgoing_opus_packets": 6,
+      "outgoing_pcm_samples": 5760,
+      "nonzero_audio_packets": 6,
+      "tts_stop": 1,
+      "voice_turn_complete": 1
+    },
+    "matches_ws_expectations": true,
+    "egress_proof": false,
+    "candidate_namespace_verification": "main-owned",
+    "fake_http_counts_observed": false
+  },
+  "fakes": {
+    "fixture": "local-protocol-fakes",
+    "counts": {
+      "asr_received_pcm_samples": 38400,
+      "asr_requests": 2,
+      "asr_pcm_samples": 38400,
+      "llm_requests": 2,
+      "llm_sse_events": 10,
+      "tts_requests": 2,
+      "tts_wave_bytes": 34648,
+      "llm_title_requests": 2
+    }
+  },
+  "externalObserver": {
+    "scope": "standalone-voice-process-only",
+    "result": "pass",
+    "calls": 116,
+    "numericIpAttempts": 83,
+    "denials": 0,
+    "dnsQuestionCoverage": false
+  },
+  "cleanup": {
+    "candidateContainersRemaining": 0,
+    "candidateVolumesRemaining": 0,
+    "candidateNetworksRemaining": 0,
+    "originalServicesHealthy": 5,
+    "originalContainerImageAndStartIdentitiesUnchanged": true,
+    "liveCutoverPerformed": false
+  },
+  "limits": [
+    "Synthetic local AI only; no paid/cloud provider quality test.",
+    "Whole-candidate DNS/egress scenario matrix incomplete.",
+    "Only the two confirmed binding authorization defects were fixed; this is not a complete security audit.",
+    "Full OS/Maven build locks and final owner acceptance pending.",
+    "Original evaluation deployment/configuration/data not changed."
+  ]
+}

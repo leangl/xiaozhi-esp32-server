@@ -1,19 +1,14 @@
+"""Factory for explicitly supported VAD implementations only."""
 import importlib
-import os
-import sys
-from core.providers.vad.base import VADProviderBase
-from config.logger import setup_logging
 
-TAG = __name__
-logger = setup_logging()
+from config.provider_profile import validate_provider_config, validate_provider_type
 
 
-def create_instance(class_name: str, *args, **kwargs) -> VADProviderBase:
-    """工厂方法创建VAD实例"""
-    if os.path.exists(os.path.join("core", "providers", "vad", f"{class_name}.py")):
-        lib_name = f"core.providers.vad.{class_name}"
-        if lib_name not in sys.modules:
-            sys.modules[lib_name] = importlib.import_module(f"{lib_name}")
-        return sys.modules[lib_name].VADProvider(*args, **kwargs)
-
-    raise ValueError(f"不支持的VAD类型: {class_name}，请检查该配置的type是否设置正确")
+def create_instance(class_name, *args, **kwargs):
+    validate_provider_type("VAD", class_name)
+    config = args[0] if args else kwargs.get("config")
+    validate_provider_config("VAD", config, class_name, require_ready=True)
+    provider = importlib.import_module(
+        f"core.providers.vad.{class_name}"
+    )
+    return provider.VADProvider(*args, **kwargs)

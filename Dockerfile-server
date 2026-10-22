@@ -1,7 +1,8 @@
-# 生产镜像，仅包含应用代码
-FROM ghcr.io/xinnan-tech/xiaozhi-esp32-server:server-base
+# Build Dockerfile-server-base from this checkout first. No upstream image fallback.
+ARG SERVER_BASE_IMAGE
+FROM ${SERVER_BASE_IMAGE}
 
 COPY main/xiaozhi-server .
 
-# 启动应用
+# Start the application
 CMD ["python", "app.py"]

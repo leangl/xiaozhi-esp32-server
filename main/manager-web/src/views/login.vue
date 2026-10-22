@@ -32,7 +32,7 @@
               {{ $t("login.welcome") }}
             </div>
 
-            <!-- 语言切换下拉菜单 -->
+            <!-- Language-selection dropdown -->
             <el-dropdown trigger="click" class="title-language-dropdown"
               @visible-change="handleLanguageDropdownVisibleChange">
               <span class="el-dropdown-link">
@@ -62,7 +62,7 @@
             </el-dropdown>
           </div>
           <div style="padding: 0 30px">
-            <!-- 用户名登录 -->
+            <!-- Username login -->
             <template v-if="!isMobileLogin">
               <div class="input-box">
                 <img loading="lazy" alt="" class="input-icon" src="@/assets/login/username.png" />
@@ -70,7 +70,7 @@
               </div>
             </template>
 
-            <!-- 手机号登录 -->
+            <!-- Mobile-number login -->
             <template v-else>
               <div class="input-box">
                 <div style="display: flex; align-items: center; width: 100%">
@@ -99,7 +99,7 @@
                 <img loading="lazy" alt="" class="input-icon" src="@/assets/login/shield.png" />
                 <el-input v-model="form.captcha" :placeholder="$t('login.captchaPlaceholder')" style="flex: 1" />
               </div>
-              <img loading="lazy" v-if="captchaUrl" :src="captchaUrl" alt="验证码"
+              <img loading="lazy" v-if="captchaUrl" :src="captchaUrl" :alt="$t('retrievePassword.captcha')"
                 style="width: 150px; height: 40px; cursor: pointer" @click="fetchCaptcha" />
             </div>
             <div style="
@@ -121,7 +121,7 @@
           </div>
           <div class="login-btn" @click="login">{{ $t("login.login") }}</div>
 
-          <!-- 登录方式切换按钮 -->
+          <!-- Login-method toggle -->
           <div class="login-type-container" v-if="enableMobileRegister">
             <div style="display: flex; gap: 10px">
               <el-tooltip :content="$t('login.mobileLogin')" placement="bottom">
@@ -173,11 +173,11 @@ export default {
       mobileAreaList: (state) => state.pubConfig.mobileAreaList,
       sm2PublicKey: (state) => state.pubConfig.sm2PublicKey,
     }),
-    // 获取当前语言
+    // Get the current language
     currentLanguage() {
       return i18n.locale || "zh_CN";
     },
-    // 获取当前语言显示文本
+    // Get the current language's display text
     currentLanguageText() {
       const currentLang = this.currentLanguage;
       switch (currentLang) {
@@ -197,7 +197,7 @@ export default {
           return this.$t("language.zhCN");
       }
     },
-    // 根据当前语言获取对应的xiaozhi-ai图标
+    // Get the xiaozhi-ai icon for the current language
     xiaozhiAiIcon() {
       const currentLang = this.currentLanguage;
       switch (currentLang) {
@@ -236,7 +236,7 @@ export default {
   mounted() {
     this.fetchCaptcha();
     this.$store.dispatch("fetchPubConfig").then(() => {
-      // 根据配置决定默认登录方式
+      // Choose the default login method from configuration
       this.isMobileLogin = this.enableMobileRegister;
     });
   },
@@ -249,7 +249,7 @@ export default {
       window.open(url, '_blank');
     },
     fetchCaptcha() {
-      // 处理手动清空localstorage导致无法获取验证码的问题
+      // Handle captcha retrieval after localStorage is cleared manually
       const token = localStorage.getItem('token')
       if (token) {
         if (this.$route.path !== "/home") {
@@ -263,18 +263,18 @@ export default {
             const blob = new Blob([res.data], { type: res.data.type });
             this.captchaUrl = URL.createObjectURL(blob);
           } else {
-            showDanger("验证码加载失败，点击刷新");
+            showDanger(this.$t('register.captchaLoadFailed'));
           }
         });
       }
     },
 
-    // 切换语言下拉菜单的可见状态变化
+    // Handle language-dropdown visibility changes
     handleLanguageDropdownVisibleChange(visible) {
       this.languageDropdownVisible = visible;
     },
 
-    // 切换语言
+    // Switch languages
     changeLanguage(lang) {
       changeLanguage(lang);
       this.languageDropdownVisible = false;
@@ -284,10 +284,10 @@ export default {
       });
     },
 
-    // 切换登录方式
+    // Switch login methods
     switchLoginType(type) {
       this.isMobileLogin = type === "mobile";
-      // 清空表单
+      // Clear the form
       this.form.username = "";
       this.form.mobile = "";
       this.form.password = "";
@@ -295,7 +295,7 @@ export default {
       this.fetchCaptcha();
     },
 
-    // 封装输入验证逻辑
+    // Encapsulate input validation
     validateInput(input, messageKey) {
       if (!input.trim()) {
         showDanger(this.$t(messageKey));
@@ -317,36 +317,36 @@ export default {
 
     async login() {
       if (this.isMobileLogin) {
-        // 手机号登录验证
+        // Validate mobile-number login
         if (!validateMobile(this.form.mobile, this.form.areaCode)) {
           showDanger(this.$t('login.requiredMobile'));
           return;
         }
-        // 拼接手机号作为用户名
+        // Use the complete mobile number as the username
         this.form.username = this.form.areaCode + this.form.mobile;
       } else {
-        // 用户名登录验证
+        // Validate username login
         if (!this.validateInput(this.form.username, 'login.requiredUsername')) {
           return;
         }
       }
 
-      // 验证密码
+      // Validate the password
       if (!this.validateInput(this.form.password, 'login.requiredPassword')) {
         return;
       }
-      // 验证验证码
+      // Validate the verification code
       if (!this.validateInput(this.form.captcha, 'login.requiredCaptcha')) {
         return;
       }
-      // 加密密码
+      // Encrypt the password
       let encryptedPassword;
       try {
-        // 拼接验证码和密码
+        // Concatenate the verification code and password
         const captchaAndPassword = this.form.captcha + this.form.password;
         encryptedPassword = sm2Encrypt(this.sm2PublicKey, captchaAndPassword);
       } catch (error) {
-        console.error("密码加密失败:", error);
+        console.error("Password encryption failed:", error);
         showDanger(this.$t('sm2.encryptionFailed'));
         return;
       }
@@ -355,7 +355,7 @@ export default {
 
       this.form.captchaId = this.captchaUuid;
 
-      // 加密
+      // Encrypt
       const loginData = {
         username: plainUsername,
         password: encryptedPassword,
@@ -370,14 +370,14 @@ export default {
           this.getUserInfo();
         },
         (err) => {
-          // 直接使用后端返回的国际化消息
+          // Use the localized message returned by the backend
           let errorMessage = err.data.msg || "登录失败";
 
           showDanger(errorMessage);
         }
       );
 
-      // 重新获取验证码
+      // Get a new verification code
       setTimeout(() => {
         this.fetchCaptcha();
       }, 1000);

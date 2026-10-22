@@ -3,21 +3,26 @@ package xiaozhi.modules.device.service.impl;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.time.Duration;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 
 import cn.hutool.crypto.digest.DigestUtil;
-import cn.hutool.http.ContentType;
-import cn.hutool.http.Header;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
+import xiaozhi.common.config.RestTemplateConfig;
+import xiaozhi.common.utils.ApprovedServicePolicy;
 
 final class MqttGatewayAuthorization {
 
     private static final int HTTP_UNAUTHORIZED = 401;
     private static final int DEFAULT_TIMEOUT_MILLIS = 10000;
+    private static final int MAX_TIMEOUT_MILLIS = 30000;
 
     private MqttGatewayAuthorization() {
     }
@@ -27,10 +32,18 @@ final class MqttGatewayAuthorization {
     }
 
     static String postJson(String url, String jsonBody, String signatureKey, Instant now, int timeoutMillis) {
-        GatewayResponse response = executeWithDateFallback(
-                signatureKey,
-                now,
-                token -> executeRequest(url, jsonBody, token, timeoutMillis));
+        URI target = approvedTarget(url);
+        if (timeoutMillis <= 0 || timeoutMillis > MAX_TIMEOUT_MILLIS) {
+            throw new GatewayRequestException("MQTT Gateway timeout must be between 1 and 30000 milliseconds", null);
+        }
+        HttpClient client = RestTemplateConfig.directHttpClient(Duration.ofMillis(timeoutMillis));
+        GatewayResponse response;
+        try {
+            response = executeWithDateFallback(signatureKey, now,
+                    token -> executeRequest(client, target, jsonBody, token, timeoutMillis));
+        } finally {
+            client.shutdownNow();
+        }
 
         if (response.statusCode() < 200 || response.statusCode() >= 300) {
             throw new GatewayRequestException(
@@ -82,14 +95,31 @@ final class MqttGatewayAuthorization {
         return StringUtils.isBlank(signatureKey) || "null".equalsIgnoreCase(signatureKey.trim());
     }
 
-    private static GatewayResponse executeRequest(String url, String jsonBody, String token, int timeoutMillis) {
-        try (HttpResponse response = HttpRequest.post(url)
-                .header(Header.CONTENT_TYPE, ContentType.JSON.getValue())
-                .header(Header.AUTHORIZATION, "Bearer " + token)
-                .body(jsonBody)
-                .timeout(timeoutMillis)
-                .execute()) {
-            return new GatewayResponse(response.getStatus(), response.body());
+    private static URI approvedTarget(String url) {
+        try {
+            return ApprovedServicePolicy.validateEndpoint(url, "tool");
+        } catch (IllegalArgumentException e) {
+            throw new GatewayRequestException("MQTT Gateway is unavailable; configure a reviewed loopback endpoint", null);
+        }
+    }
+
+    private static GatewayResponse executeRequest(HttpClient client, URI target, String jsonBody, String token, int timeoutMillis) {
+        // Validate the final recipient again on every attempt before attaching authorization.
+        approvedTarget(target.toString());
+        try {
+            HttpRequest request = HttpRequest.newBuilder(target)
+                    .timeout(Duration.ofMillis(timeoutMillis))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + token)
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody, StandardCharsets.UTF_8)).build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+            return new GatewayResponse(response.statusCode(), response.body());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new GatewayRequestException("MQTT Gateway request interrupted", null);
+        } catch (java.io.IOException | RuntimeException e) {
+            // Do not propagate request URIs, authorization headers, response bodies or causes.
+            throw new GatewayRequestException("MQTT Gateway request failed", null);
         }
     }
 

@@ -21,12 +21,12 @@ import xiaozhi.modules.device.entity.DeviceEntity;
 import xiaozhi.modules.device.vo.UserShowDeviceListVO;
 import xiaozhi.modules.security.config.WebMvcConfig;
 
-@DisplayName("设备时间序列化回归测试")
+@DisplayName("Device time serialization regression tests")
 class DeviceTimeSerializationTest {
 
-    @ParameterizedTest(name = "浏览器时区 {0}")
+    @ParameterizedTest(name = "Browser time zone {0}")
     @ValueSource(strings = { "Asia/Shanghai", "America/Sao_Paulo" })
-    @DisplayName("#3280 绑定时间和最后连接时间在任意浏览器时区都表示同一时刻")
+    @DisplayName("#3280 Binding and last connection times represent the same instant in every browser time zone")
     void serializedDeviceTimesDescribeTheSameInstantAcrossBrowserTimeZones(String browserTimeZone) {
         Instant connectedAt = Instant.parse("2026-07-10T13:21:42Z");
         DeviceEntity entity = new DeviceEntity();
@@ -46,22 +46,22 @@ class DeviceTimeSerializationTest {
 
         assertAll(
                 () -> assertTrue(payload.path("createDateTimestamp").isTextual(),
-                        "Long 时间戳必须遵循现有 JSON 契约序列化为字符串"),
+                        "Long timestamps must follow the existing JSON contract and serialize as strings"),
                 () -> assertTrue(payload.path("lastConnectedAtTimestamp").isTextual(),
-                        "Long 时间戳必须遵循现有 JSON 契约序列化为字符串"),
+                        "Long timestamps must follow the existing JSON contract and serialize as strings"),
                 () -> assertEquals(connectedAt, createDate,
-                        "createDateTimestamp 必须保留源时间点"),
+                        "createDateTimestamp must preserve the source instant"),
                 () -> assertEquals(connectedAt, lastConnectedAt,
-                        "lastConnectedAtTimestamp 必须保留源时间点"),
+                        "lastConnectedAtTimestamp must preserve the source instant"),
                 () -> assertEquals(lastConnectedAt.atZone(browserZone).toLocalDateTime(),
                         createDate.atZone(browserZone).toLocalDateTime(),
-                        "绑定时间和最后连接时间在同一浏览器中必须显示为相同的本地时间"),
+                        "Binding and last connection times must display the same local time in the same browser"),
                 () -> assertTrue(payload.path("createDate").isTextual(),
-                        "兼容字段 createDate 必须继续保留"));
+                        "The createDate compatibility field must be retained"));
     }
 
     @Test
-    @DisplayName("时间为空时新旧字段均保持 null")
+    @DisplayName("Both legacy and new fields remain null when time is absent")
     void nullDeviceTimesRemainNull() {
         DeviceEntity entity = new DeviceEntity();
         DeviceServiceImpl deviceService = serviceReturning(entity);
@@ -76,9 +76,9 @@ class DeviceTimeSerializationTest {
                 () -> assertTrue(payload.path("createDate").isNull()));
     }
 
-    @ParameterizedTest(name = "自动升级状态 {0}")
+    @ParameterizedTest(name = "Automatic update status {0}")
     @ValueSource(ints = { 0, 1 })
-    @DisplayName("#3299 设备列表按 autoUpdate 契约返回真实开关状态")
+    @DisplayName("#3299 Device list returns the actual toggle state under the autoUpdate contract")
     void serializedDeviceContainsAutoUpdateState(int autoUpdate) {
         DeviceEntity entity = new DeviceEntity();
         entity.setAutoUpdate(autoUpdate);
@@ -92,11 +92,11 @@ class DeviceTimeSerializationTest {
                 () -> assertEquals(autoUpdate, device.getAutoUpdate()),
                 () -> assertEquals(autoUpdate, payload.path("autoUpdate").asInt()),
                 () -> assertTrue(payload.path("otaUpgrade").isMissingNode(),
-                        "设备列表不应继续暴露未映射的旧字段 otaUpgrade"));
+                        "Device lists must not expose the unmapped legacy otaUpgrade field"));
     }
 
     private DeviceServiceImpl serviceReturning(DeviceEntity entity) {
-        return new DeviceServiceImpl(null, null, null, null, null, null) {
+        return new DeviceServiceImpl(null, null, null, null, null, null, null) {
             @Override
             public List<DeviceEntity> getUserDevices(Long userId, String agentId) {
                 return List.of(entity);

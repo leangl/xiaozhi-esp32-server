@@ -1,37 +1,47 @@
-# Docker安装全模块
+# Install all modules with Docker.
 
-version: '3'
 services:
-  # Server模块
+  # Server module.
   xiaozhi-esp32-server:
-    image: ghcr.nju.edu.cn/xinnan-tech/xiaozhi-esp32-server:server_latest
-    container_name: xiaozhi-esp32-server
+    image: ${SERVER_IMAGE:?Set a unique locally source-built server image}
+    pull_policy: never
+    build:
+      context: ../..
+      dockerfile: Dockerfile-server
+      args:
+        SERVER_BASE_IMAGE: ${SERVER_BASE_IMAGE:?Build Dockerfile-server-base from this checkout first}
     depends_on:
       - xiaozhi-esp32-server-db
       - xiaozhi-esp32-server-redis
-    restart: always
+    restart: "no"
     networks:
       - default
     ports:
-      # ws服务端
-      - "8000:8000"
-      # http服务的端口，用于视觉分析接口
-      - "8003:8003"
+      # WebSocket server.
+      - "127.0.0.1:${SERVER_WS_PORT:-18000}:8000"
+      # HTTP service port for vision analysis.
+      - "127.0.0.1:${SERVER_HTTP_PORT:-18003}:8003"
     security_opt:
       - seccomp:unconfined
     environment:
       - TZ=Asia/Shanghai
     volumes:
-      # 配置文件目录
-      - ./data:/opt/xiaozhi-esp32-server/data
-      # 模型文件挂接，很重要
-      - ./models/SenseVoiceSmall/model.pt:/opt/xiaozhi-esp32-server/models/SenseVoiceSmall/model.pt
+      # Configuration directory.
+      - ${CANDIDATE_DATA_DIR:?Set a new isolated candidate configuration directory}:/opt/xiaozhi-esp32-server/data
 
-  # manager-api和manager-web模块
+  # manager-api and manager-web modules.
   xiaozhi-esp32-server-web:
-    image: ghcr.nju.edu.cn/xinnan-tech/xiaozhi-esp32-server:web_latest
-    container_name: xiaozhi-esp32-server-web
-    restart: always
+    image: ${WEB_IMAGE:?Set a unique locally source-built web image}
+    pull_policy: never
+    build:
+      context: ../..
+      dockerfile: Dockerfile-web
+      args:
+        NODE_IMAGE: ${NODE_IMAGE:?Set a reviewed Docker Hub Node image digest}
+        MAVEN_IMAGE: ${MAVEN_IMAGE:?Set a reviewed Docker Hub Maven image digest}
+        RUNTIME_IMAGE: ${RUNTIME_IMAGE:?Set a reviewed Liberica runtime image digest}
+        NPM_REGISTRY: ${NPM_REGISTRY:?Review and explicitly select the official npm registry}
+    restart: "no"
     networks:
       - default
     depends_on:
@@ -40,47 +50,47 @@ services:
       xiaozhi-esp32-server-redis:
         condition: service_healthy
     ports:
-      # 智控台
-      - "8002:8002"
+      # Management console.
+      - "127.0.0.1:${MANAGER_PORT:-18002}:8002"
     environment:
       - TZ=Asia/Shanghai
       - SPRING_DATASOURCE_DRUID_URL=jdbc:mysql://xiaozhi-esp32-server-db:3306/xiaozhi_esp32_server?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true&connectTimeout=30000&socketTimeout=30000&autoReconnect=true&failOverReadOnly=false&maxReconnects=10
       - SPRING_DATASOURCE_DRUID_USERNAME=root
-      - SPRING_DATASOURCE_DRUID_PASSWORD=123456
+      - SPRING_DATASOURCE_DRUID_PASSWORD=${CANDIDATE_DB_PASSWORD:?Set a disposable candidate DB password}
       - SPRING_DATA_REDIS_HOST=xiaozhi-esp32-server-redis
       - SPRING_DATA_REDIS_PASSWORD=
       - SPRING_DATA_REDIS_PORT=6379
     volumes:
-      # 配置文件目录
-      - ./uploadfile:/uploadfile
-  # 数据库模块
+      # Configuration directory.
+      - candidate_uploads:/uploadfile
+  # Database module.
   xiaozhi-esp32-server-db:
-    image: mysql:latest
-    container_name: xiaozhi-esp32-server-db
+    image: ${MYSQL_IMAGE:?Set a reviewed docker.io/library/mysql image digest}
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
       timeout: 45s
       interval: 10s
       retries: 10
-    restart: always
+    restart: "no"
     networks:
       - default
     expose:
       - 3306
     volumes:
-      - ./mysql/data:/var/lib/mysql
+      - candidate_mysql:/var/lib/mysql
     environment:
       - TZ=Asia/Shanghai
-      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_ROOT_PASSWORD=${CANDIDATE_DB_PASSWORD:?Set a disposable candidate DB password}
       - MYSQL_DATABASE=xiaozhi_esp32_server
       - MYSQL_INITDB_ARGS="--character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
-  # redis模块
+  # Redis module.
   xiaozhi-esp32-server-redis:
-    image: redis:8.0
+    image: ${REDIS_IMAGE:?Set a reviewed docker.io/library/redis image digest}
     expose:
       - 6379
-    container_name: xiaozhi-esp32-server-redis
-    restart: always
+    restart: "no"
+    volumes:
+      - candidate_redis:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -90,3 +100,7 @@ services:
       - default
 networks:
   default:
+volumes:
+  candidate_mysql:
+  candidate_redis:
+  candidate_uploads:

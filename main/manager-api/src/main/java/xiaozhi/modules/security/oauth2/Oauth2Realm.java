@@ -30,8 +30,9 @@ import xiaozhi.modules.sys.entity.SysUserEntity;
 import xiaozhi.modules.sys.enums.SuperAdminEnum;
 
 /**
- * 认证
+ * Authentication
  * Copyright (c) 人人开源 All rights reserved.
+ * Original copyright holder: Renren Open Source; the legal attribution above is retained.
  * Website: https://www.renren.io
  */
 @Component
@@ -48,13 +49,13 @@ public class Oauth2Realm extends AuthorizingRealm {
     }
 
     /**
-     * 授权(验证权限时调用)
+     * Authorization, called when checking permissions
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         UserDetail user = (UserDetail) principals.getPrimaryPrincipal();
 
-        // 用户权限列表
+        // User permission list
         Set<String> permsSet = new HashSet<>();
 
         if (user.getSuperAdmin() == SuperAdminEnum.YES.value()) {
@@ -70,30 +71,30 @@ public class Oauth2Realm extends AuthorizingRealm {
     }
 
     /**
-     * 认证(登录时调用)
+     * Authentication, called during login
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         String accessToken = (String) token.getPrincipal();
 
-        // 根据accessToken，查询用户信息
+        // Query user information by accessToken
         SysUserTokenEntity tokenEntity = shiroService.getByToken(accessToken);
-        // token失效
+        // Token expired or invalid
         if (tokenEntity == null || tokenEntity.getExpireDate().getTime() < System.currentTimeMillis()) {
             throw new IncorrectCredentialsException(MessageUtils.getMessage(ErrorCode.TOKEN_INVALID));
         }
 
-        // 查询用户信息
+        // Query user information
         SysUserEntity userEntity = shiroService.getUser(tokenEntity.getUserId());
 
-        // 转换成UserDetail对象
+        // Convert to UserDetail
         UserDetail userDetail = ConvertUtils.sourceToTarget(userEntity, UserDetail.class);
 
         userDetail.setToken(accessToken);
 
-        // 账号锁定
+        // Account locked
         if (userDetail.getStatus() == null) {
-            logger.error("账号状态异常，status 不能为空");
+            logger.error("Invalid account status: status must not be null");
             throw new DisabledAccountException(MessageUtils.getMessage(ErrorCode.ACCOUNT_DISABLE));
         }
 

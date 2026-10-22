@@ -5,18 +5,21 @@ from typing import Optional, Tuple, List
 from core.providers.asr.dto.dto import InterfaceType
 from core.providers.asr.base import ASRProviderBase
 
-import requests
+from config.service_policy import post, validate_endpoint
+from config.provider_profile import validate_provider_config
 
 TAG = __name__
 logger = setup_logging()
 
 class ASRProvider(ASRProviderBase):
     def __init__(self, config: dict, delete_audio_file: bool):
+        validate_provider_config("ASR", config, "openai", require_ready=True)
         self.interface_type = InterfaceType.NON_STREAM
-        self.api_key = config.get("api_key")
+        self.api_key = config.get("api_key") or "local-only"
         self.api_url = config.get("base_url")
+        validate_endpoint(self.api_url, "asr")
         self.model = config.get("model_name")        
-        self.output_dir = config.get("output_dir")
+        self.output_dir = config.get("output_dir") or "tmp/"
         self.delete_audio_file = delete_audio_file
 
         os.makedirs(self.output_dir, exist_ok=True)
@@ -36,35 +39,36 @@ class ASRProvider(ASRProviderBase):
                 "Authorization": f"Bearer {self.api_key}",
             }
             
-            # 使用data参数传递模型名称
+            # Pass the model name using data
             data = {
                 "model": self.model
             }
 
 
-            with open(file_path, "rb") as audio_file:  # 使用with语句确保文件关闭
+            with open(file_path, "rb") as audio_file:  # Use a with statement to ensure the file closes
                 files = {
                     "file": audio_file
                 }
 
                 start_time = time.time()
-                response = requests.post(
+                response = post(
                     self.api_url,
+                    "asr",
                     files=files,
                     data=data,
                     headers=headers
                 )
                 logger.bind(tag=TAG).debug(
-                    f"语音识别耗时: {time.time() - start_time:.3f}s | 结果: {response.text}"
+                    f"Speech recognition duration: {time.time() - start_time:.3f}s | status: {response.status_code}"
                 )
 
             if response.status_code == 200:
                 text = response.json().get("text", "")
                 return text, file_path
             else:
-                raise Exception(f"API请求失败: {response.status_code} - {response.text}")
+                raise Exception(f"ASR API request failed with status {response.status_code}")
                 
-        except Exception as e:
-            logger.bind(tag=TAG).error(f"语音识别失败: {e}")
+        except Exception:
+            logger.bind(tag=TAG).error("Speech recognition failed; verify approved ASR configuration and availability")
             return "", None
         

@@ -14,8 +14,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 
 /**
- * XSS过滤
+ * XSS filtering
  * Copyright (c) 人人开源 All rights reserved.
+ * Original copyright holder: Renren Open Source; the legal attribution above is retained.
  * Website: https://www.renren.io
  */
 @AllArgsConstructor
@@ -32,7 +33,7 @@ public class XssFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
-        // 放行
+        // Allow through
         if (shouldNotFilter(httpServletRequest)) {
             chain.doFilter(request, response);
 
@@ -43,7 +44,7 @@ public class XssFilter implements Filter {
     }
 
     private boolean shouldNotFilter(HttpServletRequest request) {
-        // 放行不过滤的URL
+        // URLs excluded from filtering
         return properties.getExcludeUrls().stream()
                 .anyMatch(excludeUrl -> pathMatcher.match(excludeUrl, request.getServletPath()));
     }

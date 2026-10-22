@@ -1,7 +1,7 @@
 import time
-import os
 import numpy as np
 import onnxruntime
+from config.provider_profile import validate_provider_config, vad_model_path
 from config.logger import setup_logging
 from core.providers.vad.base import VADProviderBase
 
@@ -11,17 +11,17 @@ logger = setup_logging()
 
 class VADProvider(VADProviderBase):
     def __init__(self, config):
-        logger.bind(tag=TAG).info("SileroVAD", config)
-
-        model_path = os.path.join(
-            config["model_dir"], "src", "silero_vad", "data", "silero_vad.onnx"
-        )
+        validate_provider_config("VAD", config, "silero", require_ready=True)
+        model_path = str(vad_model_path(config))
         opts = onnxruntime.SessionOptions()
         opts.inter_op_num_threads = 1
         opts.intra_op_num_threads = 1
-        self.session = onnxruntime.InferenceSession(
-            model_path, providers=["CPUExecutionProvider"], sess_options=opts
-        )
+        try:
+            self.session = onnxruntime.InferenceSession(
+                model_path, providers=["CPUExecutionProvider"], sess_options=opts
+            )
+        except Exception:
+            raise ValueError("VAD local Silero model could not be loaded; verify its reviewed ONNX artifact") from None
 
         threshold = config.get("threshold", "0.5")
         threshold_low = config.get("threshold_low", "0.2")
@@ -37,14 +37,14 @@ class VADProvider(VADProviderBase):
         self.frame_window_threshold = 3
 
     def _init_connection_state(self, conn):
-        """为连接初始化独立的 VAD 状态"""
+        """Initialize independent VAD state for the connection"""
         if not hasattr(conn, "_vad_state"):
             conn._vad_state = np.zeros((2, 1, 128), dtype=np.float32)
         if not hasattr(conn, "_vad_context"):
             conn._vad_context = np.zeros((1, 64), dtype=np.float32)
 
     def release_conn_resources(self, conn):
-        """释放连接的 VAD 资源（连接关闭时调用）"""
+        """Release the connection's VAD resources when it closes"""
         for attr in ("_vad_state", "_vad_context"):
             if hasattr(conn, attr):
                 try:
@@ -53,14 +53,14 @@ class VADProvider(VADProviderBase):
                     pass
 
     def is_vad(self, conn, pcm_frame):
-        # 手动模式：直接返回True，不进行实时VAD检测，所有音频都缓存
+        # Manual mode: return True without real-time VAD; buffer all audio
         if conn.client_listen_mode == "manual":
             return True
 
         try:
             self._init_connection_state(conn)
 
-            # pcm_frame已经是处理后的PCM数据
+            # pcm_frame already contains processed PCM data
             conn.client_audio_buffer.extend(pcm_frame)
 
             client_have_voice = False
@@ -85,7 +85,7 @@ class VADProvider(VADProviderBase):
                 conn._vad_context = audio_input[:, -64:]
                 speech_prob = out.item()
 
-                # 双阈值判断
+                # Dual-threshold detection
                 if speech_prob >= self.vad_threshold:
                     is_voice = True
                 elif speech_prob <= self.vad_threshold_low:
@@ -93,16 +93,16 @@ class VADProvider(VADProviderBase):
                 else:
                     is_voice = conn.last_is_voice
 
-                # 声音没低于最低值则延续前一个状态，判断为有声音
+                # If the signal has not fallen below the minimum, keep the previous voiced state
                 conn.last_is_voice = is_voice
 
-                # 更新滑动窗口
+                # Update the sliding window
                 conn.client_voice_window.append(is_voice)
                 client_have_voice = (
                     conn.client_voice_window.count(True) >= self.frame_window_threshold
                 )
 
-                # 如果之前有声音，但本次没有声音，且与上次有声音的时间差已经超过了静默阈值，则认为已经说完一句话
+                # If voice was present previously but is now absent longer than the silence threshold, consider the utterance complete
                 if conn.client_have_voice and not client_have_voice:
                     stop_duration = time.time() * 1000 - conn.vad_last_voice_time
                     if stop_duration >= self.silence_threshold_ms:

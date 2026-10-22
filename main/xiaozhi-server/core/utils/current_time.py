@@ -1,11 +1,12 @@
 """
-时间工具模块
-提供统一的时间获取功能
+Time utilities.
+Provide a shared interface for retrieving time information.
 """
 
 import cnlunar
 from datetime import datetime
 
+# Chinese weekday names are locale data used by prompts and language fixtures.
 WEEKDAY_MAP = {
     "Monday": "星期一",
     "Tuesday": "星期二", 
@@ -19,21 +20,21 @@ WEEKDAY_MAP = {
 
 def get_current_time() -> str:
     """
-    获取当前时间字符串 (格式: HH:MM)
+    Return the current time as HH:MM.
     """
     return datetime.now().strftime("%H:%M")
 
 
 def get_current_date() -> str:
     """
-    获取今天日期字符串 (格式: YYYY-MM-DD)
+    Return today's date as YYYY-MM-DD.
     """
     return datetime.now().strftime("%Y-%m-%d")
 
 
 def get_current_weekday() -> str:
     """
-    获取今天星期几
+    Return today's weekday in Chinese.
     """
     now = datetime.now()
     return WEEKDAY_MAP[now.strftime("%A")]
@@ -41,7 +42,7 @@ def get_current_weekday() -> str:
 
 def get_current_lunar_date() -> str:
     """
-    获取农历日期字符串
+    Return the lunar date in Chinese, preserving locale formatting and fallback text.
     """
     try:
         now = datetime.now()
@@ -57,8 +58,8 @@ def get_current_lunar_date() -> str:
 
 def get_current_time_info() -> tuple:
     """
-    获取当前时间信息
-    返回: (当前时间字符串, 今天日期, 今天星期, 农历日期)
+    Return current time information.
+    Returns: (time string, today's date, weekday, lunar date).
     """
     current_time = get_current_time()
     today_date = get_current_date()

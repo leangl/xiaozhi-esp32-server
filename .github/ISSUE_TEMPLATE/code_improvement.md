@@ -1,19 +1,19 @@
 ---
-name: 代码优化建议（Code Improvement）
-about: 提出对现有代码的优化或改进建议
-title: "[Improvement] 简短描述改进内容"
+name: Code Improvement
+about: Suggest improvements or optimizations to existing code
+title: "[Improvement] Briefly describe the improvement"
 labels: refactor
 assignees: ''
 ---
 
-## 💡 改进描述
-<!-- 描述需要改进的代码部分以及存在的问题 -->
+## 💡 Description
+<!-- Describe the code that needs improvement and the existing problem. -->
 
-## 🌟 改进建议
-<!-- 提出具体的改进方案或思路 -->
+## 🌟 Proposed improvement
+<!-- Describe a specific solution or approach. -->
 
-## 🛠️ 相关代码
-<!-- 如果可能，提供相关代码片段或链接 -->
+## 🛠️ Related code
+<!-- Include relevant snippets or links when possible. -->
 
-## 📋 其他信息
-<!-- 在此添加任何其他相关信息 -->
+## 📋 Additional context
+<!-- Add any other relevant information here. -->

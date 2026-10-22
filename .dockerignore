@@ -2,6 +2,26 @@
 __pycache__
 *.pyc
 .env
+**/.env
+**/.env.*
+**/.npmrc
+# Operator profiles are supplied explicitly at runtime, not baked into images.
+main/manager-api/src/main/resources/application-*.yml
+main/manager-api/src/main/resources/application-*.yaml
 Dockerfile
 tmp/
 data/
+**/data/.config.yaml
+**/data/.config.yml
+main/xiaozhi-server/data/
+main/xiaozhi-server/models/SenseVoiceSmall/
+main/xiaozhi-server/models/**
+!main/xiaozhi-server/models/snakers4_silero-vad/
+!main/xiaozhi-server/models/snakers4_silero-vad/**
+**/.venv/
+**/.pytest_cache/
+**/tmp/
+**/node_modules/
+**/target/
+**/uploadfile/
+**/mysql/

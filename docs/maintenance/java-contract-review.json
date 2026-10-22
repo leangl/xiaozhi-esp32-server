@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "baselineCommit": "eb9dc8ca0fc8a30bc8afb0f302dcfc1578f76a7b",
+  "hashEncoding": "SHA-256 of UTF-8 Java literal token text, including delimiters and escapes, after eligible Java Unicode-escape preprocessing.",
+  "entries": [
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/knowledge/dto/dataset/DatasetDTO.java",
+      "category": "annotation-contract",
+      "beforeSha256": "97ad2f21bdc20457666437980af68b487daf26c4d1228b00995b43a5fde3f29c",
+      "afterSha256": "bf53c8bcd3b1429fdc9a9a267f513f6263d7ad51868b970ca50e1edb52b7ef05",
+      "reason": "Schema example is status-description prose; it does not rename a schema property."
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/knowledge/rag/impl/RAGFlowAdapter.java",
+      "category": "contract-call",
+      "beforeSha256": "74f1ea6be49e47e30792b087d191b13f6442d5411a5bfefd61af52eba003f468",
+      "afterSha256": "134a7c45ee0c8c68e5430a4b711d643756d03f3b74cd3138febca15b3e0bb749",
+      "reason": "Map value is a status or field description; the map key is unchanged."
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/knowledge/rag/impl/RAGFlowAdapter.java",
+      "category": "contract-call",
+      "beforeSha256": "d6d15518b1bd1a9bf52d3f6d8f31e5283bf917ac9721014330aad7888b1098db",
+      "afterSha256": "e228e4616c9391476dbed55c33e1382d07a3de574cf73eac9e3b284af59f2cd6",
+      "reason": "Map value is a status or field description; the map key is unchanged."
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/knowledge/rag/impl/RAGFlowAdapter.java",
+      "category": "contract-call",
+      "beforeSha256": "5f0b595e6840aa7c858d062ea11fee970c20cea81a21e1bb93ae1e8e3fe80904",
+      "afterSha256": "af9728c9e70bd69ca4d11961ad7672447d2997610ed4d4493299233f82a0b78d",
+      "reason": "Map value is a status or field description; the map key is unchanged."
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/knowledge/rag/impl/RAGFlowAdapter.java",
+      "category": "contract-call",
+      "beforeSha256": "64de449c78c162392561ddeff8b54e1e66f2380946fb4e602d95f3efabc439fc",
+      "afterSha256": "f7ddfcb60c9ee398cee593ff73a3da02219ad84b4d61ca74b93905e3d053b9dc",
+      "reason": "Map value is a status or field description; the map key is unchanged."
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/llm/service/impl/OpenAIStyleLLMServiceImpl.java",
+      "category": "contract-call",
+      "beforeSha256": "9f089e64bcb3fec31cfd84648dabfed9840700825d11c4ca8537bcb52f55a435",
+      "afterSha256": "5e9e0cdf27a7ab001dde4ebe92f4d11ee288a20d2a4b26ed793065551e9d04bf",
+      "reason": "Only the second replace() argument changes: the no-history fallback prompt. The placeholder first argument is unchanged."
+    },
+    {
+      "path": "main/manager-api/src/test/java/xiaozhi/modules/agent/service/impl/AgentSnapshotServiceImplTest.java",
+      "category": "contract-call",
+      "beforeSha256": "4f9afb80278101e002aaea6cae3317a99a28af80955f3128caa43464e51ad443",
+      "afterSha256": "4215b14ce0d91fa46130af3a7fbf940ed227cbdd0da084b62a5d1378933faadd",
+      "reason": "Assertion substring follows the translated error-message producer; it retains the same stale-preview rejection check."
+    },
+    {
+      "path": "main/manager-api/src/test/java/xiaozhi/modules/device/service/impl/DeviceTimeSerializationTest.java",
+      "category": "annotation-contract",
+      "beforeSha256": "8e5275619a8e196296614485e9b02a30a76ea242e4a2839fe0c9b44d7e457539",
+      "afterSha256": "fb892a45b2cae405d086b22cefe3c0c3048280e4fce0899127c1fac1efa186eb",
+      "reason": "ParameterizedTest name is display prose; argument placeholders and test behavior are unchanged."
+    },
+    {
+      "path": "main/manager-api/src/test/java/xiaozhi/modules/device/service/impl/DeviceTimeSerializationTest.java",
+      "category": "annotation-contract",
+      "beforeSha256": "b4dd876bbefc3d93c45e29e00e4cefc4a3e259e0626b72427b6852a5e7099fb5",
+      "afterSha256": "e6f1aff3069d89144194937f9a797af31d910f889df45dccd7f720cc876d3671",
+      "reason": "ParameterizedTest name is display prose; argument placeholders and test behavior are unchanged."
+    },
+    {
+      "path": "main/manager-api/src/test/java/xiaozhi/modules/device/service/impl/MqttGatewayAuthorizationTest.java",
+      "category": "annotation-contract",
+      "beforeSha256": "07f5a4e5dbb9f833d49e7d399dd61046bad3a3abb01d351a206867054373d900",
+      "afterSha256": "aa756b4d17833a19a6cc13b9bc89f1af11adbbae90ee82d3b28f7c0e33b4a10c",
+      "reason": "ParameterizedTest name is display prose; argument placeholders and test behavior are unchanged."
+    },
+    {
+      "path": "main/manager-api/src/test/java/xiaozhi/modules/device/service/impl/MqttGatewayAuthorizationTest.java",
+      "category": "annotation-contract",
+      "beforeSha256": "ebe5eac4d24b2379ecdeeda3fbf99462f268d7df6d81ebd1287a2e31c7565d95",
+      "afterSha256": "fef15a22a2e37dfa442d4825b2dbbd847220f27e08cf8a92978604a03a4a7233",
+      "reason": "ParameterizedTest name is display prose; argument placeholders and test behavior are unchanged."
+    }
+  ]
+}

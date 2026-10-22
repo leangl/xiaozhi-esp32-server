@@ -160,7 +160,7 @@ export default {
       }
     },
     handleViewDetails(row) {
-      console.log('查看详情:', row);
+      console.log('View details:', row);
     },
     handlePageSizeChange(val) {
       this.pageSize = val;
@@ -246,20 +246,20 @@ export default {
               this.fetchVoiceCloneList();
             }
           } catch (error) {
-            console.error('处理响应时出错:', error);
+            console.error('Error processing the response:', error);
             this.$message.error('处理响应时出错');
             this.fetchVoiceCloneList();
           } finally {
             this.$set(row, '_cloning', false);
           }
         }, (error) => {
-          console.error('API调用失败:', error);
+          console.error('API call failed:', error);
           this.$message.error(this.$t('voiceClone.cloneErrorTip'));
           this.fetchVoiceCloneList();
           this.$set(row, '_cloning', false);
         });
       } catch (error) {
-        console.error('调用API时出错:', error);
+        console.error('Error calling the API:', error);
         this.$message.error(this.$t('voiceClone.apiError'));
         this.fetchVoiceCloneList();
         this.$set(row, '_cloning', false);
@@ -336,7 +336,7 @@ export default {
             this.currentAudio = null;
           });
           audio.play().catch(err => {
-            console.error('播放失败:', err);
+            console.error('Playback failed:', err);
             this.$message.error(this.$t('voiceClone.playFailed') || '播放失败');
             this.playingRowId = null;
             this.currentAudio = null;

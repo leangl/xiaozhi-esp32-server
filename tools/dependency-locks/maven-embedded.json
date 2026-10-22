@@ -1,0 +1,9 @@
+{
+  "kind": "embedded-locked-maven-artifact",
+  "artifact": "org.springframework.boot:spring-boot-jarmode-tools:3.4.3",
+  "sha256": "ad5c6d96d536f0d2c0f1e03dac37c9fb4e49d7e9321ce38a17c723cab15d2a9b",
+  "container": "org/springframework/boot/spring-boot-loader-tools/3.4.3/spring-boot-loader-tools-3.4.3.jar",
+  "containerSha256": "46abe622b9952ddcaec8e09fd9e40835933897ecb67d29430d2358685a50d69d",
+  "entry": "META-INF/jarmode/spring-boot-jarmode-tools.jar",
+  "enforcement": "The complete containing plugin dependency archive is hash-verified before Maven can execute. The repackage plugin copies these embedded bytes into BOOT-INF/lib."
+}

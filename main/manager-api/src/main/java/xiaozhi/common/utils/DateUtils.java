@@ -8,38 +8,39 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 /**
- * 日期处理
+ * Date handling
  * Copyright (c) 人人开源 All rights reserved.
+ * Original copyright holder: Renren Open Source; the legal attribution above is retained.
  * Website: https://www.renren.io
  */
 public class DateUtils {
     /**
-     * 时间格式(yyyy-MM-dd)
+     * Date format (yyyy-MM-dd)
      */
     public final static String DATE_PATTERN = "yyyy-MM-dd";
     /**
-     * 时间格式(yyyy-MM-dd HH:mm:ss)
+     * Date-time format (yyyy-MM-dd HH:mm:ss)
      */
     public final static String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
     public final static String DATE_TIME_MILLIS_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
 
 
     /**
-     * 日期格式化 日期格式为：yyyy-MM-dd
+     * Format a date as yyyy-MM-dd
      *
-     * @param date 日期
-     * @return 返回yyyy-MM-dd格式日期
+     * @param date date
+     * @return date formatted as yyyy-MM-dd
      */
     public static String format(Date date) {
         return format(date, DATE_PATTERN);
     }
 
     /**
-     * 日期格式化 日期格式为：yyyy-MM-dd
+     * Format a date as yyyy-MM-dd
      *
-     * @param date    日期
-     * @param pattern 格式，如：DateUtils.DATE_TIME_PATTERN
-     * @return 返回yyyy-MM-dd格式日期
+     * @param date date
+     * @param pattern format, such as DateUtils.DATE_TIME_PATTERN
+     * @return date formatted as yyyy-MM-dd
      */
     public static String format(Date date, String pattern) {
         if (date != null) {
@@ -50,11 +51,11 @@ public class DateUtils {
     }
 
     /**
-     * 日期解析
+     * Parse a date
      *
-     * @param date    日期
-     * @param pattern 格式，如：DateUtils.DATE_TIME_PATTERN
-     * @return 返回Date
+     * @param date date
+     * @param pattern format, such as DateUtils.DATE_TIME_PATTERN
+     * @return parsed Date
      */
     public static Date parse(String date, String pattern) {
         try {
@@ -79,7 +80,7 @@ public class DateUtils {
     }
 
     /**
-     * 获取简短的时间字符串：10秒前返回刚刚，多少秒前，几小时前，超过一周返回年月日时分秒
+     * Get a short relative timestamp: just now below 10 seconds, seconds or hours ago, or full date-time after a week
      * @param date
      * @return
      */
@@ -87,17 +88,19 @@ public class DateUtils {
         if (date == null) {
             return null;
         }
-        // 将 Date 转换为 Instant
+        // Convert Date to Instant
         LocalDateTime localDateTime = date.toInstant()
-                // 获取系统默认时区
+                // Get the system default time zone
                 .atZone(ZoneId.systemDefault())
-                // 转换为 LocalDateTime
+                // Convert to LocalDateTime
                 .toLocalDateTime();
-        // 当前时间
+        // Current time
         LocalDateTime now = LocalDateTime.now();
-        // 时间差，单位为秒
+        // Time difference in seconds
         long secondsBetween = ChronoUnit.SECONDS.between(localDateTime, now);
 
+        // Existing Chinese UI labels: just now, seconds ago, minutes ago, hours ago, and days ago.
+        // Preserve these localized values; changing them is not a maintainer-prose translation.
         if (secondsBetween <= 10) {
             return "刚刚";
         } else if (secondsBetween < 60) {
@@ -109,7 +112,7 @@ public class DateUtils {
         } else if (secondsBetween < 604800) {
             return secondsBetween / 86400 + "天前";
         } else {
-            // 超过一周，显示完整日期时间
+            // Show the full date-time after one week
             return format(date,DATE_TIME_PATTERN);
         }
     }

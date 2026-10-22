@@ -66,8 +66,12 @@ import xiaozhi.modules.agent.vo.AgentSnapshotVO;
 import xiaozhi.modules.agent.vo.AgentInfoVO;
 import xiaozhi.modules.correctword.service.CorrectWordFileService;
 import xiaozhi.modules.model.service.ModelProviderService;
+import xiaozhi.modules.model.service.ModelConfigService;
+import xiaozhi.modules.model.entity.ModelConfigEntity;
+import cn.hutool.json.JSONObject;
 import xiaozhi.modules.timbre.service.TimbreService;
 
+// Mandarin language values are fixtures verifying snapshot/configuration restoration without changing user language.
 class AgentSnapshotServiceImplTest {
 
     @Test
@@ -1148,19 +1152,30 @@ class AgentSnapshotServiceImplTest {
         AgentPluginMappingService pluginMappingService = mock(AgentPluginMappingService.class);
         AgentTemplateService templateService = mock(AgentTemplateService.class);
         ModelProviderService providerService = mock(ModelProviderService.class);
+        ModelConfigService modelConfigService = mock(ModelConfigService.class);
         AgentSnapshotService snapshotService = mock(AgentSnapshotService.class);
-        AgentServiceImpl service = new AgentServiceImpl(agentDao, null, timbreService, null, null, null,
+        AgentServiceImpl service = new AgentServiceImpl(agentDao, null, timbreService, modelConfigService, null, null,
                 pluginMappingService, null, templateService, providerService, null, null, null, snapshotService);
         ReflectionTestUtils.setField(service, "baseDao", agentDao);
 
         AgentTemplateEntity template = new AgentTemplateEntity();
-        template.setTtsModelId("TTS_EdgeTTS");
-        template.setTtsVoiceId("TTS_EdgeTTS0001");
+        template.setTtsModelId("TTS_LocalOpenAI");
+        template.setTtsVoiceId("TTS_LocalOpenAI0001");
         template.setMemModelId("Memory_nomem");
         template.setSummaryMemory(null);
         when(templateService.getDefaultTemplate()).thenReturn(template);
 
-        when(timbreService.getDefaultLanguageById("TTS_EdgeTTS0001")).thenReturn("普通话");
+        ModelConfigEntity tts = new ModelConfigEntity();
+        tts.setModelType("TTS");
+        tts.setIsEnabled(1);
+        tts.setConfigJson(new JSONObject().set("type", "openai").set("api_url", "http://localhost:9999/v1/audio/speech"));
+        ModelConfigEntity memory = new ModelConfigEntity();
+        memory.setModelType("Memory");
+        memory.setIsEnabled(1);
+        memory.setConfigJson(new JSONObject().set("type", "nomem"));
+        when(modelConfigService.getModelByIdFromCache("TTS_LocalOpenAI")).thenReturn(tts);
+        when(modelConfigService.getModelByIdFromCache("Memory_nomem")).thenReturn(memory);
+        when(timbreService.getDefaultLanguageById("TTS_LocalOpenAI0001")).thenReturn("普通话");
         when(agentDao.insert(any(AgentEntity.class))).thenReturn(1);
 
         AgentCreateDTO dto = new AgentCreateDTO();
@@ -1235,11 +1250,50 @@ class AgentSnapshotServiceImplTest {
         RenException error = assertThrows(RenException.class,
                 () -> service.restoreSnapshot(agentId, targetId, "stale-token"));
 
-        assertTrue(error.getMessage().contains("重新打开恢复预览"));
+        assertTrue(error.getMessage().contains("reopen the restore preview"));
         verify(snapshotDao, never()).selectLatestSnapshot(agentId);
         verify(snapshotDao, never()).insertWithNextVersion(any());
         verify(agentDao, never()).updateSnapshotFields(any());
         verify(pluginMappingService, never()).deleteByAgentId(any());
+    }
+
+    @Test
+    void unavailableProviderRestoreIsRejectedBeforeBackupRelationsAndHistoryWrites() {
+        AgentSnapshotDao snapshotDao = mock(AgentSnapshotDao.class);
+        AgentDao agentDao = mock(AgentDao.class);
+        AgentTagDao tagDao = mock(AgentTagDao.class);
+        AgentPluginMappingService plugins = mock(AgentPluginMappingService.class);
+        AgentContextProviderService contexts = mock(AgentContextProviderService.class);
+        AgentChatHistoryService history = mock(AgentChatHistoryService.class);
+        CorrectWordFileService words = mock(CorrectWordFileService.class);
+        ModelConfigService models = mock(ModelConfigService.class);
+        AgentSnapshotServiceImpl service = new AgentSnapshotServiceImpl(snapshotDao, agentDao, tagDao, null,
+                plugins, contexts, null, history, models, words);
+        ReflectionTestUtils.setField(service, "baseDao", snapshotDao);
+        AgentEntity locked = new AgentEntity();
+        locked.setId("agent");
+        AgentSnapshotDataDTO target = snapshotData("target", "history stays");
+        target.setLlmModelId("legacy");
+        ModelConfigEntity legacy = new ModelConfigEntity();
+        legacy.setModelType("LLM");
+        legacy.setIsEnabled(1);
+        legacy.setConfigJson(new JSONObject().set("type", "coze").set("api_key", "restore-secret"));
+        when(models.getModelByIdFromCache("legacy")).thenReturn(legacy);
+        when(agentDao.selectByIdForUpdate("agent")).thenReturn(locked);
+        when(snapshotDao.selectById("target")).thenReturn(snapshotEntity("target", "agent", 2, target));
+        when(agentDao.selectAgentInfoById("agent")).thenReturn(snapshotAgentInfo("agent", 7L, "current", "kept"));
+        when(tagDao.selectByAgentId("agent")).thenReturn(List.of());
+        when(words.getAgentCorrectWordFileIds("agent")).thenReturn(List.of());
+        RenException rejected = assertThrows(RenException.class, () -> service.restoreSnapshot("agent", "target",
+                currentStateToken(service, snapshotData("current", "kept"))));
+        assertTrue(rejected.getMessage().startsWith("LLM configuration is unavailable"));
+        assertFalse(rejected.getMessage().contains("restore-secret"));
+        verify(snapshotDao, never()).selectLatestSnapshot(any());
+        verify(snapshotDao, never()).insertWithNextVersion(any());
+        verify(agentDao, never()).updateSnapshotFields(any());
+        verify(plugins, never()).deleteByAgentId(any());
+        verify(contexts, never()).saveOrUpdateByAgentId(any());
+        verifyNoInteractions(history);
     }
 
     @Test
@@ -1834,7 +1888,7 @@ class AgentSnapshotServiceImplTest {
                 () -> method.invoke(service, snapshotTag, new Date()));
 
         assertTrue(error.getCause() instanceof RenException);
-        assertEquals("快照引用的标签已被删除，无法恢复，请先重新创建或选择标签", error.getCause().getMessage());
+        assertEquals("The snapshot's tag has been deleted; recreate or select a tag before restoring", error.getCause().getMessage());
         verify(tagDao, never()).updateById(any(AgentTagEntity.class));
         verify(tagDao, never()).insert(any(AgentTagEntity.class));
     }

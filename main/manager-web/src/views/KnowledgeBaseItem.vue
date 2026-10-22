@@ -154,7 +154,7 @@ export default {
             this.total = data.data.total || 0;
             this.fetchSliceCountsForDocuments();
           } else {
-            this.$message.error(data?.msg || '获取文档列表失败');
+            this.$message.error(data?.msg || this.$t('knowledgeFileUpload.getListFailed'));
             this.documents = [];
             this.total = 0;
           }
@@ -162,9 +162,9 @@ export default {
         (err) => {
           this.docLoading = false;
           if (err && err.data) {
-            this.$message.error(err.data.msg || err.msg || '获取文档列表失败');
+            this.$message.error(err.data.msg || err.msg || this.$t('knowledgeFileUpload.getListFailed'));
           } else {
-            this.$message.error('获取文档列表失败');
+            this.$message.error(this.$t('knowledgeFileUpload.getListFailed'));
           }
           this.documents = [];
           this.total = 0;

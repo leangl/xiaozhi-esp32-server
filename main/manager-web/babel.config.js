@@ -6,7 +6,7 @@ module.exports = {
     }]
   ],
   plugins: [
-    '@babel/plugin-syntax-dynamic-import',  // 确保支持动态导入 (Lazy Loading)
+    '@babel/plugin-syntax-dynamic-import',  // Ensure support for dynamic imports (lazy loading)
     '@babel/plugin-transform-runtime'
   ]
 }

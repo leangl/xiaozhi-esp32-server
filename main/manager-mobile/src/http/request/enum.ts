@@ -1,18 +1,18 @@
 export enum ResultEnum {
-  Success = 0, // 成功
-  Error = 400, // 错误
-  Unauthorized = 401, // 未授权
-  Forbidden = 403, // 禁止访问（原为forbidden）
-  NotFound = 404, // 未找到（原为notFound）
-  MethodNotAllowed = 405, // 方法不允许（原为methodNotAllowed）
-  RequestTimeout = 408, // 请求超时（原为requestTimeout）
-  InternalServerError = 500, // 服务器错误（原为internalServerError）
-  NotImplemented = 501, // 未实现（原为notImplemented）
-  BadGateway = 502, // 网关错误（原为badGateway）
-  ServiceUnavailable = 503, // 服务不可用（原为serviceUnavailable）
-  GatewayTimeout = 504, // 网关超时（原为gatewayTimeout）
-  HttpVersionNotSupported = 505, // HTTP版本不支持（原为httpVersionNotSupported）
-  MixedContent = 600, // 混合内容错误（HTTPS页面请求HTTP接口）
+  Success = 0, // Success
+  Error = 400, // Error
+  Unauthorized = 401, // Unauthorized
+  Forbidden = 403, // Forbidden (formerly forbidden)
+  NotFound = 404, // Not found (formerly notFound)
+  MethodNotAllowed = 405, // Method not allowed (formerly methodNotAllowed)
+  RequestTimeout = 408, // Request timeout (formerly requestTimeout)
+  InternalServerError = 500, // Internal server error (formerly internalServerError)
+  NotImplemented = 501, // Not implemented (formerly notImplemented)
+  BadGateway = 502, // Bad gateway (formerly badGateway)
+  ServiceUnavailable = 503, // Service unavailable (formerly serviceUnavailable)
+  GatewayTimeout = 504, // Gateway timeout (formerly gatewayTimeout)
+  HttpVersionNotSupported = 505, // HTTP version not supported (formerly httpVersionNotSupported)
+  MixedContent = 600, // Mixed content (an HTTPS page requesting an HTTP API)
 }
 export enum ContentTypeEnum {
   JSON = 'application/json;charset=UTF-8',
@@ -20,11 +20,13 @@ export enum ContentTypeEnum {
   FORM_DATA = 'multipart/form-data;charset=UTF-8',
 }
 /**
- * 根据状态码，生成对应的错误信息
- * @param {number|string} status 状态码
- * @returns {string} 错误信息
+ * Generate an error message for a status code
+ * @param {number|string} status Status code
+ * @returns {string} Error message
  */
 export function ShowMessage(status: number | string): string {
+  // These strings are displayed to users, not developer logs. Preserve the localized
+  // fallbacks; TRANSLATION_NOTES.md provides the complete English status-message map.
   let message: string
   switch (status) {
     case 400:

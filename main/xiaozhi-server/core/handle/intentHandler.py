@@ -18,45 +18,45 @@ TAG = __name__
 
 
 async def handle_user_intent(conn: "ConnectionHandler", text):
-    # 预处理输入文本，处理可能的JSON格式
+    # Preprocess input text, handling possible JSON formatting.
     try:
         if text.strip().startswith("{") and text.strip().endswith("}"):
             parsed_data = json.loads(text)
             if isinstance(parsed_data, dict) and "content" in parsed_data:
-                text = parsed_data["content"]  # 提取content用于意图分析
-                conn.current_speaker = parsed_data.get("speaker")  # 保留说话人信息
+                text = parsed_data["content"]  # Extract content for intent analysis.
+                conn.current_speaker = parsed_data.get("speaker")  # Preserve speaker information.
     except (json.JSONDecodeError, TypeError):
         pass
 
-    # 检查是否有明确的退出命令
+    # Check for an explicit exit command.
     _, filtered_text = remove_punctuation_and_length(text)
     if await check_direct_exit(conn, filtered_text):
         return True
 
-    # 检查是否是唤醒词
+    # Check for a wake word.
     if await checkWakeupWords(conn, filtered_text):
         return True
 
     if conn.intent_type == "function_call":
-        # 使用支持function calling的聊天方法,不再进行意图分析
+        # Use function-calling chat without a separate intent-analysis step.
         return False
-    # 使用LLM进行意图分析
+    # Analyze intent using the LLM.
     intent_result = await analyze_intent_with_llm(conn, text)
     if not intent_result:
         return False
-    # 会话开始时生成sentence_id
+    # Generate sentence_id at the start of the conversation.
     conn.sentence_id = str(uuid.uuid4().hex)
-    # 处理各种意图
+    # Handle the recognized intents.
     return await process_intent_result(conn, intent_result, text)
 
 
 async def check_direct_exit(conn: "ConnectionHandler", text):
-    """检查是否有明确的退出命令"""
+    """Check for an explicit exit command."""
     _, text = remove_punctuation_and_length(text)
     cmd_exit = conn.cmd_exit
     for cmd in cmd_exit:
         if text == cmd:
-            conn.logger.bind(tag=TAG).info(f"识别到明确的退出命令: {text}")
+            conn.logger.bind(tag=TAG).info(f"Explicit exit command recognized: {text}")
             await send_stt_message(conn, text)
             await conn.close()
             return True
@@ -64,18 +64,18 @@ async def check_direct_exit(conn: "ConnectionHandler", text):
 
 
 async def analyze_intent_with_llm(conn: "ConnectionHandler", text):
-    """使用LLM分析用户意图"""
+    """Analyze user intent using the LLM."""
     if not hasattr(conn, "intent") or not conn.intent:
-        conn.logger.bind(tag=TAG).warning("意图识别服务未初始化")
+        conn.logger.bind(tag=TAG).warning("Intent recognition service is not initialized")
         return None
 
-    # 对话历史记录
+    # Conversation history.
     dialogue = conn.dialogue
     try:
         intent_result = await conn.intent.detect_intent(conn, dialogue.dialogue, text)
         return intent_result
     except Exception as e:
-        conn.logger.bind(tag=TAG).error(f"意图识别失败: {str(e)}")
+        conn.logger.bind(tag=TAG).error(f"Intent recognition failed: {str(e)}")
 
     return None
 
@@ -83,16 +83,16 @@ async def analyze_intent_with_llm(conn: "ConnectionHandler", text):
 async def process_intent_result(
     conn: "ConnectionHandler", intent_result, original_text
 ):
-    """处理意图识别结果"""
+    """Handle the intent-recognition result."""
     try:
-        # 尝试将结果解析为JSON
+        # Try parsing the result as JSON.
         intent_data = json.loads(intent_result)
 
-        # 检查是否有function_call
+        # Check for function_call.
         if "function_call" in intent_data:
-            # 直接从意图识别获取了function_call
+            # Intent recognition directly returned function_call.
             conn.logger.bind(tag=TAG).debug(
-                f"检测到function_call格式的意图结果: {intent_data['function_call']['name']}"
+                f"Intent result in function_call format: {intent_data['function_call']['name']}"
             )
             function_name = intent_data["function_call"]["name"]
             if function_name == "continue_chat":
@@ -111,21 +111,21 @@ async def process_intent_result(
                         get_current_time_info()
                     )
 
-                    # 构建带上下文的基础提示
+                    # Build the context prompt; preserve its existing model-facing language.
                     context_prompt = f"""当前时间：{current_time}
                                         今天日期：{today_date} ({today_weekday})
                                         今天农历：{lunar_date}
 
                                         请根据以上信息回答用户的问题：{original_text}"""
 
-                    # 使用异步调用避免阻塞事件循环，影响其他设备的音频播放
+                    # Use an asynchronous call to avoid blocking the event loop and other devices' audio playback.
                     try:
                         response = asyncio.run_coroutine_threadsafe(
                             conn.intent.replyResult(context_prompt, original_text),
                             conn.loop,
                         ).result()
                     except Exception as e:
-                        conn.logger.bind(tag=TAG).error(f"LLM生成回复失败: {e}")
+                        conn.logger.bind(tag=TAG).error(f"LLM response generation failed: {e}")
                         response = None
                     if response:
                         speak_txt(conn, response)
@@ -138,7 +138,7 @@ async def process_intent_result(
                 function_args = intent_data["function_call"]["arguments"]
                 if function_args is None:
                     function_args = {}
-            # 确保参数是字符串格式的JSON
+            # Ensure arguments are a JSON string.
             if isinstance(function_args, dict):
                 function_args = json.dumps(function_args)
 
@@ -151,7 +151,7 @@ async def process_intent_result(
             await send_stt_message(conn, original_text)
             conn.client_abort = False
 
-            # 准备工具调用参数
+            # Prepare tool-call arguments.
             tool_input = {}
             if function_args:
                 if isinstance(function_args, str):
@@ -159,16 +159,16 @@ async def process_intent_result(
                 elif isinstance(function_args, dict):
                     tool_input = function_args
 
-            # 上报工具调用
+            # Report the tool call.
             enqueue_tool_report(conn, function_name, tool_input)
 
-            # 使用executor执行函数调用和结果处理
+            # Use the executor to call the function and handle results.
             def process_function_call():
                 conn.dialogue.put(Message(role="user", content=original_text))
                 
-                # 工具调用超时时间
+                # Tool-call timeout.
                 tool_call_timeout = int(conn.config.get("tool_call_timeout", 30))
-                # 使用统一工具处理器处理所有工具调用
+                # Handle all tool calls through the unified tool handler.
                 try:
                     result = asyncio.run_coroutine_threadsafe(
                         conn.func_handler.handle_llm_function_call(
@@ -177,30 +177,30 @@ async def process_intent_result(
                         conn.loop,
                     ).result(timeout=tool_call_timeout)
                 except Exception as e:
-                    conn.logger.bind(tag=TAG).error(f"工具调用失败: {e}")
+                    conn.logger.bind(tag=TAG).error(f"Tool call failed: {e}")
                     result = ActionResponse(
                         action=Action.ERROR, result="工具调用超时，请一会再试下哈", response="工具调用超时，请一会再试下哈"
                     )
 
-                # 上报工具调用结果
+                # Report the tool-call result.
                 if result:
                     enqueue_tool_report(conn, function_name, tool_input, str(result.result) if result.result else None, report_tool_call=False)
 
-                    if result.action == Action.RESPONSE:  # 直接回复前端
+                    if result.action == Action.RESPONSE:  # Reply directly to the client.
                         text = result.response
                         if text is not None:
                             speak_txt(conn, text)
-                    elif result.action == Action.REQLLM:  # 调用函数后再请求llm生成回复
+                    elif result.action == Action.REQLLM:  # Ask the LLM for a response after calling the function.
                         text = result.result
                         conn.dialogue.put(Message(role="tool", content=text))
-                        # 使用异步调用避免阻塞事件循环，影响其他设备的音频播放
+                        # Use an asynchronous call to avoid blocking the event loop and other devices' audio playback.
                         try:
                             llm_result = asyncio.run_coroutine_threadsafe(
                                 conn.intent.replyResult(text, original_text),
                                 conn.loop,
                             ).result()
                         except Exception as e:
-                            conn.logger.bind(tag=TAG).error(f"LLM生成回复失败: {e}")
+                            conn.logger.bind(tag=TAG).error(f"LLM response generation failed: {e}")
                             llm_result = text
                         if llm_result is None:
                             llm_result = text
@@ -214,24 +214,24 @@ async def process_intent_result(
                             speak_txt(conn, text)
                     elif function_name != "play_music":
                         # For backward compatibility with original code
-                        # 获取当前最新的文本索引
+                        # Get the latest text index.
                         text = result.response
                         if text is None:
                             text = result.result
                         if text is not None:
                             speak_txt(conn, text)
 
-            # 将函数执行放在线程池中
+            # Execute the function in the thread pool.
             conn.executor.submit(process_function_call)
             return True
         return False
     except json.JSONDecodeError as e:
-        conn.logger.bind(tag=TAG).error(f"处理意图结果时出错: {e}")
+        conn.logger.bind(tag=TAG).error(f"Error handling intent result: {e}")
         return False
 
 
 def speak_txt(conn: "ConnectionHandler", text):
-    # 记录文本到 sentence_id 映射
+    # Record the text-to-sentence_id mapping.
     conn.tts.store_tts_text(conn.sentence_id, text)
 
     conn.tts.tts_text_queue.put(

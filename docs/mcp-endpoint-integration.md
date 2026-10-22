@@ -1,20 +1,17 @@
-# MCP 接入点使用指南
+# MCP endpoint integration guide
 
-本教程以虾哥开源的mcp计算器功能为示例，介绍如何将自己自定义的mcp服务接入到自己的接入点里。
+This guide uses the open-source MCP calculator to connect a custom MCP service to your endpoint. First [enable MCP endpoints](./mcp-endpoint-enable.md) on `xiaozhi-server`.
 
-本教程的前提是，你的`xiaozhi-server`已经启用了mcp接入点功能，如果你还没启用，可以先根据[这个教程](./mcp-endpoint-enable.md)启用。
+# Add a calculator tool to an agent
 
-# 如何为智能体接入一个简单的mcp功能，如计算器功能
+### Full-module deployment
 
-### 如果你是全模块部署
-如果你是全模块部署，你可以进入智控台，智能体管理，点击`配置角色`，在`意图识别`的右边，有一个`编辑功能`的按钮。
+Open **Agent Management > Configure Role** in the console. Click **Edit Functions** beside **Intent Recognition**. At the bottom of the dialog, find **MCP Endpoint** and copy the agent's **MCP Endpoint Address**. You will need it below.
 
-点击这个按钮。在弹出的页面里，位于底部，会有`MCP接入点`，正常来说，会显示这个智能体的`MCP接入点地址`，接下来，我们来给这个智能体扩展一个基于MCP技术的计算器的功能。
+### Server-only deployment
 
-这个`MCP接入点地址`很重要，你等一下会用到。
+If you have configured an endpoint, startup prints a log like this. The preserved Chinese lines are historical output: VAD and ASR initialize, then the server lists OTA, vision, MCP, and WebSocket URLs. The warning says to use the digital-human module for browser interaction tests, not open the WebSocket URL as a web page.
 
-### 如果你是单模块部署
-如果你是单模块部署，且你已经在配置文件里配置了MCP接入点地址，那么正常来说，单模块部署启动的时候，会输出如下的日志。
 ```
 250705[__main__]-INFO-初始化组件: vad成功 SileroVAD
 250705[__main__]-INFO-初始化组件: asr成功 FunASRServer
@@ -27,22 +24,14 @@
 250705[__main__]-INFO-=============================================================
 ```
 
-如上，输出`mcp接入点是`中`ws://192.168.1.25:8004/mcp_endpoint/mcp/?token=abc`就是你的`MCP接入点地址`。
+In this example, the MCP endpoint address is `ws://192.168.1.25:8004/mcp_endpoint/mcp/?token=abc`. Copy your actual address for the next step.
 
-这个`MCP接入点地址`很重要，你等一下会用到。
+## Step 1: Download the MCP calculator
 
-## 第一步 下载虾哥MCP计算器项目代码
-
-浏览器打开虾哥写的[计算器项目](https://github.com/78/mcp-calculator)，
-
-打开完，找到页面中一个绿色的按钮，写着`Code`的按钮，点开它，然后你就看到`Download ZIP`的按钮。
-
-点击它，下载本项目源码压缩包。下载到你电脑后，解压它，此时它的名字可能叫`mcp-calculator-main`
-你需要把它重命名成`mcp-calculator`。接下来，我们用命令行进入项目目录即安装依赖
-
+Open the [calculator project](https://github.com/78/mcp-calculator), select **Code > Download ZIP**, and extract it. Rename `mcp-calculator-main` to `mcp-calculator`. Enter the directory and install dependencies. The environment-removal command deletes any existing environment with this name.
 
 ```bash
-# 进入项目目录
+# Enter the project directory
 cd mcp-calculator
 
 conda remove -n mcp-calculator --all -y
@@ -52,32 +41,33 @@ conda activate mcp-calculator
 pip install -r requirements.txt
 ```
 
-## 第二步 启动
+## Step 2: Start the calculator
 
-启动前，先从你的智控台的智能体里，复制到了MCP接入点的地址。
+Copy your agent's MCP endpoint from the console or server logs. Example:
 
-例如我的智能体的mcp地址是
 ```
 ws://192.168.1.25:8004/mcp_endpoint/mcp/?token=abc
 ```
 
-开始输入命令
+Set it in the environment:
 
 ```bash
 export MCP_ENDPOINT=ws://192.168.1.25:8004/mcp_endpoint/mcp/?token=abc
 ```
 
-输入完后，启动程序
+Start the process:
 
 ```bash
 python mcp_pipe.py calculator.py
 ```
 
-### 如果你是智控台部署
-如果你是智控台部署，启动完后，你再进入智控台，点击刷新MCP的接入状态，就会看到你扩展的功能列表了。
+### Console deployment
 
-### 如果你是单模块部署
-如果你是单模块部署，当设备连接后，会输出类似的日志，说明成功了
+Refresh the agent's MCP connection status in the console. You should see the added tools.
+
+### Server-only deployment
+
+After a device connects, a successful historical log looks like this. The Chinese lines mean: initialize the endpoint, send initialization, connect, complete initialization, initialize the unified tool handler, list server identity and tool count, finish fetching tools, refresh the cache, and list supported functions.
 
 ```
 250705 -INFO-正在初始化MCP接入点: wss://2662r3426b.vicp.fun/mcp_e 
@@ -91,4 +81,5 @@ python mcp_pipe.py calculator.py
 250705 -INFO-工具缓存已刷新
 250705 -INFO-当前支持的函数列表: [ 'get_time', 'get_lunar', 'play_music', 'get_weather', 'handle_exit_intent', 'calculator']
 ```
-如果包含了 `'calculator'`，说明设备将可以根据意图识别，调用计算器这个工具。
+
+If `'calculator'` appears in the function list, the device can call that tool through intent recognition.

@@ -22,14 +22,14 @@ import xiaozhi.modules.device.service.DeviceService;
 import xiaozhi.modules.security.user.SecurityUser;
 import xiaozhi.modules.sys.service.SysParamsService;
 
-@DisplayName("设备更新接口回归测试")
+@DisplayName("Device update API regression tests")
 class DeviceControllerTest {
 
     private static final String DEVICE_ID = "device-id";
     private static final long USER_ID = 1L;
 
     @Test
-    @DisplayName("数据库未更新时不误报自动升级状态修改成功")
+    @DisplayName("Do not report automatic update changes as successful when the database was not updated")
     void updateFailureIsReturnedToCaller() {
         DeviceService deviceService = mock(DeviceService.class);
         DeviceEntity entity = ownedDevice();

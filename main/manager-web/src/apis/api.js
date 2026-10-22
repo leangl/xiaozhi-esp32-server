@@ -1,4 +1,4 @@
-// 引入各个模块的请求
+// Import requests from each module
 import admin from './module/admin.js'
 import agent from './module/agent.js'
 import device from './module/device.js'
@@ -16,21 +16,21 @@ import addressBook from './module/addressBook.js'
 
 
 /**
- * 接口地址
- * 开发时自动读取使用.env.development文件
- * 编译时自动读取使用.env.production文件
+ * API address
+ * Read .env.development during development
+ * Read .env.production during the production build
  */
 const DEV_API_SERVICE = process.env.VUE_APP_API_BASE_URL
 
 /**
- * 根据开发环境返回接口url
+ * Return the API URL for the current environment
  * @returns {string}
  */
 export function getServiceUrl() {
     return DEV_API_SERVICE
 }
 
-/** request服务封装 */
+/** Request service wrapper */
 export default {
     getServiceUrl,
     user,

@@ -6,9 +6,9 @@ import type {
 import { http } from '@/http/request/alova'
 
 /**
- * 获取聊天会话列表
- * @param agentId 智能体ID
- * @param params 分页参数
+ * Get chat sessions
+ * @param agentId Agent ID
+ * @param params Pagination parameters
  */
 export function getChatSessions(agentId: string, params: GetSessionsParams) {
   return http.Get<ChatSessionsResponse>(`/agent/${agentId}/sessions`, {
@@ -24,9 +24,9 @@ export function getChatSessions(agentId: string, params: GetSessionsParams) {
 }
 
 /**
- * 获取聊天记录详情
- * @param agentId 智能体ID
- * @param sessionId 会话ID
+ * Get chat history details
+ * @param agentId Agent ID
+ * @param sessionId Session ID
  */
 export function getChatHistory(agentId: string, sessionId: string) {
   return http.Get<ChatMessage[]>(`/agent/${agentId}/chat-history/${sessionId}`, {
@@ -41,8 +41,8 @@ export function getChatHistory(agentId: string, sessionId: string) {
 }
 
 /**
- * 获取音频下载ID
- * @param audioId 音频ID
+ * Get an audio download ID
+ * @param audioId Audio ID
  */
 export function getAudioId(audioId: string) {
   return http.Post<string>(`/agent/audio/${audioId}`, {}, {
@@ -54,10 +54,10 @@ export function getAudioId(audioId: string) {
 }
 
 /**
- * 获取音频播放地址
- * @param downloadId 下载ID
+ * Get the audio playback URL
+ * @param downloadId Download ID
  */
 export function getAudioPlayUrl(downloadId: string) {
-  // 根据需求文档，这个是直接返回二进制的，所以我们直接构造URL
+  // The requirements specify a binary response, so construct the URL directly
   return `/agent/play/${downloadId}`
 }

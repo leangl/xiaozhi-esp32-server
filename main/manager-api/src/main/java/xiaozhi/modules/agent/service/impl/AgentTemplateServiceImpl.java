@@ -9,6 +9,9 @@ import com.baomidou.mybatisplus.spring.repository.CrudRepository;
 import xiaozhi.modules.agent.dao.AgentTemplateDao;
 import xiaozhi.modules.agent.entity.AgentTemplateEntity;
 import xiaozhi.modules.agent.service.AgentTemplateService;
+import xiaozhi.modules.model.service.ModelConfigService;
+import xiaozhi.common.utils.ApprovedProviderCatalog;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Objects;
@@ -17,35 +20,75 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 /**
  * @author chenerlei
- * @description 针对表【ai_agent_template(智能体配置模板表)】的数据库操作Service实现
+ * @description Database service implementation for ai_agent_template (agent configuration templates)
  * @createDate 2025-03-22 11:48:18
  */
 @Service
+@RequiredArgsConstructor
 public class AgentTemplateServiceImpl extends CrudRepository<AgentTemplateDao, AgentTemplateEntity>
         implements AgentTemplateService {
 
+    private final ModelConfigService modelConfigService;
+
+    @Override
+    public List<AgentTemplateEntity> getAvailableTemplates() {
+        return list(new QueryWrapper<AgentTemplateEntity>().orderByAsc("sort")).stream().filter(template -> {
+            try {
+                ApprovedProviderCatalog.validateSelections(template, modelConfigService::getModelByIdFromCache);
+                modelConfigService.validateVoiceSelection(template.getTtsModelId(), template.getTtsVoiceId());
+                return true;
+            } catch (RuntimeException unavailable) {
+                return false;
+            }
+        }).toList();
+    }
+
+    @Override
+    public boolean save(AgentTemplateEntity template) {
+        ApprovedProviderCatalog.validateSelections(template, modelConfigService::getModelByIdFromCache);
+        modelConfigService.validateVoiceSelection(template.getTtsModelId(), template.getTtsVoiceId());
+        return super.save(template);
+    }
+
+    @Override
+    public boolean updateById(AgentTemplateEntity template) {
+        ApprovedProviderCatalog.validateSelections(template, modelConfigService::getModelByIdFromCache);
+        if (template.getTtsModelId() != null || template.getTtsVoiceId() != null) {
+            AgentTemplateEntity current = getById(template.getId());
+            modelConfigService.validateVoiceSelection(template.getTtsModelId() == null && current != null ? current.getTtsModelId() : template.getTtsModelId(),
+                    template.getTtsVoiceId() == null && current != null ? current.getTtsVoiceId() : template.getTtsVoiceId());
+        }
+        return super.updateById(template);
+    }
+
     /**
-     * 获取默认模板
+     * Get the default template
      * 
-     * @return 默认模板实体
+     * @return default template entity
      */
     public AgentTemplateEntity getDefaultTemplate() {
         LambdaQueryWrapper<AgentTemplateEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.orderByAsc(AgentTemplateEntity::getSort)
                 .last("LIMIT 1");
-        return this.getOne(wrapper);
+        AgentTemplateEntity template = this.getOne(wrapper);
+        if (template != null) {
+            ApprovedProviderCatalog.validateSelections(template, modelConfigService::getModelByIdFromCache);
+            modelConfigService.validateVoiceSelection(template.getTtsModelId(), template.getTtsVoiceId());
+        }
+        return template;
     }
 
     /**
-     * 更新默认模板中的模型ID
+     * Update the model ID in the default template
      * 
-     * @param modelType 模型类型
-     * @param modelId   模型ID
+     * @param modelType model type
+     * @param modelId model ID
      */
     @Override
     public void updateDefaultTemplateModelId(String modelType, String modelId) {
-        modelType = modelType.toUpperCase();
-        // 如果是rag模型，不需要更新
+        modelConfigService.requireSelectable(modelId, modelType);
+        modelType = modelType.toUpperCase(java.util.Locale.ROOT);
+        // Do not update RAG models
         if (modelType.equals("RAG")) {
             return;
         }
@@ -85,18 +128,18 @@ public class AgentTemplateServiceImpl extends CrudRepository<AgentTemplateDao, A
             return;
         }
         
-        // 查询所有排序值大于被删除模板的记录
+        // Query templates with sort values greater than the deleted template
         UpdateWrapper<AgentTemplateEntity> updateWrapper = new UpdateWrapper<>();
         updateWrapper.gt("sort", deletedSort)
                     .setSql("sort = sort - 1");
         
-        // 执行批量更新，将这些记录的排序值减1
+        // Batch decrement those sort values by one
         this.update(updateWrapper);
     }
 
     @Override
     public Integer getNextAvailableSort() {
-        // 查询所有已存在的排序值并按升序排序
+        // Query existing sort values in ascending order
         List<Integer> sortValues = baseMapper.selectList(new QueryWrapper<AgentTemplateEntity>())
                 .stream()
                 .map(AgentTemplateEntity::getSort)
@@ -104,22 +147,22 @@ public class AgentTemplateServiceImpl extends CrudRepository<AgentTemplateDao, A
                 .sorted()
                 .collect(Collectors.toList());
         
-        // 如果没有排序值，返回1
+        // Return 1 if no sort values exist
         if (sortValues.isEmpty()) {
             return 1;
         }
         
-        // 寻找最小的未使用序号
+        // Find the smallest unused sequence number
         int expectedSort = 1;
         for (Integer sort : sortValues) {
             if (sort > expectedSort) {
-                // 找到空缺的序号
+                // Found a gap in the sequence
                 return expectedSort;
             }
             expectedSort = sort + 1;
         }
         
-        // 如果没有空缺，返回最大序号+1
+        // Return the maximum sequence number plus one if no gap exists
         return expectedSort;
     }
 }

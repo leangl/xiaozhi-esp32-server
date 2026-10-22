@@ -4,8 +4,9 @@ import xiaozhi.modules.security.entity.SysUserTokenEntity;
 import xiaozhi.modules.sys.entity.SysUserEntity;
 
 /**
- * shiro相关接口
+ * Shiro interfaces
  * Copyright (c) 人人开源 All rights reserved.
+ * Original copyright holder: Renren Open Source; the legal attribution above is retained.
  * Website: https://www.renren.io
  */
 public interface ShiroService {
@@ -13,7 +14,7 @@ public interface ShiroService {
     SysUserTokenEntity getByToken(String token);
 
     /**
-     * 根据用户ID，查询用户
+     * Query a user by user ID
      *
      * @param userId
      */

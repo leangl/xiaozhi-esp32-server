@@ -12,8 +12,9 @@ import xiaozhi.common.exception.ErrorCode;
 import xiaozhi.common.exception.RenException;
 
 /**
- * 校验工具类
+ * Validation utilities
  * Copyright (c) 人人开源 All rights reserved.
+ * Original copyright holder: Renren Open Source; the legal attribution above is retained.
  * Website: https://www.renren.io
  */
 public class AssertUtils {

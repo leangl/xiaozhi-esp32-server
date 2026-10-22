@@ -9,108 +9,108 @@ logger = setup_logging()
 
 class AudioRateController:
     """
-    音频速率控制器 - 按照60ms帧时长精确控制音频发送
-    解决高并发下的时间累积误差问题
+    Audio rate controller: precisely pace transmission using 60 ms frames.
+    Prevent accumulated timing drift under high concurrency.
     """
 
     def __init__(self, frame_duration=60, send_delay=0):
         """
         Args:
-            frame_duration: 单个音频帧时长（毫秒），默认60ms
-            send_delay: 自定义发送间隔（毫秒）。
-                        0 = 按 frame_duration 节奏发；
-                        >0 = 按 send_delay 节奏发（主线程不入队延迟，无预缓冲）
+            frame_duration: Duration of one audio frame in milliseconds; default: 60 ms.
+            send_delay: Custom send interval in milliseconds.
+                        0 = pace by frame_duration;
+                        >0 = pace by send_delay (no main-thread enqueue delay or prebuffering).
         """
-        # 流控间隔（毫秒）：send_delay > 0 时用配置值，否则用 frame_duration
+        # Pacing interval (ms): use send_delay if positive, otherwise frame_duration.
         self.interval_ms = send_delay if send_delay > 0 else frame_duration
         self.queue = deque()
-        self.play_position = 0  # 虚拟播放位置（毫秒）
-        self.start_timestamp = None  # 开始时间戳（只读，不修改）
+        self.play_position = 0  # Virtual playback position in milliseconds.
+        self.start_timestamp = None  # Start timestamp (read-only during continuous playback).
         self.pending_send_task = None
         self.logger = logger
-        self.queue_empty_event = asyncio.Event()  # 队列清空事件
-        self.queue_empty_event.set()  # 初始为空状态
-        self.queue_has_data_event = asyncio.Event()  # 队列数据事件
-        self._last_queue_empty_time = 0  # 上次队列清空的时间（秒）
+        self.queue_empty_event = asyncio.Event()  # Queue-empty event.
+        self.queue_empty_event.set()  # Initially empty.
+        self.queue_has_data_event = asyncio.Event()  # Queue-data event.
+        self._last_queue_empty_time = 0  # Last time the queue became empty, in seconds.
 
     def reset(self):
-        """重置控制器状态"""
+        """Reset the controller state."""
         if self.pending_send_task and not self.pending_send_task.done():
             self.pending_send_task.cancel()
-            # 取消任务后，任务会在下次事件循环时清理，无需阻塞等待
+            # Cancellation is handled on the next event-loop iteration; do not block waiting.
 
         self.queue.clear()
         self.play_position = 0
-        self.start_timestamp = None  # 由首个音频包设置
-        self._last_queue_empty_time = 0  # 重置时间
-        # 相关事件处理
+        self.start_timestamp = None  # Set by the first audio packet.
+        self._last_queue_empty_time = 0  # Reset the timestamp.
+        # Update the associated events.
         self.queue_empty_event.set()
         self.queue_has_data_event.clear()
 
     def add_audio(self, opus_packet):
-        """添加音频包到队列"""
-        # 如果队列之前为空，需要调整时间戳以保持播放时间连续
-        # 这样工具调用等待期间，新加入的音频不会提前播放
-        # 如果间隔很短（<1帧），说明是正常的流式传输，不需要重置
+        """Add an audio packet to the queue."""
+        # After an empty queue, adjust the timestamp to maintain playback continuity.
+        # This prevents newly queued audio from playing early after a tool-call wait.
+        # A gap shorter than one frame is normal streaming and needs no reset.
         if len(self.queue) == 0 and self.play_position > 0:
             elapsed_since_empty = (time.monotonic() - self._last_queue_empty_time) * 1000
-            # 只有间隔超过1帧时长，才认为是真正的"暂停恢复"
+            # Treat a gap of at least one frame as resuming after a pause.
             if elapsed_since_empty >= self.interval_ms:
                 self.start_timestamp = time.monotonic() - (self.play_position / 1000)
                 self.logger.bind(tag=TAG).debug(
-                    f"队列从空恢复，重置时间戳，当前播放位置: {self.play_position}ms，间隔: {elapsed_since_empty:.0f}ms"
+                    f"Queue resumed from empty; timestamp reset, playback position: {self.play_position}ms, gap: {elapsed_since_empty:.0f}ms"
                 )
 
         self.queue.append(("audio", opus_packet))
-        # 相关事件处理
+        # Update the associated events.
         self.queue_empty_event.clear()
         self.queue_has_data_event.set()
 
     def add_message(self, message_callback):
         """
-        添加消息到队列（立即发送，不占用播放时间）
+        Add a message to the queue (send immediately without consuming playback time).
 
         Args:
-            message_callback: 消息发送回调函数 async def()
+            message_callback: Message-sending callback, async def().
         """
         if len(self.queue) == 0 and self.play_position > 0:
             elapsed_since_empty = (time.monotonic() - self._last_queue_empty_time) * 1000
             if elapsed_since_empty >= self.interval_ms:
                 self.start_timestamp = time.monotonic() - (self.play_position / 1000)
                 self.logger.bind(tag=TAG).debug(
-                    f"队列从空恢复，重置时间戳，当前播放位置: {self.play_position}ms，间隔: {elapsed_since_empty:.0f}ms"
+                    f"Queue resumed from empty; timestamp reset, playback position: {self.play_position}ms, gap: {elapsed_since_empty:.0f}ms"
                 )
 
         self.queue.append(("message", message_callback))
-        # 相关事件处理
+        # Update the associated events.
         self.queue_empty_event.clear()
         self.queue_has_data_event.set()
 
     def _get_elapsed_ms(self):
-        """获取已经过的时间（毫秒）"""
+        """Return elapsed time in milliseconds."""
         if self.start_timestamp is None:
             return 0
         return (time.monotonic() - self.start_timestamp) * 1000
 
     async def check_queue(self, send_audio_callback):
         """
-        检查队列并按时发送音频/消息
+        Drain queued audio/messages according to the transmission schedule.
 
         Args:
-            send_audio_callback: 发送音频的回调函数 async def(opus_packet)
+            send_audio_callback: Audio-sending callback, async def(opus_packet).
         """
         while self.queue:
             item = self.queue[0]
             item_type = item[0]
 
             if item_type == "message":
-                # 消息类型：立即发送，不占用播放时间
+                # Messages are sent immediately and do not consume playback time.
                 _, message_callback = item
                 self.queue.popleft()
                 try:
                     await message_callback()
                 except Exception as e:
-                    self.logger.bind(tag=TAG).error(f"发送消息失败: {e}")
+                    self.logger.bind(tag=TAG).error(f"Failed to send message: {e}")
                     raise
 
             elif item_type == "audio":
@@ -119,69 +119,69 @@ class AudioRateController:
 
                 _, opus_packet = item
 
-                # 循环等待直到时间到达
+                # Wait until the scheduled transmission time.
                 while True:
-                    # 计算时间差
+                    # Calculate the time difference.
                     elapsed_ms = self._get_elapsed_ms()
                     output_ms = self.play_position
 
                     if elapsed_ms < output_ms:
-                        # 还不到发送时间，计算等待时长
+                        # Not yet time to send; calculate the remaining wait.
                         wait_ms = output_ms - elapsed_ms
 
-                        # 等待后继续检查（允许被中断）
+                        # Wait interruptibly, then check again.
                         try:
                             await asyncio.sleep(wait_ms / 1000)
                         except asyncio.CancelledError:
-                            self.logger.bind(tag=TAG).debug("音频发送任务被取消")
+                            self.logger.bind(tag=TAG).debug("Audio transmission task cancelled")
                             raise
-                        # 等待结束后重新检查时间（循环回到 while True）
+                        # Recheck the time by returning to while True.
                     else:
-                        # 时间已到，跳出等待循环
+                        # Transmission is due; leave the wait loop.
                         break
 
-                # 时间已到，从队列移除并发送
+                # Transmission is due; remove the packet from the queue and send it.
                 self.queue.popleft()
                 self.play_position += self.interval_ms
                 try:
                     await send_audio_callback(opus_packet)
                 except Exception as e:
-                    self.logger.bind(tag=TAG).error(f"发送音频失败: {e}")
+                    self.logger.bind(tag=TAG).error(f"Failed to send audio: {e}")
                     raise
 
-        # 队列处理完后清除事件
+        # Update events after draining the queue.
         self.queue_empty_event.set()
         self.queue_has_data_event.clear()
-        self._last_queue_empty_time = time.monotonic()  # 记录队列清空时间
+        self._last_queue_empty_time = time.monotonic()  # Record when the queue became empty.
 
     def start_sending(self, send_audio_callback):
         """
-        启动异步发送任务
+        Start an asynchronous transmission task.
 
         Args:
-            send_audio_callback: 发送音频的回调函数
+            send_audio_callback: Audio-sending callback.
 
         Returns:
-            asyncio.Task: 发送任务
+            asyncio.Task: Transmission task.
         """
 
         async def _send_loop():
             try:
                 while True:
-                    # 等待队列数据事件，不轮询等待占用CPU
+                    # Wait for queued data without CPU-consuming polling.
                     await self.queue_has_data_event.wait()
 
                     await self.check_queue(send_audio_callback)
             except asyncio.CancelledError:
-                self.logger.bind(tag=TAG).debug("音频发送循环已停止")
+                self.logger.bind(tag=TAG).debug("Audio transmission loop stopped")
             except Exception as e:
-                self.logger.bind(tag=TAG).error(f"音频发送循环异常: {e}")
+                self.logger.bind(tag=TAG).error(f"Audio transmission loop error: {e}")
 
         self.pending_send_task = asyncio.create_task(_send_loop())
         return self.pending_send_task
 
     def stop_sending(self):
-        """停止发送任务"""
+        """Stop the transmission task."""
         if self.pending_send_task and not self.pending_send_task.done():
             self.pending_send_task.cancel()
-            self.logger.bind(tag=TAG).debug("已取消音频发送任务")
+            self.logger.bind(tag=TAG).debug("Audio transmission task cancelled")

@@ -22,6 +22,7 @@ import xiaozhi.modules.sys.service.SysUserService;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("dev")
+// Chinese phone/password placeholders are request fixtures for registration/recovery permission checks.
 class loginControllerTest {
 
     @Autowired

@@ -1,27 +1,23 @@
-# 语音识别、大语言模型、非流式语音合成、流式语音合成、视觉模型的性能测试工具使用指南
+# Provider benchmark status
 
-1.在main/xiaozhi-server目录下创建data目录
-2.在data目录下创建.config.yaml文件
-3.在.data/config.yaml中，写入你的语音识别、大语言模型、流式语音合成、视觉模型的参数
-例如：
-```
-LLM:
-  ChatGLMLLM:
-    # 定义LLM API类型
-    type: openai
-    # glm-4-flash 是免费的，但是还是需要注册填写api_key的
-    # 可在这里找到你的api key https://bigmodel.cn/usercenter/proj-mgmt/apikeys
-    model_name: glm-4-flash
-    url: https://open.bigmodel.cn/api/paas/v4/
-    api_key: 你的chat-glm web key
+The legacy interactive benchmark is unavailable in the supported profile. Its
+streaming tests imported removed vendor SDKs/adapters and called vendor-specific
+protocols outside the retained provider seam. The generic runners also swept
+configured offerings and could trigger real calls while discovering benchmarks.
+They do not establish performance for the retained profile.
 
-TTS:
+`main/xiaozhi-server/performance_tester.py` now prints an unavailable explanation
+and exits with status 2. It loads no private configuration, imports no provider,
+downloads no model and makes no network request. The obsolete test modules are
+removed. Application HTTP, WebSocket and provider interfaces are unchanged by
+this retirement. Historical published results do not certify this configuration.
 
-VLLM:
+A future benchmark needs a separate explicit request: select one supported
+provider, validate its endpoint through the shared policy, provide synthetic
+input, disable environment proxies/redirect fallback, and define timing and cost
+limits. Start with deterministic local fixtures. Cloud accuracy/latency testing
+requires approval, explicit credentials and acknowledgement of possible charges.
+Do not run old benchmark commands from historical integration guides.
 
-ASR:
-```
-4.在main/xiaozhi-server目录下运行performance_tester.py: 
-```
-python performance_tester.py
-```
+Offline build-policy checks are listed in [the build guide](docker-build.md).
+Those checks test source constraints, not AI accuracy or provider latency.

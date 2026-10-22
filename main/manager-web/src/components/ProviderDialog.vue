@@ -268,7 +268,7 @@ export default {
           });
       }).catch(() => {
         this.$message.info({
-          message: '已取消删除',
+          message: this.$t('common.deleteCancelled'),
           showClose: true
         });
       });
@@ -310,7 +310,7 @@ export default {
             }
           });
 
-          // 兜底：父组件若未在回调内清 saving，3 秒后强制释放加载状态
+          // Release loading state after 3 seconds if the parent does not clear saving in its callback
           setTimeout(() => {
             this.saving = false;
           }, 3000);

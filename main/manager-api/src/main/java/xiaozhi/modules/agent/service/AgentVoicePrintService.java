@@ -7,43 +7,43 @@ import xiaozhi.modules.agent.dto.AgentVoicePrintUpdateDTO;
 import xiaozhi.modules.agent.vo.AgentVoicePrintVO;
 
 /**
- * 智能体声纹处理service
+ * Agent voiceprint service
  *
  * @author zjy
  */
 public interface AgentVoicePrintService {
     /**
-     * 添加智能体新的声纹
+     * Add a new voiceprint to an agent
      *
-     * @param dto 保存智能体声纹的数据
-     * @return T:成功 F：失败
+     * @param dto voiceprint data to save
+     * @return true on success, false on failure
      */
     boolean insert(AgentVoicePrintSaveDTO dto);
 
     /**
-     * 删除智能体的指的声纹
+     * Delete a specified agent voiceprint
      *
-     * @param userId       当前登录的用户id
-     * @param voicePrintId 声纹id
-     * @return 是否成功 T:成功 F：失败
+     * @param userId logged-in user ID
+     * @param voicePrintId voiceprint ID
+     * @return true on success, false on failure
      */
     boolean delete(Long userId, String voicePrintId);
 
     /**
-     * 获取指定智能体的所有声纹数据
+     * Get all voiceprints for an agent
      *
-     * @param userId  当前登录的用户id
-     * @param agentId 智能体id
-     * @return 声纹数据集合
+     * @param userId logged-in user ID
+     * @param agentId agent ID
+     * @return voiceprint data collection
      */
     List<AgentVoicePrintVO> list(Long userId, String agentId);
 
     /**
-     * 更新智能体的指的声纹数据
+     * Update a specified agent voiceprint
      *
-     * @param userId 当前登录的用户id
-     * @param dto    修改的声纹的数据
-     * @return 是否成功 T:成功 F：失败
+     * @param userId logged-in user ID
+     * @param dto updated voiceprint data
+     * @return true on success, false on failure
      */
     boolean update(Long userId, AgentVoicePrintUpdateDTO dto);
 

@@ -1,6 +1,10 @@
 package xiaozhi.modules.sys.controller;
 
 import java.util.Map;
+import java.net.URI;
+import java.net.http.WebSocket;
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -24,10 +28,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import xiaozhi.common.annotation.LogOperation;
 import xiaozhi.common.constant.Constant;
+import xiaozhi.common.config.RestTemplateConfig;
 import xiaozhi.common.exception.RenException;
 import xiaozhi.common.exception.ErrorCode;
 import xiaozhi.common.page.PageData;
 import xiaozhi.common.utils.Result;
+import xiaozhi.common.utils.ApprovedServicePolicy;
 import xiaozhi.common.validator.AssertUtils;
 import xiaozhi.common.validator.ValidatorUtils;
 import xiaozhi.common.validator.group.AddGroup;
@@ -39,14 +45,14 @@ import xiaozhi.modules.sys.service.SysParamsService;
 import xiaozhi.modules.sys.utils.WebSocketValidator;
 
 /**
- * 参数管理
+ * Parameter management
  *
  * @author Mark sunlightcs@gmail.com
  * @since 1.0.0
  */
 @RestController
 @RequestMapping("admin/params")
-@Tag(name = "参数管理")
+@Tag(name = "Parameter management")
 @AllArgsConstructor
 public class SysParamsController {
     private final SysParamsService sysParamsService;
@@ -54,13 +60,13 @@ public class SysParamsController {
     private final RestTemplate restTemplate;
 
     @GetMapping("page")
-    @Operation(summary = "分页")
+    @Operation(summary = "Pagination")
     @Parameters({
-            @Parameter(name = Constant.PAGE, description = "当前页码，从1开始", in = ParameterIn.QUERY, required = true, ref = "int"),
-            @Parameter(name = Constant.LIMIT, description = "每页显示记录数", in = ParameterIn.QUERY, required = true, ref = "int"),
-            @Parameter(name = Constant.ORDER_FIELD, description = "排序字段", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = Constant.ORDER, description = "排序方式，可选值(asc、desc)", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = "paramCode", description = "参数编码或参数备注", in = ParameterIn.QUERY, ref = "String")
+            @Parameter(name = Constant.PAGE, description = "Current page number, starting at 1", in = ParameterIn.QUERY, required = true, ref = "int"),
+            @Parameter(name = Constant.LIMIT, description = "Records per page", in = ParameterIn.QUERY, required = true, ref = "int"),
+            @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref = "String"),
+            @Parameter(name = Constant.ORDER, description = "Sort direction (asc or desc)", in = ParameterIn.QUERY, ref = "String"),
+            @Parameter(name = "paramCode", description = "Parameter code or remarks", in = ParameterIn.QUERY, ref = "String")
     })
     @RequiresPermissions("sys:role:superAdmin")
     public Result<PageData<SysParamsDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params) {
@@ -70,7 +76,7 @@ public class SysParamsController {
     }
 
     @GetMapping("{id}")
-    @Operation(summary = "信息")
+    @Operation(summary = "Information")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<SysParamsDTO> get(@PathVariable("id") Long id) {
         SysParamsDTO data = sysParamsService.get(id);
@@ -79,42 +85,46 @@ public class SysParamsController {
     }
 
     @PostMapping
-    @Operation(summary = "保存")
-    @LogOperation("保存")
+    @Operation(summary = "Save")
+    @LogOperation("Save")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<Void> save(@RequestBody SysParamsDTO dto) {
-        // 效验数据
+        // Validate data
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
 
+        validateWebSocketUrls(dto.getParamCode(), dto.getParamValue());
+        validateOtaUrl(dto.getParamCode(), dto.getParamValue());
+        validateMcpUrl(dto.getParamCode(), dto.getParamValue());
+        validateVoicePrint(dto.getParamCode(), dto.getParamValue());
         sysParamsService.save(dto);
         configService.getConfig(false);
         return new Result<Void>();
     }
 
     @PutMapping
-    @Operation(summary = "修改")
-    @LogOperation("修改")
+    @Operation(summary = "Update")
+    @LogOperation("Update")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<Void> update(@RequestBody SysParamsDTO dto) {
-        // 效验数据
+        // Validate data
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
 
-        // 验证WebSocket地址列表
+        // Validate the WebSocket URL list
         validateWebSocketUrls(dto.getParamCode(), dto.getParamValue());
 
-        // 验证OTA地址
+        // Validate the OTA URL
         validateOtaUrl(dto.getParamCode(), dto.getParamValue());
 
-        // 验证MCP地址
+        // Validate the MCP URL
         validateMcpUrl(dto.getParamCode(), dto.getParamValue());
 
-        // 验证声纹地址
+        // Validate the voiceprint URL
         validateVoicePrint(dto.getParamCode(), dto.getParamValue());
 
-        // 校验mqtt密钥长度
+        // Validate MQTT secret length
         validateMqttSecretLength(dto.getParamCode(), dto.getParamValue());
 
-        // 如果是系统功能菜单配置，使用特殊处理
+        // Use special handling for system feature menu configuration
         if (Constant.SYSTEM_WEB_MENU.equals(dto.getParamCode())) {
             sysParamsService.updateSystemWebMenu(dto.getParamValue());
         } else {
@@ -125,10 +135,10 @@ public class SysParamsController {
     }
 
     /**
-     * 验证WebSocket地址列表
+     * Validate the WebSocket URL list
      *
-     * @param urls WebSocket地址列表，以分号分隔
-     * @return 验证结果
+     * @param urls semicolon-separated WebSocket URLs
+     * @return validation result
      */
     private void validateWebSocketUrls(String paramCode, String urls) {
         if (!paramCode.equals(Constant.SERVER_WEBSOCKET)) {
@@ -140,18 +150,24 @@ public class SysParamsController {
         }
         for (String url : wsUrls) {
             if (StringUtils.isNotBlank(url)) {
-                // 检查是否包含localhost或127.0.0.1
-                if (url.contains("localhost") || url.contains("127.0.0.1")) {
-                    throw new RenException(ErrorCode.WEBSOCKET_URL_LOCALHOST);
-                }
-
-                // 验证WebSocket地址格式
+                // Validate the WebSocket URL format
                 if (!WebSocketValidator.validateUrlFormat(url)) {
                     throw new RenException(ErrorCode.WEBSOCKET_URL_FORMAT_ERROR);
                 }
 
-                // 测试WebSocket连接
-                if (!WebSocketValidator.testConnection(url)) {
+                // Test the WebSocket connection
+                try {
+                    URI target = ApprovedServicePolicy.validateEndpoint(url, "mcp");
+                    var client = RestTemplateConfig.directHttpClient(Duration.ofSeconds(5));
+                    try {
+                        WebSocket socket = client.newWebSocketBuilder().connectTimeout(Duration.ofSeconds(5))
+                                .buildAsync(target, new WebSocket.Listener() {}).get(5, TimeUnit.SECONDS);
+                        socket.abort();
+                    } finally {
+                        client.shutdownNow();
+                    }
+                } catch (Exception e) {
+                    if (e instanceof InterruptedException) Thread.currentThread().interrupt();
                     throw new RenException(ErrorCode.WEBSOCKET_CONNECTION_FAILED);
                 }
             }
@@ -159,11 +175,11 @@ public class SysParamsController {
     }
 
     @PostMapping("/delete")
-    @Operation(summary = "删除")
-    @LogOperation("删除")
+    @Operation(summary = "Delete")
+    @LogOperation("Delete")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<Void> delete(@RequestBody String[] ids) {
-        // 效验数据
+        // Validate data
         AssertUtils.isArrayEmpty(ids, "id");
 
         sysParamsService.delete(ids);
@@ -172,7 +188,7 @@ public class SysParamsController {
     }
 
     /**
-     * 验证OTA地址
+     * Validate the OTA URL
      */
     private void validateOtaUrl(String paramCode, String url) {
         if (!paramCode.equals(Constant.SERVER_OTA)) {
@@ -182,12 +198,7 @@ public class SysParamsController {
             return;
         }
 
-        // 检查是否包含localhost或127.0.0.1
-        if (url.contains("localhost") || url.contains("127.0.0.1")) {
-            throw new RenException(ErrorCode.OTA_URL_LOCALHOST);
-        }
-
-        // 验证URL格式
+        // Validate URL format
         if (!url.toLowerCase().startsWith("http")) {
             throw new RenException(ErrorCode.OTA_URL_PROTOCOL_ERROR);
         }
@@ -196,12 +207,13 @@ public class SysParamsController {
         }
 
         try {
-            // 发送GET请求
-            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+            ApprovedServicePolicy.validateEndpoint(url, "tool");
+            // Send a GET request
+            ResponseEntity<String> response = restTemplate.getForEntity(URI.create(url), String.class);
             if (response.getStatusCode() != HttpStatus.OK) {
                 throw new RenException(ErrorCode.OTA_INTERFACE_ACCESS_FAILED);
             }
-            // 检查响应内容是否包含OTA相关信息
+            // Check whether the response contains OTA information
             String body = response.getBody();
             if (body == null || !body.contains("OTA")) {
                 throw new RenException(ErrorCode.OTA_INTERFACE_FORMAT_ERROR);
@@ -218,20 +230,18 @@ public class SysParamsController {
         if (StringUtils.isBlank(url) || url.equals("null")) {
             return;
         }
-        if (url.contains("localhost") || url.contains("127.0.0.1")) {
-            throw new RenException(ErrorCode.MCP_URL_LOCALHOST);
-        }
-        if (!url.toLowerCase().contains("key")) {
+        if (!hasServiceKey(url)) {
             throw new RenException(ErrorCode.MCP_URL_INVALID);
         }
 
         try {
-            // 发送GET请求
-            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+            ApprovedServicePolicy.validateEndpoint(url, "mcp");
+            // Send a GET request
+            ResponseEntity<String> response = restTemplate.getForEntity(URI.create(url), String.class);
             if (response.getStatusCode() != HttpStatus.OK) {
                 throw new RenException(ErrorCode.MCP_INTERFACE_ACCESS_FAILED);
             }
-            // 检查响应内容是否包含mcp相关信息
+            // Check whether the response contains MCP information
             String body = response.getBody();
             if (body == null || !body.contains("success")) {
                 throw new RenException(ErrorCode.MCP_INTERFACE_FORMAT_ERROR);
@@ -241,7 +251,7 @@ public class SysParamsController {
         }
     }
 
-    // 验证声纹接口地址是否正常
+    // Validate the voiceprint API URL
     private void validateVoicePrint(String paramCode, String url) {
         if (!paramCode.equals(Constant.SERVER_VOICE_PRINT)) {
             return;
@@ -249,23 +259,21 @@ public class SysParamsController {
         if (StringUtils.isBlank(url) || url.equals("null")) {
             return;
         }
-        if (url.contains("localhost") || url.contains("127.0.0.1")) {
-            throw new RenException(ErrorCode.VOICEPRINT_URL_LOCALHOST);
-        }
-        if (!url.toLowerCase().contains("key")) {
+        if (!hasServiceKey(url)) {
             throw new RenException(ErrorCode.VOICEPRINT_URL_INVALID);
         }
-        // 验证URL格式
+        // Validate URL format
         if (!url.toLowerCase().startsWith("http")) {
             throw new RenException(ErrorCode.VOICEPRINT_URL_PROTOCOL_ERROR);
         }
         try {
-            // 发送GET请求
-            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+            ApprovedServicePolicy.validateEndpoint(url, "voiceprint");
+            // Send a GET request
+            ResponseEntity<String> response = restTemplate.getForEntity(URI.create(url), String.class);
             if (response.getStatusCode() != HttpStatus.OK) {
                 throw new RenException(ErrorCode.VOICEPRINT_INTERFACE_ACCESS_FAILED);
             }
-            // 检查响应内容
+            // Check response content
             String body = response.getBody();
             if (body == null || !body.contains("healthy")) {
                 throw new RenException(ErrorCode.VOICEPRINT_INTERFACE_FORMAT_ERROR);
@@ -275,7 +283,20 @@ public class SysParamsController {
         }
     }
 
-    // 校验mqtt密钥长度和复杂度
+    private boolean hasServiceKey(String url) {
+        try {
+            String query = URI.create(url).getRawQuery();
+            if (query == null) return false;
+            var keys = java.util.Arrays.stream(query.split("&"))
+                    .filter(pair -> pair.startsWith("key=")).map(pair -> pair.substring(4)).toList();
+            return keys.size() == 1 && !java.net.URLDecoder.decode(
+                    keys.getFirst(), java.nio.charset.StandardCharsets.UTF_8).isBlank();
+        } catch (RuntimeException e) {
+            return false;
+        }
+    }
+
+    // Validate MQTT secret length and complexity
     private void validateMqttSecretLength(String paramCode, String secret) {
         if (!paramCode.equals(Constant.SERVER_MQTT_SECRET)) {
             return;
@@ -286,11 +307,11 @@ public class SysParamsController {
         if (secret.length() < 8) {
             throw new RenException(ErrorCode.MQTT_SECRET_LENGTH_INSECURE);
         }
-        // 检查是否同时包含大小写字母
+        // Check for both uppercase and lowercase letters
         if (!secret.matches(".*[a-z].*") || !secret.matches(".*[A-Z].*")) {
             throw new RenException(ErrorCode.MQTT_SECRET_CHARACTER_INSECURE);
         }
-        // 不允许包含弱密码
+        // Reject weak passwords
         String[] weakPasswords = { "test", "1234", "admin", "password", "qwerty", "xiaozhi" };
         for (String weakPassword : weakPasswords) {
             if (secret.toLowerCase().contains(weakPassword)) {

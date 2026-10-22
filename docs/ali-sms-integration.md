@@ -1,44 +1,65 @@
-# 阿里云短信集成指南
+# Alibaba Cloud SMS integration
 
-登录阿里云控制台，进入“短信服务”页面：https://dysms.console.aliyun.com/overview
+Sign in to the Alibaba Cloud console and open [SMS Service](https://dysms.console.aliyun.com/overview).
 
-## 第一步 添加签名
-![步骤](images/alisms/sms-01.png)
-![步骤](images/alisms/sms-02.png)
+## Step 1: Add a signature
 
-以上步骤，会得到签名，请把它写入到智控台参数，`aliyun.sms.sign_name`
+Open **Domestic Messages > Signature Management** and click **Add Signature**:
 
-## 第二步 添加模版
-![步骤](images/alisms/sms-11.png)
+![Add an SMS signature](images/alisms/sms-01.png)
 
-以上步骤，会得到模版code，请把它写入到智控台参数，`aliyun.sms.sms_code_template_code`
+Enter your approved organization/app/trademark signature, choose the appropriate usage and qualification information, describe the use case, provide supporting documents where required, and submit:
 
-注意，签名要等7个工作日，等运营商报备成功后才能发送成功。
+![Complete and submit the signature form](images/alisms/sms-02.png)
 
-注意，签名要等7个工作日，等运营商报备成功后才能发送成功。
+Put the approved signature text in the management console parameter `aliyun.sms.sign_name`.
 
-注意，签名要等7个工作日，等运营商报备成功后才能发送成功。
+The original guide warns that carrier registration can take seven business days and sending will fail before approval. Wait for successful registration before continuing; provider processing times may vary.
 
-可以等报备成功后，再继续往下操作。
+## Step 2: Add a template
 
-## 第三步 创建短信账户和开通权限
+Open **Domestic Messages > Template Management**. Add an approved verification-code template or use the available approved one, then copy its **Template CODE** (the highlighted `SMS_...` value):
 
-登录阿里云控制台，进入“访问控制”页面：https://ram.console.aliyun.com/overview?activeTab=overview
+![Find the verification-code template code](images/alisms/sms-11.png)
 
-![步骤](images/alisms/sms-21.png)
-![步骤](images/alisms/sms-22.png)
-![步骤](images/alisms/sms-23.png)
-![步骤](images/alisms/sms-24.png)
-![步骤](images/alisms/sms-25.png)
+Set `aliyun.sms.sms_code_template_code` to that code.
 
-以上步骤，会得到access_key_id和access_key_secret，请把它写入到智控台参数，`aliyun.sms.access_key_id`、`aliyun.sms.access_key_secret`
-## 第四步 启动手机注册功能
+## Step 3: Create an SMS account and grant permissions
 
-1、正常来说，以上信息都填完后，会有这个效果，如果没有，可能缺少了某个步骤
+Open [RAM Access Control](https://ram.console.aliyun.com/overview?activeTab=overview).
 
-![步骤](images/alisms/sms-31.png)
+In **Identity Management > Users**, click **Create User**:
 
-2、开启允许非管理员用户可注册，将参数`server.allow_user_register`设置成`true`
+![Create a RAM user](images/alisms/sms-21.png)
 
-3、开启手机注册功能，将参数`server.enable_mobile_register`设置成`true`
-![步骤](images/alisms/sms-32.png)
+Enter a login name and display name. The screenshot uses an SMS-specific user and enables permanent **AccessKey** access, leaving console access unchecked. Confirm creation:
+
+![Configure user identity and AccessKey access](images/alisms/sms-22.png)
+
+Copy the **AccessKey ID** and **AccessKey Secret** before closing the result page; the secret is not available again there:
+
+![Copy the AccessKey credentials](images/alisms/sms-23.png)
+
+Return to the user list, find the SMS user you created, and click **Add Permissions**:
+
+![Add permissions to the SMS user](images/alisms/sms-24.png)
+
+Confirm that the authorization principal is that same SMS user. Search for `sms`. The original screenshot selects the existing system policies `AliyunDysmsFullAccess` and `AliyunDysmsReadOnlyAccess`, then clicks **Confirm New Authorization**:
+
+![Select the original SMS policies and confirm authorization](images/alisms/sms-25.png)
+
+This describes the screenshot's existing permission choice without changing it; the full-access policy is broad and needs a separate least-privilege review.
+
+Set `aliyun.sms.access_key_id` and `aliyun.sms.access_key_secret` to the generated credentials in the management console.
+
+## Step 4: Enable mobile registration
+
+Search for `sms` in **Parameter Management**. Confirm the access-key ID, secret, signature, and template-code parameters are populated. The screenshot also shows the per-number daily message limit; do not copy its example credentials.
+
+![Review the configured SMS parameters](images/alisms/sms-31.png)
+
+Set `server.allow_user_register` to `true` to allow non-administrator registration. Set `server.enable_mobile_register` to `true` to enable mobile registration.
+
+![Enable mobile registration](images/alisms/sms-32.png)
+
+The last historical screenshot displays `system.enable_mobile_register`, while the original prose uses `server.enable_mobile_register`. Verify the parameter exposed by your installed version; this translation preserves both references rather than silently renaming a configuration key.

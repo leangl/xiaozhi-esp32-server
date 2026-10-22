@@ -5,8 +5,9 @@ import java.io.Serializable;
 import lombok.Data;
 
 /**
- * 登录用户信息
+ * Logged-in user information
  * Copyright (c) 人人开源 All rights reserved.
+ * Original copyright holder: Renren Open Source; the legal attribution above is retained.
  * Website: https://www.renren.io
  */
 @Data

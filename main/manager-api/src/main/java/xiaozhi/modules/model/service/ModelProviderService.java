@@ -8,6 +8,8 @@ import xiaozhi.modules.model.dto.ModelProviderDTO;
 
 public interface ModelProviderService {
 
+    void validateSelection(String pluginId, java.util.Map<String, ?> params);
+
     List<ModelProviderDTO> getPluginList();
 
     ModelProviderDTO getById(String id);

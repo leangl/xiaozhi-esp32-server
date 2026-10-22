@@ -19,13 +19,13 @@ class Message:
         self.content = content
         self.tool_calls = tool_calls
         self.tool_call_id = tool_call_id
-        self.is_temporary = is_temporary  # 标记临时消息（如工具调用提醒）
+        self.is_temporary = is_temporary  # Mark temporary messages, such as tool-call reminders.
 
 
 class Dialogue:
     def __init__(self):
         self.dialogue: List[Message] = []
-        # 获取当前时间
+        # Get the current time.
         self.current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     def put(self, message: Message):
@@ -48,13 +48,12 @@ class Dialogue:
             dialogue.append({"role": m.role, "content": m.content})
 
     def get_llm_dialogue(self) -> List[Dict[str, str]]:
-        # 直接调用get_llm_dialogue_with_memory，传入None作为memory_str
-        # 这样确保说话人功能在所有调用路径下都生效
+        # Delegate with memory_str=None so speaker support works on every call path.
         return self.get_llm_dialogue_with_memory(None, None)
 
     def update_system_message(self, new_content: str):
-        """更新或添加系统消息"""
-        # 查找第一个系统消息
+        """Update or add the system message."""
+        # Find the first system message.
         system_msg = next((msg for msg in self.dialogue if msg.role == "system"), None)
         if system_msg:
             system_msg.content = new_content
@@ -63,8 +62,8 @@ class Dialogue:
 
     def _ensure_tool_calls_complete(self, messages: List[Message]) -> List[Message]:
         """
-        确保所有 tool_calls 都有对应的 tool 响应
-        修复被打断导致的悬空 tool_calls，防止大模型 API 报 400 错误
+        Ensure every tool_call has a corresponding tool response.
+        Repair orphaned calls after interruption to prevent LLM API HTTP 400 errors.
         """
         pending_tool_calls = set()
         result = []
@@ -84,6 +83,7 @@ class Dialogue:
         for missing_id in pending_tool_calls:
             dummy_tool_msg = Message(
                 role="tool",
+                # Preserve model-facing cancellation content and its JSON contract.
                 content='{"status": "interrupted", "message": "动作已取消/被打断"}',
                 tool_call_id=missing_id
             )
@@ -95,10 +95,10 @@ class Dialogue:
             self, memory_str: str = None, voiceprint_config: dict = None,
             current_speaker: str = None,
     ) -> List[Dict[str, str]]:
-        # 构建对话
+        # Build the conversation.
         dialogue = []
 
-        # 添加系统提示和记忆
+        # Add the system prompt and memory.
         system_message = next(
             (msg for msg in self.dialogue if msg.role == "system"), None
         )
@@ -106,12 +106,12 @@ class Dialogue:
         if system_message:
             full_prompt = system_message.content
 
-            # 替换时间占位符
+            # Replace the time placeholder.
             full_prompt = full_prompt.replace(
                 "{{current_time}}", datetime.now().strftime("%H:%M")
             )
 
-            # 填充记忆
+            # Insert memory.
             if memory_str is not None:
                 full_prompt = re.sub(
                     r"<memory>.*?</memory>",
@@ -120,11 +120,12 @@ class Dialogue:
                     flags=re.DOTALL,
                 )
 
-            # 追加说话人信息
+            # Append speaker information; retain the original model-facing language.
             try:
                 current_speaker_name = (current_speaker or "").strip()
-                # 仅在本轮注入了有效身份时才输出 speakers_info，避免列表里的名字每轮
-                # 重复出现诱导模型反复称呼；后续轮不再注入身份，靠对话历史首轮保留
+                # Emit speakers_info only when this turn injects a valid identity.
+                # Repeating the names every turn encourages repetitive forms of address;
+                # later turns rely on the identity retained in conversation history.
                 if current_speaker_name and current_speaker_name != "未知说话人":
                     speakers = voiceprint_config.get("speakers", [])
                     speakers_info = "\n<speakers_info>"
@@ -147,14 +148,14 @@ class Dialogue:
 
             dialogue.append({"role": "system", "content": full_prompt})
 
-        # 第二段：few-shot 示例（会话内不变）
+        # Second section: few-shot examples (constant within the session).
         non_system_messages = [m for m in self.dialogue if m.role != "system"]
         fewshot_messages = [m for m in non_system_messages if m.is_temporary]
         complete_fewshot = self._ensure_tool_calls_complete(fewshot_messages)
         for m in complete_fewshot:
             self.getMessages(m, dialogue)
 
-        # 第三段：实际对话历史（不含 few-shot）
+        # Third section: actual conversation history (excluding few-shot examples).
         actual_messages = [m for m in non_system_messages if not m.is_temporary]
         complete_actual = self._ensure_tool_calls_complete(actual_messages)
         for m in complete_actual:

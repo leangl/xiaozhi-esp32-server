@@ -4,8 +4,8 @@ import pytest
 from core.providers.tts.base import TTSProviderBase
 
 
-# 最小 stub：仅需满足抽象方法实例化要求；object.__new__ 会绕过
-# abstractmethod 检查，若基类新增抽象方法这里不会自动报错，属预期（测试不调用）
+# Minimal stub for abstract-method instantiation; object.__new__ bypasses
+# abstractmethod checks. New abstract methods intentionally do not fail here: tests do not call them.
 class _TTS(TTSProviderBase):
     async def text_to_speak(self, text, output_file):
         return None
@@ -58,36 +58,37 @@ def test_text_without_quotes_is_split_as_before(step):
 
 @pytest.mark.parametrize("step", [1, 4])
 def test_ascii_quote_at_stream_end_stays_whole(step):
-    # 旧逻辑在 ！ 处切开，把孤立的 " 留给下一段首；现在等待引号闭合，整句一次输出
+    # The old logic split at the exclamation mark, leaving a stray quote in the next segment.
+    # Now wait for the closing quote and emit the sentence together.
     assert _segments('She said, "Hi!"', step) == ['She said, "Hi!"']
 
 
-_LQ, _RQ = "\u00ab", "\u00bb"        # « » 法/俄语书名号式引号
-_GOPEN, _GCLOSE = "\u201e", "\u201c"  # „ “ 德语低引号
+_LQ, _RQ = "\u00ab", "\u00bb"        # French/Russian guillemets.
+_GOPEN, _GCLOSE = "\u201e", "\u201c"  # German low-high quotation marks.
 
 
 @pytest.mark.parametrize("step", [1, 4])
 def test_guillemets_are_not_split(step):
-    # ！ 位于 «» 内，须等右书名号闭合后在句尾标点处切分
+    # The exclamation mark is inside guillemets; wait for the closer and sentence-ending punctuation.
     text = "Il a dit " + _LQ + "Bonjour ! " + _RQ + " puis est parti."
     assert _segments(text, step) == [text]
 
 
 @pytest.mark.parametrize("step", [1, 4])
 def test_german_low9_quotes_stay_whole(step):
-    # „…“ 的闭合符 “ 是中文引号的开引号：“ 总被 (“”, ””) 对计为 opener，
-    # 故 „…“ 闭合后依然判不平衡，无论后续有无句末标点（实测），
-    # 德语只能整句 stop flush —— 这是字符冲突下的保守预期，非缺陷
+    # The German closing quote U+201C also opens Chinese quotes and is counted as an opener.
+    # Thus the German pair still appears unbalanced, with or without later sentence punctuation.
+    # The whole German sentence flushes at stop: a conservative consequence of this conflict, not a defect.
     text = "Er sagte " + _GOPEN + "Hallo!" + _GCLOSE + " und ging."
     assert _segments(text, step) == [text]
-    # 闭合 + 中文句号同样整句 flush：正路径因 “ 双重语义不可达
+    # A closing quote plus Chinese full stop also flushes together: U+201C's ambiguity blocks the normal path.
     text2 = "Er sagte " + _GOPEN + "Hallo!" + _GCLOSE + "。Dann geht er。"
     assert _segments(text2, step) == [text2]
 
 
 @pytest.mark.parametrize("step", [1, 4])
 def test_unterminated_quote_flushes_on_stop(step):
-    # 单个引号符号（未闭合）不卡死：流式期间等待，stop 时整段 flush
+    # An unmatched quote must not hang: wait while streaming, then flush the whole segment at stop.
     assert _segments('"Hi', step) == ['"Hi']
     assert _segments("「わぁ", step) == ["「わぁ"]
 
@@ -97,8 +98,8 @@ _LB, _RB = "\u3010", "\u3011"  # 【】
 
 @pytest.mark.parametrize("step", [1, 4])
 def test_brackets_with_punct_inside_are_not_split(step):
-    # ！位于【】内不得切开（切开时第一段只到“他说【重要”），
-    # 应等右括号闭合后在句尾标点切分
+    # Do not split at the exclamation mark inside full-width brackets.
+    # Wait for the closing bracket, then split at sentence-ending punctuation.
     assert _segments("他说" + _LB + "重要！步骤" + _RB + "。然后走了。", step) == [
         "他说" + _LB + "重要！步骤",
         "然后走了",
@@ -106,13 +107,13 @@ def test_brackets_with_punct_inside_are_not_split(step):
 
 
 def test_nested_mixed_quotes_stay_whole():
-    # 嵌套引号逐对独立计数，互不干扰
+    # Count nested quote pairs independently without interference.
     assert _segments("“他说『好』了。”然后离开。", 1) == ["他说『好』了。”然后离开"]
 
 
 def test_apostrophes_do_not_block_splitting():
-    # 单引号有撇号歧义（don't），不得纳入平衡检查导致整句延迟
-    # 注：flush 段（stop 时剩余文本）原样输出，不做 strip
+    # Single quotes can be apostrophes (don't); do not balance them and delay the whole sentence.
+    # Flushed text (remaining at stop) is emitted unchanged, without stripping.
     assert _segments("don't! It's fine.", 1) == ["don't", " It's fine."]
 
 

@@ -1,0 +1,57 @@
+# Test-only overlay for the explicitly named synthetic candidate, never live Compose.
+# Resolve relative paths against the approved parent compose.service-policy.yaml.
+x-traced: &traced
+  environment:
+    CANDIDATE_EGRESS_FIXTURE: service-policy-rehearsal-20261021
+  cap_add: [SYS_PTRACE]
+  volumes:
+    - policy-audit:/audit-out
+    - ${CANDIDATE_TRACE_BUNDLE:?Supply the public strace bundle}:/audit:ro
+    - ./upstream/tools/service-trace-launch.sh:/tools/service-trace-launch.sh:ro
+    - ${CANDIDATE_RESOLV_CONF:?Supply the synthetic DNS fixture}:/etc/resolv.conf:ro
+
+services:
+  fake-ai:
+    volumes:
+      - policy-audit:/audit-out
+      - ${CANDIDATE_TRACE_BUNDLE:?Supply the public strace bundle}:/audit:ro
+  manager:
+    <<: *traced
+    entrypoint: [/bin/sh, /tools/service-trace-launch.sh, manager]
+    command: []
+  voice:
+    <<: *traced
+    entrypoint: [/bin/sh, /tools/service-trace-launch.sh, voice]
+    command: []
+    volumes:
+      - policy-audit:/audit-out
+      - ${CANDIDATE_TRACE_BUNDLE:?Supply the public strace bundle}:/audit:ro
+      - ./upstream/tools/service-trace-launch.sh:/tools/service-trace-launch.sh:ro
+      - ${CANDIDATE_RESOLV_CONF:?Supply the synthetic DNS fixture}:/etc/resolv.conf:ro
+      - ./upstream/tools/service-removed-smoke.py:/tools/service-removed-smoke.py:ro
+  gateway:
+    <<: *traced
+    entrypoint: [/bin/sh, /tools/service-trace-launch.sh, gateway]
+    command: []
+  network-fixture:
+    image: xiaozhi-policy/network-fixture:20261021
+    pull_policy: never
+    restart: "no"
+    labels:
+      xiaozhi.validation: service-policy-rehearsal-20261021
+    network_mode: service:manager
+    depends_on:
+      manager:
+        condition: service_started
+    cap_drop: [ALL]
+    cap_add: [NET_ADMIN, NET_BIND_SERVICE]
+    read_only: true
+    security_opt: [no-new-privileges:true]
+    command: [dns, --candidate-only, --mapping, /audit-out/mapping.json, --output, /audit-out/dns.json]
+    volumes:
+      - policy-audit:/audit-out
+      - ./upstream/tools/service-egress-check.py:/tools/service-egress-check.py:ro
+      - ./upstream/tools/service-network-report.py:/tools/service-network-report.py:ro
+
+volumes:
+  policy-audit:

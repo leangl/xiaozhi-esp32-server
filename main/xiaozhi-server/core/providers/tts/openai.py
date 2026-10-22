@@ -1,5 +1,5 @@
-import requests
-from core.utils.util import check_model_key
+from config.service_policy import post, validate_endpoint
+from config.provider_profile import validate_provider_config
 from core.providers.tts.base import TTSProviderBase
 from config.logger import setup_logging
 
@@ -13,27 +13,26 @@ class TTSProvider(TTSProviderBase):
     ]
 
     def __init__(self, config, delete_audio_file):
+        validate_provider_config("TTS", config, "openai", require_ready=True)
+        validate_endpoint(config.get("api_url"), "tts")
         super().__init__(config, delete_audio_file)
-        self.api_key = config.get("api_key")
-        self.api_url = config.get("api_url", "https://api.openai.com/v1/audio/speech")
-        self.model = config.get("model", "tts-1")
+        self.api_key = config.get("api_key") or "local-only"
+        self.api_url = config["api_url"]
+        self.model = config["model"]
         if config.get("private_voice"):
             self.voice = config.get("private_voice")
         else:
             self.voice = config.get("voice", "alloy")
         self.audio_file_type = config.get("format", "wav")
 
-        # 处理空字符串的情况
+        # Handle empty strings
         speed = config.get("speed", "1.0")
         self.speed = float(speed) if speed else 1.0
 
-        # 应用百分比调整（如果存在），否则使用公有化配置
+        # Apply percentage adjustments when present; otherwise use the shared configuration
         self._apply_percentage_params(config)
 
         self.output_file = config.get("output_dir", "tmp/")
-        model_key_msg = check_model_key("TTS", self.api_key)
-        if model_key_msg:
-            logger.bind(tag=TAG).error(model_key_msg)
 
     async def text_to_speak(self, text, output_file):
         headers = {
@@ -47,8 +46,8 @@ class TTSProvider(TTSProviderBase):
             "response_format": self.audio_file_type,
             "speed": self.speed,
         }
-        response = requests.post(
-            self.api_url, json=data, headers=headers, timeout=self.tts_timeout
+        response = post(
+            self.api_url, "tts", json=data, headers=headers, timeout=self.tts_timeout
         )
         if response.status_code == 200:
             if output_file:
@@ -58,5 +57,5 @@ class TTSProvider(TTSProviderBase):
                 return response.content
         else:
             raise Exception(
-                f"OpenAI TTS请求失败: {response.status_code} - {response.text}"
+                f"TTS API request failed with status {response.status_code}"
             )

@@ -10,8 +10,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 /**
- * 基础实体类，所有实体都需要继承
+ * Base entity inherited by all entities
  * Copyright (c) 人人开源 All rights reserved.
+ * Original copyright holder: Renren Open Source; the legal attribution above is retained.
  * Website: https://www.renren.io
  */
 @Data
@@ -22,12 +23,12 @@ public abstract class BaseEntity implements Serializable {
     @TableId
     private Long id;
     /**
-     * 创建者
+     * Created by
      */
     @TableField(fill = FieldFill.INSERT)
     private Long creator;
     /**
-     * 创建时间
+     * Creation time
      */
     @TableField(fill = FieldFill.INSERT)
     private Date createDate;

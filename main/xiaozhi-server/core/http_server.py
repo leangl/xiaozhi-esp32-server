@@ -15,14 +15,14 @@ class SimpleHttpServer:
         self.vision_handler = VisionHandler(config)
 
     def _get_websocket_url(self, local_ip: str, port: int) -> str:
-        """获取websocket地址
+        """Return the WebSocket URL.
 
         Args:
-            local_ip: 本地IP地址
-            port: 端口号
+            local_ip: Local IP address.
+            port: Port number.
 
         Returns:
-            str: websocket地址
+            str: WebSocket URL.
         """
         server_config = self.config["server"]
         websocket_config = server_config.get("websocket")
@@ -43,7 +43,8 @@ class SimpleHttpServer:
                 app = web.Application()
 
                 if not read_config_from_api:
-                    # 如果没有开启智控台，只是单模块运行，就需要再添加简单OTA接口，用于下发websocket接口
+                    # In a server-only deployment without the management console,
+                    # add the simple OTA endpoint to distribute the WebSocket URL.
                     app.add_routes(
                         [
                             web.get("/xiaozhi/ota/", self.ota_handler.handle_get),
@@ -51,7 +52,7 @@ class SimpleHttpServer:
                             web.options(
                                 "/xiaozhi/ota/", self.ota_handler.handle_options
                             ),
-                            # 下载接口，仅提供 data/bin/*.bin 下载
+                            # Download endpoint: serve only data/bin/*.bin.
                             web.get(
                                 "/xiaozhi/ota/download/{filename}",
                                 self.ota_handler.handle_download,
@@ -62,7 +63,7 @@ class SimpleHttpServer:
                             ),
                         ]
                     )
-                # 添加路由
+                # Add routes.
                 app.add_routes(
                     [
                         web.get("/mcp/vision/explain", self.vision_handler.handle_get),
@@ -75,18 +76,18 @@ class SimpleHttpServer:
                     ]
                 )
 
-                # 运行服务
+                # Start the service.
                 runner = web.AppRunner(app)
                 await runner.setup()
                 site = web.TCPSite(runner, host, port)
                 await site.start()
 
-                # 保持服务运行
+                # Keep the service running.
                 while True:
-                    await asyncio.sleep(3600)  # 每隔 1 小时检查一次
+                    await asyncio.sleep(3600)  # Check once per hour.
         except Exception as e:
-            self.logger.bind(tag=TAG).error(f"HTTP服务器启动失败: {e}")
+            self.logger.bind(tag=TAG).error(f"HTTP server failed to start: {e}")
             import traceback
 
-            self.logger.bind(tag=TAG).error(f"错误堆栈: {traceback.format_exc()}")
+            self.logger.bind(tag=TAG).error(f"Traceback: {traceback.format_exc()}")
             raise

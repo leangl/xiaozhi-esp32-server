@@ -1,0 +1,491 @@
+service-dependency-lock-v1
+kind	deb
+base	docker.io/library/python:3.10-slim-bookworm@sha256:5be5aaecb962a41567bc8041f1e9e3432cb085b037fe057f9a562630b2e4b370
+arch	arm64
+installed	adduser	3.134
+installed	apt	2.6.1
+installed	base-files	12.4+deb12u15
+installed	base-passwd	3.6.1
+installed	bash	5.2.15-2+b13
+installed	bsdutils	1:2.38.1-5+deb12u3
+installed	ca-certificates	20250419~deb12u1
+installed	coreutils	9.1-1
+installed	dash	0.5.12-2
+installed	debconf	1.5.82
+installed	debian-archive-keyring	2023.3+deb12u2
+installed	debianutils	5.7-0.5~deb12u1
+installed	diffutils	1:3.8-4
+installed	dpkg	1.21.23
+installed	e2fsprogs	1.47.0-2+b2
+installed	ffmpeg	7:5.1.9-0+deb12u1
+installed	findutils	4.9.0-4
+installed	fontconfig	2.14.1-4
+installed	fontconfig-config	2.14.1-4
+installed	fonts-dejavu-core	2.37-6
+installed	gcc-12-base:arm64	12.2.0-14+deb12u1
+installed	gpgv	2.2.40-1.1+deb12u2
+installed	grep	3.8-5
+installed	gzip	1.12-1
+installed	hostname	3.23+nmu1
+installed	init-system-helpers	1.65.2+deb12u1
+installed	libacl1:arm64	2.3.1-3
+installed	libaom3:arm64	3.6.0-1+deb12u3
+installed	libapt-pkg6.0:arm64	2.6.1
+installed	libasound2-data	1.2.8-1
+installed	libasound2:arm64	1.2.8-1+b1
+installed	libass9:arm64	1:0.17.1-1+deb12u1
+installed	libasyncns0:arm64	0.8-6+b3
+installed	libattr1:arm64	1:2.5.1-4
+installed	libaudit-common	1:3.0.9-1
+installed	libaudit1:arm64	1:3.0.9-1
+installed	libavc1394-0:arm64	0.5.4-5
+installed	libavcodec59:arm64	7:5.1.9-0+deb12u1
+installed	libavdevice59:arm64	7:5.1.9-0+deb12u1
+installed	libavfilter8:arm64	7:5.1.9-0+deb12u1
+installed	libavformat59:arm64	7:5.1.9-0+deb12u1
+installed	libavutil57:arm64	7:5.1.9-0+deb12u1
+installed	libblas3:arm64	3.11.0-2
+installed	libblkid1:arm64	2.38.1-5+deb12u3
+installed	libbluray2:arm64	1:1.3.4-1
+installed	libbrotli1:arm64	1.0.9-2+b6
+installed	libbs2b0:arm64	3.1.0+dfsg-7
+installed	libbsd0:arm64	0.11.7-2
+installed	libbz2-1.0:arm64	1.0.8-5+b1
+installed	libc-bin	2.36-9+deb12u14
+installed	libc-l10n	2.36-9+deb12u14
+installed	libc6:arm64	2.36-9+deb12u14
+installed	libcaca0:arm64	0.99.beta20-3+deb12u1
+installed	libcairo-gobject2:arm64	1.16.0-7
+installed	libcairo2:arm64	1.16.0-7
+installed	libcap-ng0:arm64	0.8.3-1+b3
+installed	libcap2:arm64	1:2.66-4+deb12u3+b1
+installed	libcdio-cdda2:arm64	10.2+2.0.1-1
+installed	libcdio-paranoia2:arm64	10.2+2.0.1-1
+installed	libcdio19:arm64	2.1.0-4
+installed	libchromaprint1:arm64	1.5.1-2+b1
+installed	libcjson1:arm64	1.7.15-1+deb12u4
+installed	libcodec2-1.0:arm64	1.0.5-1
+installed	libcom-err2:arm64	1.47.0-2+b2
+installed	libcrypt1:arm64	1:4.4.33-2
+installed	libdatrie1:arm64	0.2.13-2+b1
+installed	libdav1d6:arm64	1.0.0-2+deb12u1
+installed	libdb5.3:arm64	5.3.28+dfsg2-1
+installed	libdbus-1-3:arm64	1.14.10-1~deb12u1
+installed	libdc1394-25:arm64	2.2.6-4
+installed	libdebconfclient0:arm64	0.270
+installed	libdecor-0-0:arm64	0.1.1-2
+installed	libdeflate0:arm64	1.14-1
+installed	libdrm-amdgpu1:arm64	2.4.114-1+b1
+installed	libdrm-common	2.4.114-1
+installed	libdrm-nouveau2:arm64	2.4.114-1+b1
+installed	libdrm-radeon1:arm64	2.4.114-1+b1
+installed	libdrm2:arm64	2.4.114-1+b1
+installed	libedit2:arm64	3.1-20221030-2
+installed	libelf1:arm64	0.188-2.1
+installed	libepoxy0:arm64	1.5.10-1
+installed	libexpat1:arm64	2.5.0-1+deb12u4
+installed	libext2fs2:arm64	1.47.0-2+b2
+installed	libffi8:arm64	3.4.4-1
+installed	libflac12:arm64	1.4.2+ds-2
+installed	libflite1:arm64	2.2-5
+installed	libfontconfig1:arm64	2.14.1-4
+installed	libfreetype6:arm64	2.12.1+dfsg-5+deb12u4
+installed	libfribidi0:arm64	1.0.8-2.1
+installed	libgbm1:arm64	22.3.6-1+deb12u2
+installed	libgcc-s1:arm64	12.2.0-14+deb12u1
+installed	libgcrypt20:arm64	1.10.1-3+deb12u1
+installed	libgdbm6:arm64	1.23-3
+installed	libgdk-pixbuf-2.0-0:arm64	2.42.10+dfsg-1+deb12u4
+installed	libgdk-pixbuf2.0-common	2.42.10+dfsg-1+deb12u4
+installed	libgfortran5:arm64	12.2.0-14+deb12u1
+installed	libgl1-mesa-dri:arm64	22.3.6-1+deb12u2
+installed	libgl1:arm64	1.6.0-1
+installed	libglapi-mesa:arm64	22.3.6-1+deb12u2
+installed	libglib2.0-0:arm64	2.74.6-2+deb12u9
+installed	libglvnd0:arm64	1.6.0-1
+installed	libglx-mesa0:arm64	22.3.6-1+deb12u2
+installed	libglx0:arm64	1.6.0-1
+installed	libgme0:arm64	0.6.3-6
+installed	libgmp10:arm64	2:6.2.1+dfsg1-1.1
+installed	libgnutls30:arm64	3.7.9-2+deb12u7
+installed	libgomp1:arm64	12.2.0-14+deb12u1
+installed	libgpg-error0:arm64	1.46-1
+installed	libgraphite2-3:arm64	1.3.14-1+deb12u1
+installed	libgsm1:arm64	1.0.22-1
+installed	libgssapi-krb5-2:arm64	1.20.1-2+deb12u5
+installed	libharfbuzz0b:arm64	6.0.0+dfsg-3
+installed	libhogweed6:arm64	3.8.1-2
+installed	libhwy1:arm64	1.0.3-3+deb12u1
+installed	libicu72:arm64	72.1-3+deb12u1
+installed	libidn2-0:arm64	2.3.3-1+b1
+installed	libiec61883-0:arm64	1.2.0-6+b1
+installed	libjack-jackd2-0:arm64	1.9.21~dfsg-3
+installed	libjbig0:arm64	2.1-6.1
+installed	libjpeg62-turbo:arm64	1:2.1.5-2
+installed	libjxl0.7:arm64	0.7.0-10+deb12u1
+installed	libk5crypto3:arm64	1.20.1-2+deb12u5
+installed	libkeyutils1:arm64	1.6.3-2
+installed	libkrb5-3:arm64	1.20.1-2+deb12u5
+installed	libkrb5support0:arm64	1.20.1-2+deb12u5
+installed	liblapack3:arm64	3.11.0-2
+installed	liblcms2-2:arm64	2.14-2+deb12u1
+installed	liblerc4:arm64	4.0.0+ds-2
+installed	liblilv-0-0:arm64	0.24.14-1
+installed	libllvm15:arm64	1:15.0.6-4+b1
+installed	liblz4-1:arm64	1.9.4-1
+installed	liblzma5:arm64	5.4.1-1+deb12u2
+installed	libmbedcrypto7:arm64	2.28.3-1
+installed	libmd0:arm64	1.0.4-2
+installed	libmount1:arm64	2.38.1-5+deb12u3
+installed	libmp3lame0:arm64	3.100-6
+installed	libmpg123-0:arm64	1.31.2-1+deb12u1
+installed	libmysofa1:arm64	1.3.1~dfsg0-1
+installed	libncursesw6:arm64	6.4-4
+installed	libnettle8:arm64	3.8.1-2
+installed	libnorm1:arm64	1.5.9+dfsg-2
+installed	libnsl2:arm64	1.3.0-2
+installed	libnuma1:arm64	2.0.16-1
+installed	libogg0:arm64	1.3.5-3
+installed	libopenal-data	1:1.19.1-2
+installed	libopenal1:arm64	1:1.19.1-2
+installed	libopenjp2-7:arm64	2.5.0-2+deb12u3
+installed	libopenmpt0:arm64	0.6.9-1
+installed	libopus0:arm64	1.3.1-3
+installed	libp11-kit0:arm64	0.24.1-2
+installed	libpam-modules-bin	1.5.2-6+deb12u2
+installed	libpam-modules:arm64	1.5.2-6+deb12u2
+installed	libpam-runtime	1.5.2-6+deb12u2
+installed	libpam0g:arm64	1.5.2-6+deb12u2
+installed	libpango-1.0-0:arm64	1.50.12+ds-1
+installed	libpangocairo-1.0-0:arm64	1.50.12+ds-1
+installed	libpangoft2-1.0-0:arm64	1.50.12+ds-1
+installed	libpcre2-8-0:arm64	10.42-1+deb12u2
+installed	libpgm-5.3-0:arm64	5.3.128~dfsg-2
+installed	libpixman-1-0:arm64	0.42.2-1
+installed	libplacebo208:arm64	4.208.0-3
+installed	libpng16-16:arm64	1.6.39-2+deb12u6
+installed	libpocketsphinx3:arm64	0.8+5prealpha+1-15
+installed	libpostproc56:arm64	7:5.1.9-0+deb12u1
+installed	libpulse0:arm64	16.1+dfsg1-2+b1
+installed	librabbitmq4:arm64	0.11.0-1+deb12u3
+installed	librav1e0:arm64	0.5.1-6
+installed	libraw1394-11:arm64	2.1.2-2
+installed	libreadline8:arm64	8.2-1.3
+installed	librist4:arm64	0.2.7+dfsg-1
+installed	librsvg2-2:arm64	2.54.7+dfsg-1~deb12u1
+installed	librubberband2:arm64	3.1.2+dfsg0-1
+installed	libsamplerate0:arm64	0.2.2-3
+installed	libsdl2-2.0-0:arm64	2.26.5+dfsg-1
+installed	libseccomp2:arm64	2.5.4-1+deb12u1
+installed	libselinux1:arm64	3.4-1+b6
+installed	libsemanage-common	3.4-1
+installed	libsemanage2:arm64	3.4-1+b5
+installed	libsensors-config	1:3.6.0-7.1
+installed	libsensors5:arm64	1:3.6.0-7.1
+installed	libsepol2:arm64	3.4-2.1
+installed	libserd-0-0:arm64	0.30.16-1
+installed	libshine3:arm64	3.1.1-2
+installed	libslang2:arm64	2.3.3-3
+installed	libsmartcols1:arm64	2.38.1-5+deb12u3
+installed	libsnappy1v5:arm64	1.1.9-3
+installed	libsndfile1:arm64	1.2.0-1+deb12u1
+installed	libsndio7.0:arm64	1.9.0-0.3+b2
+installed	libsodium23:arm64	1.0.18-1+deb12u1
+installed	libsord-0-0:arm64	0.16.14+git221008-1
+installed	libsoxr0:arm64	0.1.3-4
+installed	libspeex1:arm64	1.2.1-2
+installed	libsphinxbase3:arm64	0.8+5prealpha+1-16
+installed	libsqlite3-0:arm64	3.40.1-2+deb12u2
+installed	libsratom-0-0:arm64	0.6.14-1
+installed	libsrt1.5-gnutls:arm64	1.5.1-1+deb12u1
+installed	libss2:arm64	1.47.0-2+b2
+installed	libssh-gcrypt-4:arm64	0.10.6-0+deb12u3
+installed	libssl3:arm64	3.0.22-1~deb12u1
+installed	libstdc++6:arm64	12.2.0-14+deb12u1
+installed	libsvtav1enc1:arm64	1.4.1+dfsg-1
+installed	libswresample4:arm64	7:5.1.9-0+deb12u1
+installed	libswscale6:arm64	7:5.1.9-0+deb12u1
+installed	libsystemd0:arm64	252.39-1~deb12u2
+installed	libtasn1-6:arm64	4.19.0-2+deb12u1
+installed	libthai-data	0.1.29-1
+installed	libthai0:arm64	0.1.29-1
+installed	libtheora0:arm64	1.1.1+dfsg.1-16.1+deb12u1
+installed	libtiff6:arm64	4.5.0-6+deb12u4
+installed	libtinfo6:arm64	6.4-4
+installed	libtirpc-common	1.3.3+ds-1
+installed	libtirpc3:arm64	1.3.3+ds-1
+installed	libtwolame0:arm64	0.4.0-2
+installed	libudev1:arm64	252.39-1~deb12u2
+installed	libudfread0:arm64	1.1.2-1
+installed	libunistring2:arm64	1.0-2
+installed	libusb-1.0-0:arm64	2:1.0.26-1
+installed	libuuid1:arm64	2.38.1-5+deb12u3
+installed	libva-drm2:arm64	2.17.0-1
+installed	libva-x11-2:arm64	2.17.0-1
+installed	libva2:arm64	2.17.0-1
+installed	libvdpau1:arm64	1.5-2
+installed	libvidstab1.1:arm64	1.1.0-2+b1
+installed	libvorbis0a:arm64	1.3.7-1
+installed	libvorbisenc2:arm64	1.3.7-1
+installed	libvorbisfile3:arm64	1.3.7-1
+installed	libvpx7:arm64	1.12.0-1+deb12u5
+installed	libvulkan1:arm64	1.3.239.0-1
+installed	libwayland-client0:arm64	1.21.0-1
+installed	libwayland-cursor0:arm64	1.21.0-1
+installed	libwayland-egl1:arm64	1.21.0-1
+installed	libwayland-server0:arm64	1.21.0-1
+installed	libwebp7:arm64	1.2.4-0.2+deb12u1
+installed	libwebpmux3:arm64	1.2.4-0.2+deb12u1
+installed	libx11-6:arm64	2:1.8.4-2+deb12u2
+installed	libx11-data	2:1.8.4-2+deb12u2
+installed	libx11-xcb1:arm64	2:1.8.4-2+deb12u2
+installed	libx264-164:arm64	2:0.164.3095+gitbaee400-3
+installed	libx265-199:arm64	3.5-2+b1
+installed	libxau6:arm64	1:1.0.9-1
+installed	libxcb-dri2-0:arm64	1.15-1
+installed	libxcb-dri3-0:arm64	1.15-1
+installed	libxcb-glx0:arm64	1.15-1
+installed	libxcb-present0:arm64	1.15-1
+installed	libxcb-randr0:arm64	1.15-1
+installed	libxcb-render0:arm64	1.15-1
+installed	libxcb-shape0:arm64	1.15-1
+installed	libxcb-shm0:arm64	1.15-1
+installed	libxcb-sync1:arm64	1.15-1
+installed	libxcb-xfixes0:arm64	1.15-1
+installed	libxcb1:arm64	1.15-1
+installed	libxcursor1:arm64	1:1.2.1-1
+installed	libxdmcp6:arm64	1:1.1.2-3
+installed	libxext6:arm64	2:1.3.4-1+b1
+installed	libxfixes3:arm64	1:6.0.0-2
+installed	libxi6:arm64	2:1.8-1+b1
+installed	libxkbcommon0:arm64	1.5.0-1
+installed	libxml2:arm64	2.9.14+dfsg-1.3~deb12u6
+installed	libxrandr2:arm64	2:1.5.2-2+b1
+installed	libxrender1:arm64	1:0.9.10-1.1
+installed	libxshmfence1:arm64	1.3-1
+installed	libxss1:arm64	1:1.2.3-1
+installed	libxv1:arm64	2:1.0.11-1.1
+installed	libxvidcore4:arm64	2:1.3.7-1
+installed	libxxf86vm1:arm64	1:1.1.4-1+b2
+installed	libxxhash0:arm64	0.8.1-1
+installed	libz3-4:arm64	4.8.12-3.1
+installed	libzimg2:arm64	3.0.4+ds1-1
+installed	libzmq5:arm64	4.3.4-6
+installed	libzstd1:arm64	1.5.4+dfsg2-5
+installed	libzvbi-common	0.2.41-1+deb12u1
+installed	libzvbi0:arm64	0.2.41-1+deb12u1
+installed	locales	2.36-9+deb12u14
+installed	login	1:4.13+dfsg1-1+deb12u2
+installed	logsave	1.47.0-2+b2
+installed	mawk	1.3.4.20200120-3.1
+installed	mount	2.38.1-5+deb12u3
+installed	ncurses-base	6.4-4
+installed	ncurses-bin	6.4-4
+installed	netbase	6.4
+installed	ocl-icd-libopencl1:arm64	2.3.1-1
+installed	openssl	3.0.22-1~deb12u1
+installed	passwd	1:4.13+dfsg1-1+deb12u2
+installed	perl-base	5.36.0-7+deb12u4
+installed	readline-common	8.2-1.3
+installed	sed	4.9-1+deb12u1
+installed	shared-mime-info	2.2-1
+installed	sysvinit-utils	3.06-4
+installed	tar	1.34+dfsg-1.2+deb12u1
+installed	tzdata	2026c-0+deb12u1
+installed	usr-is-merged	37~deb12u1
+installed	util-linux	2.38.1-5+deb12u3
+installed	util-linux-extra	2.38.1-5+deb12u3
+installed	x11-common	1:7.7+23
+installed	xkb-data	2.35.1-1
+installed	zlib1g:arm64	1:1.2.13.dfsg-1
+artifact	7890aeb19a94d73e5d9281afa5ca07005804c1fca4f10791f4f2ce0df741b610	1807012	ffmpeg_7%3a5.1.9-0+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/f/ffmpeg/ffmpeg_5.1.9-0%2bdeb12u1_arm64.deb	Package: ffmpeg;Version: 7:5.1.9-0+deb12u1;Architecture: arm64
+artifact	297b5a63f9214ffebe08892cdf2effdaf2b408e719811d5e8e98870f710cd35c	314864	fontconfig-config_2.14.1-4_arm64.deb	https://deb.debian.org/debian/pool/main/f/fontconfig/fontconfig-config_2.14.1-4_arm64.deb	Package: fontconfig-config;Version: 2.14.1-4;Architecture: arm64
+artifact	5fe5ce908c360fb5e9376ce26484477948f8182c982fee495b8ab024a0f22c6f	449296	fontconfig_2.14.1-4_arm64.deb	https://deb.debian.org/debian/pool/main/f/fontconfig/fontconfig_2.14.1-4_arm64.deb	Package: fontconfig;Version: 2.14.1-4;Architecture: arm64
+artifact	8892669e51aab4dc56682c8e39d8ddb7d70fad83c369344e1e240bf3ca22bb76	1067728	fonts-dejavu-core_2.37-6_all.deb	https://deb.debian.org/debian/pool/main/f/fonts-dejavu/fonts-dejavu-core_2.37-6_all.deb	Package: fonts-dejavu-core;Version: 2.37-6;Architecture: all
+artifact	ddf3745b08f612ba9cc290cb874f28f756b37b56ede4b3aaee6230803dad7f29	1373556	libaom3_3.6.0-1+deb12u3_arm64.deb	https://deb.debian.org/debian-security/pool/updates/main/a/aom/libaom3_3.6.0-1%2bdeb12u3_arm64.deb	Package: libaom3;Version: 3.6.0-1+deb12u3;Architecture: arm64
+artifact	fe0780d2d3674b2977e0acb0d48b448ad72ba1642564b7dc537f55e839984c2d	20488	libasound2-data_1.2.8-1_all.deb	https://deb.debian.org/debian/pool/main/a/alsa-lib/libasound2-data_1.2.8-1_all.deb	Package: libasound2-data;Version: 1.2.8-1;Architecture: all
+artifact	9fa889400fcee4b92c8f4a2fafbb7f2cd33444d9ec1665a71002ab67c06114bb	327044	libasound2_1.2.8-1+b1_arm64.deb	https://deb.debian.org/debian/pool/main/a/alsa-lib/libasound2_1.2.8-1%2bb1_arm64.deb	Package: libasound2;Version: 1.2.8-1+b1;Architecture: arm64
+artifact	6086660245201528762ccfbc49694dffbc4db3714de4a7531f2f1e0d75eda4f8	91240	libass9_1%3a0.17.1-1+deb12u1_arm64.deb	https://deb.debian.org/debian-security/pool/updates/main/liba/libass/libass9_0.17.1-1%2bdeb12u1_arm64.deb	Package: libass9;Version: 1:0.17.1-1+deb12u1;Architecture: arm64
+artifact	30ec77ed3695fc09863427bf30e27318b74909089144ac24db17c3ab1f184a62	12456	libasyncns0_0.8-6+b3_arm64.deb	https://deb.debian.org/debian/pool/main/liba/libasyncns/libasyncns0_0.8-6%2bb3_arm64.deb	Package: libasyncns0;Version: 0.8-6+b3;Architecture: arm64
+artifact	5a6ad45da10d69ca6ca7757882fe696ace8af98fccac781697ef280ea13e770f	18368	libavc1394-0_0.5.4-5_arm64.deb	https://deb.debian.org/debian/pool/main/liba/libavc1394/libavc1394-0_0.5.4-5_arm64.deb	Package: libavc1394-0;Version: 0.5.4-5;Architecture: arm64
+artifact	74468871b1b95f28476a3cb63deafe21c97e57289ac286e760384273b0c39fc1	4811760	libavcodec59_7%3a5.1.9-0+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/f/ffmpeg/libavcodec59_5.1.9-0%2bdeb12u1_arm64.deb	Package: libavcodec59;Version: 7:5.1.9-0+deb12u1;Architecture: arm64
+artifact	46c574e3ca73624d88af636e89703820b1c57657090bd89eb02cef727076ed1b	119244	libavdevice59_7%3a5.1.9-0+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/f/ffmpeg/libavdevice59_5.1.9-0%2bdeb12u1_arm64.deb	Package: libavdevice59;Version: 7:5.1.9-0+deb12u1;Architecture: arm64
+artifact	6156525ccfd083bca35545a2b227839b2978f6d6c02cd10a1fe4691989e80a4e	3321836	libavfilter8_7%3a5.1.9-0+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/f/ffmpeg/libavfilter8_5.1.9-0%2bdeb12u1_arm64.deb	Package: libavfilter8;Version: 7:5.1.9-0+deb12u1;Architecture: arm64
+artifact	600ddadab359b552bc890323c9ca603bd0f08f4e324378e4530321c0f1900990	1054596	libavformat59_7%3a5.1.9-0+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/f/ffmpeg/libavformat59_5.1.9-0%2bdeb12u1_arm64.deb	Package: libavformat59;Version: 7:5.1.9-0+deb12u1;Architecture: arm64
+artifact	9c5bd3feecf46c9eab1d6b4e65830acaf8e2d6caee008bd4f94e1adf22a63f31	341460	libavutil57_7%3a5.1.9-0+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/f/ffmpeg/libavutil57_5.1.9-0%2bdeb12u1_arm64.deb	Package: libavutil57;Version: 7:5.1.9-0+deb12u1;Architecture: arm64
+artifact	054aec63b247d157b4b475ca26763538d5dcbd32894734db6b5cae6c7aa335f2	91444	libblas3_3.11.0-2_arm64.deb	https://deb.debian.org/debian/pool/main/l/lapack/libblas3_3.11.0-2_arm64.deb	Package: libblas3;Version: 3.11.0-2;Architecture: arm64
+artifact	f8f28e8e099f6c872053abf79755514a83d1cdc035b3774c29b0d75ebc7f0d11	123524	libbluray2_1%3a1.3.4-1_arm64.deb	https://deb.debian.org/debian/pool/main/libb/libbluray/libbluray2_1.3.4-1_arm64.deb	Package: libbluray2;Version: 1:1.3.4-1;Architecture: arm64
+artifact	3137de7f71952e710ee9f0df05026b3c6f463be9369a502d57c7696732f1ed22	269124	libbrotli1_1.0.9-2+b6_arm64.deb	https://deb.debian.org/debian/pool/main/b/brotli/libbrotli1_1.0.9-2%2bb6_arm64.deb	Package: libbrotli1;Version: 1.0.9-2+b6;Architecture: arm64
+artifact	6145ea38842a1cc5d2f49e1a00bfb65426024c8c8fe48edbe59d3f8366ef565b	10656	libbs2b0_3.1.0+dfsg-7_arm64.deb	https://deb.debian.org/debian/pool/main/libb/libbs2b/libbs2b0_3.1.0%2bdfsg-7_arm64.deb	Package: libbs2b0;Version: 3.1.0+dfsg-7;Architecture: arm64
+artifact	ef00f132ddd268ee67d756998723ee18543db27ab34930c0a9f1cff75cf55382	115116	libbsd0_0.11.7-2_arm64.deb	https://deb.debian.org/debian/pool/main/libb/libbsd/libbsd0_0.11.7-2_arm64.deb	Package: libbsd0;Version: 0.11.7-2;Architecture: arm64
+artifact	95285badd0b02ca7e90e8f20d17c912170ffaeb48db10f113d1ece042b59248d	676384	libc-l10n_2.36-9+deb12u14_all.deb	https://deb.debian.org/debian/pool/main/g/glibc/libc-l10n_2.36-9%2bdeb12u14_all.deb	Package: libc-l10n;Version: 2.36-9+deb12u14;Architecture: all
+artifact	2a1cba3e489daa6c7252fa435c51272a94fe195145505ec8cede89d69dda5e5f	195792	libcaca0_0.99.beta20-3+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/libc/libcaca/libcaca0_0.99.beta20-3%2bdeb12u1_arm64.deb	Package: libcaca0;Version: 0.99.beta20-3+deb12u1;Architecture: arm64
+artifact	05a0e107ab9d7512b0ee9421da705c268b7381dc66041c188993f6fb4600792e	111652	libcairo-gobject2_1.16.0-7_arm64.deb	https://deb.debian.org/debian/pool/main/c/cairo/libcairo-gobject2_1.16.0-7_arm64.deb	Package: libcairo-gobject2;Version: 1.16.0-7;Architecture: arm64
+artifact	48b5c5ae1972ea0757c6285463d611d0ca32c9c808957961e5c7924126f30289	526680	libcairo2_1.16.0-7_arm64.deb	https://deb.debian.org/debian/pool/main/c/cairo/libcairo2_1.16.0-7_arm64.deb	Package: libcairo2;Version: 1.16.0-7;Architecture: arm64
+artifact	20515c1a5df7fce5c3ff41b5a5abf10f0294b485577ea4d461186ebc4e79c014	20112	libcdio-cdda2_10.2+2.0.1-1_arm64.deb	https://deb.debian.org/debian/pool/main/libc/libcdio-paranoia/libcdio-cdda2_10.2%2b2.0.1-1_arm64.deb	Package: libcdio-cdda2;Version: 10.2+2.0.1-1;Architecture: arm64
+artifact	f960dc3ab9f6bd6aee925350a19736a86d44ef8326177ce8127ae8df443490b6	19568	libcdio-paranoia2_10.2+2.0.1-1_arm64.deb	https://deb.debian.org/debian/pool/main/libc/libcdio-paranoia/libcdio-paranoia2_10.2%2b2.0.1-1_arm64.deb	Package: libcdio-paranoia2;Version: 10.2+2.0.1-1;Architecture: arm64
+artifact	f1b9c80716ba707e46ced45b454246b4b03f93ef9772e92af0e3b86ab0d56e2d	201476	libcdio19_2.1.0-4_arm64.deb	https://deb.debian.org/debian/pool/main/libc/libcdio/libcdio19_2.1.0-4_arm64.deb	Package: libcdio19;Version: 2.1.0-4;Architecture: arm64
+artifact	6f73d7b541247024746730858ebd5729acf6c017e189c2be25b13c6e7d92853f	37404	libchromaprint1_1.5.1-2+b1_arm64.deb	https://deb.debian.org/debian/pool/main/c/chromaprint/libchromaprint1_1.5.1-2%2bb1_arm64.deb	Package: libchromaprint1;Version: 1.5.1-2+b1;Architecture: arm64
+artifact	67b9f4d780a401b28bcce3d23a0a26efbdf040d7a012f1d73f8142a641925e2e	22724	libcjson1_1.7.15-1+deb12u4_arm64.deb	https://deb.debian.org/debian/pool/main/c/cjson/libcjson1_1.7.15-1%2bdeb12u4_arm64.deb	Package: libcjson1;Version: 1.7.15-1+deb12u4;Architecture: arm64
+artifact	13c5182958d011333d30e1459e5e72acb24a2b3433ac4dd027d35f1afdcb6338	8163248	libcodec2-1.0_1.0.5-1_arm64.deb	https://deb.debian.org/debian/pool/main/c/codec2/libcodec2-1.0_1.0.5-1_arm64.deb	Package: libcodec2-1.0;Version: 1.0.5-1;Architecture: arm64
+artifact	d7c52aa971278e7f298b7e74f8ed50ad25579f9b344212fd4a91744cffa58cc9	42624	libdatrie1_0.2.13-2+b1_arm64.deb	https://deb.debian.org/debian/pool/main/libd/libdatrie/libdatrie1_0.2.13-2%2bb1_arm64.deb	Package: libdatrie1;Version: 0.2.13-2+b1;Architecture: arm64
+artifact	579c820b80ce3491143c411a342b3a222ce3a381c7c052e8c8501de5bace954f	274856	libdav1d6_1.0.0-2+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/d/dav1d/libdav1d6_1.0.0-2%2bdeb12u1_arm64.deb	Package: libdav1d6;Version: 1.0.0-2+deb12u1;Architecture: arm64
+artifact	2a423794f44ee756f70fda67c6e47b15afe3dd22cd69e51f5d14d2ec9538f806	192624	libdbus-1-3_1.14.10-1~deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/d/dbus/libdbus-1-3_1.14.10-1%7edeb12u1_arm64.deb	Package: libdbus-1-3;Version: 1.14.10-1~deb12u1;Architecture: arm64
+artifact	82c939e239dc710675344c25f792341d00b9c4329c0c62b4146e06ffe928310a	105424	libdc1394-25_2.2.6-4_arm64.deb	https://deb.debian.org/debian/pool/main/libd/libdc1394/libdc1394-25_2.2.6-4_arm64.deb	Package: libdc1394-25;Version: 2.2.6-4;Architecture: arm64
+artifact	e88d3c2dd3336a97b8cf10ef270a264388fce81cedf8032b18f2a36b021bc6a3	14152	libdecor-0-0_0.1.1-2_arm64.deb	https://deb.debian.org/debian/pool/main/libd/libdecor-0/libdecor-0-0_0.1.1-2_arm64.deb	Package: libdecor-0-0;Version: 0.1.1-2;Architecture: arm64
+artifact	32576ec45ad51662e02f5381e09cca75bc114065eaf28090f7294a4d84526451	54340	libdeflate0_1.14-1_arm64.deb	https://deb.debian.org/debian/pool/main/libd/libdeflate/libdeflate0_1.14-1_arm64.deb	Package: libdeflate0;Version: 1.14-1;Architecture: arm64
+artifact	24692e933b98b2b8b80d87c45728efa2bc7176120ce9efcb8793407e508b5a32	20392	libdrm-amdgpu1_2.4.114-1+b1_arm64.deb	https://deb.debian.org/debian/pool/main/libd/libdrm/libdrm-amdgpu1_2.4.114-1%2bb1_arm64.deb	Package: libdrm-amdgpu1;Version: 2.4.114-1+b1;Architecture: arm64
+artifact	32f9664138b38b224383c6986457d5ad2ec8efd559b1a0ce7749405f7a451aad	7112	libdrm-common_2.4.114-1_all.deb	https://deb.debian.org/debian/pool/main/libd/libdrm/libdrm-common_2.4.114-1_all.deb	Package: libdrm-common;Version: 2.4.114-1;Architecture: all
+artifact	2acf0db609e8569dd89eea5f3e6f27968de50474d31213665901ad1c6d1133de	18396	libdrm-nouveau2_2.4.114-1+b1_arm64.deb	https://deb.debian.org/debian/pool/main/libd/libdrm/libdrm-nouveau2_2.4.114-1%2bb1_arm64.deb	Package: libdrm-nouveau2;Version: 2.4.114-1+b1;Architecture: arm64
+artifact	e53c2b4be53b4a8e6413887525c9172bdc95ed3a140a52ce23d6e1a68789aaa0	20876	libdrm-radeon1_2.4.114-1+b1_arm64.deb	https://deb.debian.org/debian/pool/main/libd/libdrm/libdrm-radeon1_2.4.114-1%2bb1_arm64.deb	Package: libdrm-radeon1;Version: 2.4.114-1+b1;Architecture: arm64
+artifact	f5f15a46d02cf5d9fa52d4f1c54b8cf80c398711ad771a9938b12399b8d8090c	36744	libdrm2_2.4.114-1+b1_arm64.deb	https://deb.debian.org/debian/pool/main/libd/libdrm/libdrm2_2.4.114-1%2bb1_arm64.deb	Package: libdrm2;Version: 2.4.114-1+b1;Architecture: arm64
+artifact	6ca1e355586ebfcfe8122b4d317fcaad4a9a10ca455c6a9bbd36f55bf4be85d3	88140	libedit2_3.1-20221030-2_arm64.deb	https://deb.debian.org/debian/pool/main/libe/libedit/libedit2_3.1-20221030-2_arm64.deb	Package: libedit2;Version: 3.1-20221030-2;Architecture: arm64
+artifact	32971952d8f5d563447bf275f24e26057500924da2d855c1edb53b0f0400bd11	172708	libelf1_0.188-2.1_arm64.deb	https://deb.debian.org/debian/pool/main/e/elfutils/libelf1_0.188-2.1_arm64.deb	Package: libelf1;Version: 0.188-2.1;Architecture: arm64
+artifact	f9cf8272b5abbcc872999347dc086dbacb4fb5896024f6d9d466369c26c1b9eb	197548	libepoxy0_1.5.10-1_arm64.deb	https://deb.debian.org/debian/pool/main/libe/libepoxy/libepoxy0_1.5.10-1_arm64.deb	Package: libepoxy0;Version: 1.5.10-1;Architecture: arm64
+artifact	5333bc2f751edadaceff1dd117d1e29be76b78a3a7bf139021bb9d07e6e2cae5	89164	libexpat1_2.5.0-1+deb12u4_arm64.deb	https://deb.debian.org/debian-security/pool/updates/main/e/expat/libexpat1_2.5.0-1%2bdeb12u4_arm64.deb	Package: libexpat1;Version: 2.5.0-1+deb12u4;Architecture: arm64
+artifact	338f78e2a140ed4ffca36d4240a7fc6f7867999bea000762a0c1b3924245a868	161192	libflac12_1.4.2+ds-2_arm64.deb	https://deb.debian.org/debian/pool/main/f/flac/libflac12_1.4.2%2bds-2_arm64.deb	Package: libflac12;Version: 1.4.2+ds-2;Architecture: arm64
+artifact	a32d8cfe4eda5e98dc4332ffb2520d3fb65565265bb869eb101f6b8b21f0115d	12814836	libflite1_2.2-5_arm64.deb	https://deb.debian.org/debian/pool/main/f/flite/libflite1_2.2-5_arm64.deb	Package: libflite1;Version: 2.2-5;Architecture: arm64
+artifact	4836d9deca824883f0de33d4f8f3718ba776c6e7c80cd7c418b5a0f86c009b9e	381416	libfontconfig1_2.14.1-4_arm64.deb	https://deb.debian.org/debian/pool/main/f/fontconfig/libfontconfig1_2.14.1-4_arm64.deb	Package: libfontconfig1;Version: 2.14.1-4;Architecture: arm64
+artifact	b8d32e54ebc9020637f8fa16b6afa64a5731e40845a6e01880d38d6f632237c9	367860	libfreetype6_2.12.1+dfsg-5+deb12u4_arm64.deb	https://deb.debian.org/debian/pool/main/f/freetype/libfreetype6_2.12.1%2bdfsg-5%2bdeb12u4_arm64.deb	Package: libfreetype6;Version: 2.12.1+dfsg-5+deb12u4;Architecture: arm64
+artifact	8ab3adcf64b318252d37669468fecb8e0478e1cf5f096d065611ac7dda68ccf4	64880	libfribidi0_1.0.8-2.1_arm64.deb	https://deb.debian.org/debian/pool/main/f/fribidi/libfribidi0_1.0.8-2.1_arm64.deb	Package: libfribidi0;Version: 1.0.8-2.1;Architecture: arm64
+artifact	f5c8fdddbf365259d74af270fb10f30d7fddb3fbe7b2ff62f0fdd556f8db0dc8	37104	libgbm1_22.3.6-1+deb12u2_arm64.deb	https://deb.debian.org/debian/pool/main/m/mesa/libgbm1_22.3.6-1%2bdeb12u2_arm64.deb	Package: libgbm1;Version: 22.3.6-1+deb12u2;Architecture: arm64
+artifact	1ee7ed6fa461a5421dbc541e85d169608bffe9e84558c0839a6a9009df6f7251	130260	libgdk-pixbuf-2.0-0_2.42.10+dfsg-1+deb12u4_arm64.deb	https://deb.debian.org/debian/pool/main/g/gdk-pixbuf/libgdk-pixbuf-2.0-0_2.42.10%2bdfsg-1%2bdeb12u4_arm64.deb	Package: libgdk-pixbuf-2.0-0;Version: 2.42.10+dfsg-1+deb12u4;Architecture: arm64
+artifact	0f3df073ca7eed5564ea3faceff819d94932d924c56474f1e42799a8017a2d30	306756	libgdk-pixbuf2.0-common_2.42.10+dfsg-1+deb12u4_all.deb	https://deb.debian.org/debian/pool/main/g/gdk-pixbuf/libgdk-pixbuf2.0-common_2.42.10%2bdfsg-1%2bdeb12u4_all.deb	Package: libgdk-pixbuf2.0-common;Version: 2.42.10+dfsg-1+deb12u4;Architecture: all
+artifact	583497cf5a95960c11f2006586050375c4adbc4b0c569a7e7df346f2bf380cbc	339792	libgfortran5_12.2.0-14+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/g/gcc-12/libgfortran5_12.2.0-14%2bdeb12u1_arm64.deb	Package: libgfortran5;Version: 12.2.0-14+deb12u1;Architecture: arm64
+artifact	2381957e885754c0aa59ffef0a3671ad4aeb9e83476d87c979bb2d7675a6a342	6281392	libgl1-mesa-dri_22.3.6-1+deb12u2_arm64.deb	https://deb.debian.org/debian/pool/main/m/mesa/libgl1-mesa-dri_22.3.6-1%2bdeb12u2_arm64.deb	Package: libgl1-mesa-dri;Version: 22.3.6-1+deb12u2;Architecture: arm64
+artifact	f4043ab47f52325973d2b608514b3469b055b65c744861c7f378755a32e799d6	90232	libgl1_1.6.0-1_arm64.deb	https://deb.debian.org/debian/pool/main/libg/libglvnd/libgl1_1.6.0-1_arm64.deb	Package: libgl1;Version: 1.6.0-1;Architecture: arm64
+artifact	bc604daab873ed7ddf82667903cd84070dde7b99d78a9f7d51a6ffac45575183	45060	libglapi-mesa_22.3.6-1+deb12u2_arm64.deb	https://deb.debian.org/debian/pool/main/m/mesa/libglapi-mesa_22.3.6-1%2bdeb12u2_arm64.deb	Package: libglapi-mesa;Version: 22.3.6-1+deb12u2;Architecture: arm64
+artifact	61d92fffada7e27fc0ed9d23e047b45bca3b2e3bfe1a918f4ec16559282859f4	1315904	libglib2.0-0_2.74.6-2+deb12u9_arm64.deb	https://deb.debian.org/debian/pool/main/g/glib2.0/libglib2.0-0_2.74.6-2%2bdeb12u9_arm64.deb	Package: libglib2.0-0;Version: 2.74.6-2+deb12u9;Architecture: arm64
+artifact	d5063205fab5322ee686f33f87c6315b3fcd1335ea4e7bc8202b48ed4f9c9e83	41396	libglvnd0_1.6.0-1_arm64.deb	https://deb.debian.org/debian/pool/main/libg/libglvnd/libglvnd0_1.6.0-1_arm64.deb	Package: libglvnd0;Version: 1.6.0-1;Architecture: arm64
+artifact	59642b0dceb0932ba98dfc40de97c1592ac278fa21749c1283ad4b7332696f8c	146024	libglx-mesa0_22.3.6-1+deb12u2_arm64.deb	https://deb.debian.org/debian/pool/main/m/mesa/libglx-mesa0_22.3.6-1%2bdeb12u2_arm64.deb	Package: libglx-mesa0;Version: 22.3.6-1+deb12u2;Architecture: arm64
+artifact	523f9b71f75e48ae605d8ef298a4b03ade26ade9a808a85329a3bd82a54b9b0d	30848	libglx0_1.6.0-1_arm64.deb	https://deb.debian.org/debian/pool/main/libg/libglvnd/libglx0_1.6.0-1_arm64.deb	Package: libglx0;Version: 1.6.0-1;Architecture: arm64
+artifact	561758595dc64d42e3ef48da13f87025af713a6dd240631eb68334bfcfcf8c97	117960	libgme0_0.6.3-6_arm64.deb	https://deb.debian.org/debian/pool/main/g/game-music-emu/libgme0_0.6.3-6_arm64.deb	Package: libgme0;Version: 0.6.3-6;Architecture: arm64
+artifact	a48b70dd1a95585466b40bd94564bce56ebcb2566e49ccdb6441e996aaab2098	104092	libgomp1_12.2.0-14+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/g/gcc-12/libgomp1_12.2.0-14%2bdeb12u1_arm64.deb	Package: libgomp1;Version: 12.2.0-14+deb12u1;Architecture: arm64
+artifact	fca82a3f01cb2cfe607efb6f21f489081716ddcf8a71e2f588d3d67ad39107a2	68660	libgraphite2-3_1.3.14-1+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/g/graphite2/libgraphite2-3_1.3.14-1%2bdeb12u1_arm64.deb	Package: libgraphite2-3;Version: 1.3.14-1+deb12u1;Architecture: arm64
+artifact	4c0041b45a3e2535dfcdb91222fbd9cb2a79c9ba0e38d6d44ad727424b457775	28816	libgsm1_1.0.22-1_arm64.deb	https://deb.debian.org/debian/pool/main/libg/libgsm/libgsm1_1.0.22-1_arm64.deb	Package: libgsm1;Version: 1.0.22-1;Architecture: arm64
+artifact	64b1d4aa672dc4eda5e11b9ff8061122060fc7aba6ad16908c89a269ffa174ee	1914384	libharfbuzz0b_6.0.0+dfsg-3_arm64.deb	https://deb.debian.org/debian/pool/main/h/harfbuzz/libharfbuzz0b_6.0.0%2bdfsg-3_arm64.deb	Package: libharfbuzz0b;Version: 6.0.0+dfsg-3;Architecture: arm64
+artifact	bfd492bb0c5c5072c67ea053c3ca8863df67d14d066b4dddd519eeae8cbcd92f	225744	libhwy1_1.0.3-3+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/h/highway/libhwy1_1.0.3-3%2bdeb12u1_arm64.deb	Package: libhwy1;Version: 1.0.3-3+deb12u1;Architecture: arm64
+artifact	4f5d892fd81110435e45ed0a5f1b12899d7ff989d51db283cbc043f5631646d8	9202292	libicu72_72.1-3+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/i/icu/libicu72_72.1-3%2bdeb12u1_arm64.deb	Package: libicu72;Version: 72.1-3+deb12u1;Architecture: arm64
+artifact	55dbcc899d6f647b0a6d0299f8430e3737059185c72f7d51ba8798ce797a140c	29032	libiec61883-0_1.2.0-6+b1_arm64.deb	https://deb.debian.org/debian/pool/main/libi/libiec61883/libiec61883-0_1.2.0-6%2bb1_arm64.deb	Package: libiec61883-0;Version: 1.2.0-6+b1;Architecture: arm64
+artifact	9b4bef2006edefa4d015918b954b315a91829a3c5a34ca5f9ca1a752b90f4ea8	261068	libjack-jackd2-0_1.9.21~dfsg-3_arm64.deb	https://deb.debian.org/debian/pool/main/j/jackd2/libjack-jackd2-0_1.9.21%7edfsg-3_arm64.deb	Package: libjack-jackd2-0;Version: 1.9.21~dfsg-3;Architecture: arm64
+artifact	098a382f51781c149e37aa25aeacfd54f26fdadfcbe5dc3ebf8713ef72efa6bd	30024	libjbig0_2.1-6.1_arm64.deb	https://deb.debian.org/debian/pool/main/j/jbigkit/libjbig0_2.1-6.1_arm64.deb	Package: libjbig0;Version: 2.1-6.1;Architecture: arm64
+artifact	de66f186f3ff3c1d10c2e75ae056b019b3f7f091f51096a06cade48b2dea875b	171432	libjpeg62-turbo_1%3a2.1.5-2_arm64.deb	https://deb.debian.org/debian/pool/main/libj/libjpeg-turbo/libjpeg62-turbo_2.1.5-2_arm64.deb	Package: libjpeg62-turbo;Version: 1:2.1.5-2;Architecture: arm64
+artifact	fc46d9d24c22e16726cc0fe131f52c4b3cc08db7ba408ef15173841bd3933f2e	643892	libjxl0.7_0.7.0-10+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/j/jpeg-xl/libjxl0.7_0.7.0-10%2bdeb12u1_arm64.deb	Package: libjxl0.7;Version: 0.7.0-10+deb12u1;Architecture: arm64
+artifact	7f6310fbd910326a63dedd87da046cd6eff3f644e9c00173f3afce20b7b2a93e	1664496	liblapack3_3.11.0-2_arm64.deb	https://deb.debian.org/debian/pool/main/l/lapack/liblapack3_3.11.0-2_arm64.deb	Package: liblapack3;Version: 3.11.0-2;Architecture: arm64
+artifact	753a2c7baa2d0a84b7c6ca6e80bbe37beadc2410939e5b34cbb4341234428a92	143756	liblcms2-2_2.14-2+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/l/lcms2/liblcms2-2_2.14-2%2bdeb12u1_arm64.deb	Package: liblcms2-2;Version: 2.14-2+deb12u1;Architecture: arm64
+artifact	c5294ed128ac375249098c43be9805c787ed1c65703fe1d877ead4213904f123	137640	liblerc4_4.0.0+ds-2_arm64.deb	https://deb.debian.org/debian/pool/main/l/lerc/liblerc4_4.0.0%2bds-2_arm64.deb	Package: liblerc4;Version: 4.0.0+ds-2;Architecture: arm64
+artifact	e3c0ebc8374617e26fa81e87714dbcbf7a04002cd3a11470ec4240692bf29ced	46808	liblilv-0-0_0.24.14-1_arm64.deb	https://deb.debian.org/debian/pool/main/l/lilv/liblilv-0-0_0.24.14-1_arm64.deb	Package: liblilv-0-0;Version: 0.24.14-1;Architecture: arm64
+artifact	9eecca617a53fb80ce0de5c6f475817528b3284cd43eec3863126715dc850dd2	20662856	libllvm15_1%3a15.0.6-4+b1_arm64.deb	https://deb.debian.org/debian/pool/main/l/llvm-toolchain-15/libllvm15_15.0.6-4%2bb1_arm64.deb	Package: libllvm15;Version: 1:15.0.6-4+b1;Architecture: arm64
+artifact	018c421355f3fbbf11a5132a2d5e3b2c2f6b057ead517002da5547be2817a731	262868	libmbedcrypto7_2.28.3-1_arm64.deb	https://deb.debian.org/debian/pool/main/m/mbedtls/libmbedcrypto7_2.28.3-1_arm64.deb	Package: libmbedcrypto7;Version: 2.28.3-1;Architecture: arm64
+artifact	4259ab5810ec52b03344e8c8fbcad330561ad6758f35f07233af3224d2824547	357228	libmp3lame0_3.100-6_arm64.deb	https://deb.debian.org/debian/pool/main/l/lame/libmp3lame0_3.100-6_arm64.deb	Package: libmp3lame0;Version: 3.100-6;Architecture: arm64
+artifact	a4348cc2939baabb498158c94229941d09fc42070af765dc45ef9b26eab727d2	140704	libmpg123-0_1.31.2-1+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/m/mpg123/libmpg123-0_1.31.2-1%2bdeb12u1_arm64.deb	Package: libmpg123-0;Version: 1.31.2-1+deb12u1;Architecture: arm64
+artifact	ec983f89355ac7f22fc486eaabc10c5c6192c56f02aec0c0ff50a7ce8e86a9ea	1155764	libmysofa1_1.3.1~dfsg0-1_arm64.deb	https://deb.debian.org/debian/pool/main/libm/libmysofa/libmysofa1_1.3.1%7edfsg0-1_arm64.deb	Package: libmysofa1;Version: 1.3.1~dfsg0-1;Architecture: arm64
+artifact	3974ddba57ed9bbfff10a144baae64d647adbb38ebce5fa122e4f0dd16b77866	202432	libnorm1_1.5.9+dfsg-2_arm64.deb	https://deb.debian.org/debian/pool/main/n/norm/libnorm1_1.5.9%2bdfsg-2_arm64.deb	Package: libnorm1;Version: 1.5.9+dfsg-2;Architecture: arm64
+artifact	b4ed2547f387eb2e97d13c0b423b034d2a4d052b2131dfe043e45a84915452c5	20312	libnuma1_2.0.16-1_arm64.deb	https://deb.debian.org/debian/pool/main/n/numactl/libnuma1_2.0.16-1_arm64.deb	Package: libnuma1;Version: 2.0.16-1;Architecture: arm64
+artifact	1a3e6c2a934a4099dcd982785d1563212fc6ad20f021a6f06aa0d6e6582416d3	23040	libogg0_1.3.5-3_arm64.deb	https://deb.debian.org/debian/pool/main/libo/libogg/libogg0_1.3.5-3_arm64.deb	Package: libogg0;Version: 1.3.5-3;Architecture: arm64
+artifact	695a650803f885459994bb921132d956c2b693759572005351a5b13773c754cd	170228	libopenal-data_1%3a1.19.1-2_all.deb	https://deb.debian.org/debian/pool/main/o/openal-soft/libopenal-data_1.19.1-2_all.deb	Package: libopenal-data;Version: 1:1.19.1-2;Architecture: all
+artifact	848f7cb93823c780ab58c0da67535316ef797666934d06ed6d64e902d4e2df11	485416	libopenal1_1%3a1.19.1-2_arm64.deb	https://deb.debian.org/debian/pool/main/o/openal-soft/libopenal1_1.19.1-2_arm64.deb	Package: libopenal1;Version: 1:1.19.1-2;Architecture: arm64
+artifact	c3cfa6f3ec67bb3caa361c21034df0a5a1c8359a16e00a460f62920fc07e561a	176232	libopenjp2-7_2.5.0-2+deb12u3_arm64.deb	https://deb.debian.org/debian/pool/main/o/openjpeg2/libopenjp2-7_2.5.0-2%2bdeb12u3_arm64.deb	Package: libopenjp2-7;Version: 2.5.0-2+deb12u3;Architecture: arm64
+artifact	168a759cc2cfec251b757527fae13989b2306a8f778627aedf61000378149a52	621956	libopenmpt0_0.6.9-1_arm64.deb	https://deb.debian.org/debian/pool/main/libo/libopenmpt/libopenmpt0_0.6.9-1_arm64.deb	Package: libopenmpt0;Version: 0.6.9-1;Architecture: arm64
+artifact	a7efb06da15cc7f1ffff62bfdd77ba43f2a2065b8b59185ad1d14031c5a9e354	175924	libopus0_1.3.1-3_arm64.deb	https://deb.debian.org/debian/pool/main/o/opus/libopus0_1.3.1-3_arm64.deb	Package: libopus0;Version: 1.3.1-3;Architecture: arm64
+artifact	88afa1481f9e520a3068e85dad776ed09a3751c7638a877333af6cec927db3ee	199908	libpango-1.0-0_1.50.12+ds-1_arm64.deb	https://deb.debian.org/debian/pool/main/p/pango1.0/libpango-1.0-0_1.50.12%2bds-1_arm64.deb	Package: libpango-1.0-0;Version: 1.50.12+ds-1;Architecture: arm64
+artifact	6a13b03932612d8515857f696376a6b4a8c25c8b52cee44c87a1a1edc5e9462a	32032	libpangocairo-1.0-0_1.50.12+ds-1_arm64.deb	https://deb.debian.org/debian/pool/main/p/pango1.0/libpangocairo-1.0-0_1.50.12%2bds-1_arm64.deb	Package: libpangocairo-1.0-0;Version: 1.50.12+ds-1;Architecture: arm64
+artifact	57f52f354ebe0cf818fe7f764d1b97d3127d19640e0ca6958ec49831883ee060	44540	libpangoft2-1.0-0_1.50.12+ds-1_arm64.deb	https://deb.debian.org/debian/pool/main/p/pango1.0/libpangoft2-1.0-0_1.50.12%2bds-1_arm64.deb	Package: libpangoft2-1.0-0;Version: 1.50.12+ds-1;Architecture: arm64
+artifact	6a632aa13cafe154d6212a57710f058405dd895fb62d464e16961b28d7325cbb	151640	libpgm-5.3-0_5.3.128~dfsg-2_arm64.deb	https://deb.debian.org/debian/pool/main/libp/libpgm/libpgm-5.3-0_5.3.128%7edfsg-2_arm64.deb	Package: libpgm-5.3-0;Version: 5.3.128~dfsg-2;Architecture: arm64
+artifact	a18db1a3bdbad168c7168b528bbb07b47316ff9fe977206a780dcc21b376e501	470200	libpixman-1-0_0.42.2-1_arm64.deb	https://deb.debian.org/debian/pool/main/p/pixman/libpixman-1-0_0.42.2-1_arm64.deb	Package: libpixman-1-0;Version: 0.42.2-1;Architecture: arm64
+artifact	ea1d0e24255b74e94155daaba32f4467d6a746447ce2dc4e6d122a670d600f6c	2003668	libplacebo208_4.208.0-3_arm64.deb	https://deb.debian.org/debian/pool/main/libp/libplacebo/libplacebo208_4.208.0-3_arm64.deb	Package: libplacebo208;Version: 4.208.0-3;Architecture: arm64
+artifact	9fa66d01197efe73f44ed566a3bffbb476675826326e9c32ffa80b29495de482	270552	libpng16-16_1.6.39-2+deb12u6_arm64.deb	https://deb.debian.org/debian-security/pool/updates/main/libp/libpng1.6/libpng16-16_1.6.39-2%2bdeb12u6_arm64.deb	Package: libpng16-16;Version: 1.6.39-2+deb12u6;Architecture: arm64
+artifact	5792065cf9dc3e1c5413f1f87ba95845b3daf90ef542ed2786bf64c36b846a60	114020	libpocketsphinx3_0.8+5prealpha+1-15_arm64.deb	https://deb.debian.org/debian/pool/main/p/pocketsphinx/libpocketsphinx3_0.8%2b5prealpha%2b1-15_arm64.deb	Package: libpocketsphinx3;Version: 0.8+5prealpha+1-15;Architecture: arm64
+artifact	ffafb4b6fc84108c2113386fe2d9a7f8ab2c1bcb0dca1b8d84f2ccf4ecba6177	82604	libpostproc56_7%3a5.1.9-0+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/f/ffmpeg/libpostproc56_5.1.9-0%2bdeb12u1_arm64.deb	Package: libpostproc56;Version: 7:5.1.9-0+deb12u1;Architecture: arm64
+artifact	26f17e3457c5fce0104a6b2f0efb75a3256b24b32ca7cfda6266373758a930cb	230964	libpulse0_16.1+dfsg1-2+b1_arm64.deb	https://deb.debian.org/debian/pool/main/p/pulseaudio/libpulse0_16.1%2bdfsg1-2%2bb1_arm64.deb	Package: libpulse0;Version: 16.1+dfsg1-2+b1;Architecture: arm64
+artifact	5e59bedc95b96a4f272b260e08c8d0a8f7d305e651be15219220929403289da2	40308	librabbitmq4_0.11.0-1+deb12u3_arm64.deb	https://deb.debian.org/debian-security/pool/updates/main/libr/librabbitmq/librabbitmq4_0.11.0-1%2bdeb12u3_arm64.deb	Package: librabbitmq4;Version: 0.11.0-1+deb12u3;Architecture: arm64
+artifact	054bff7e2f2dae8693e933d8505d1ad4d99a0c8bae5d5cfe47508b007cb44555	551912	librav1e0_0.5.1-6_arm64.deb	https://deb.debian.org/debian/pool/main/r/rust-rav1e/librav1e0_0.5.1-6_arm64.deb	Package: librav1e0;Version: 0.5.1-6;Architecture: arm64
+artifact	81a1e9bd2b790aa7ce7c426dd1742d3310894b01f124bc41962331b834da6cc3	40316	libraw1394-11_2.1.2-2_arm64.deb	https://deb.debian.org/debian/pool/main/libr/libraw1394/libraw1394-11_2.1.2-2_arm64.deb	Package: libraw1394-11;Version: 2.1.2-2;Architecture: arm64
+artifact	35df536e53aed81b4da5c4568ad7f98375318e6611ebaae4c4140e9a5c4ca2a9	69620	librist4_0.2.7+dfsg-1_arm64.deb	https://deb.debian.org/debian/pool/main/libr/librist/librist4_0.2.7%2bdfsg-1_arm64.deb	Package: librist4;Version: 0.2.7+dfsg-1;Architecture: arm64
+artifact	35dde303686e97604b74268bec715a4c37147df878ff57497c802b4dcac6d20b	2290100	librsvg2-2_2.54.7+dfsg-1~deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/libr/librsvg/librsvg2-2_2.54.7%2bdfsg-1%7edeb12u1_arm64.deb	Package: librsvg2-2;Version: 2.54.7+dfsg-1~deb12u1;Architecture: arm64
+artifact	fb97c395697ab03ce4d06d82ef293a6f1fef62ea79299b686d0f498eb6839d7e	117612	librubberband2_3.1.2+dfsg0-1_arm64.deb	https://deb.debian.org/debian/pool/main/r/rubberband/librubberband2_3.1.2%2bdfsg0-1_arm64.deb	Package: librubberband2;Version: 3.1.2+dfsg0-1;Architecture: arm64
+artifact	07f8fe4c8c54aa93e9ebc0f45bb6ca22421ad84234e5942b55d08b3b7819021f	945412	libsamplerate0_0.2.2-3_arm64.deb	https://deb.debian.org/debian/pool/main/libs/libsamplerate/libsamplerate0_0.2.2-3_arm64.deb	Package: libsamplerate0;Version: 0.2.2-3;Architecture: arm64
+artifact	7d875b119108a240015e7739c7a0de402616975281bcd8169cb434326fa93a66	565580	libsdl2-2.0-0_2.26.5+dfsg-1_arm64.deb	https://deb.debian.org/debian/pool/main/libs/libsdl2/libsdl2-2.0-0_2.26.5%2bdfsg-1_arm64.deb	Package: libsdl2-2.0-0;Version: 2.26.5+dfsg-1;Architecture: arm64
+artifact	7f3c9fbd822858a9e30335e4a7f66c9468962eb26cd375b93bc8b789660bf02f	14252	libsensors-config_1%3a3.6.0-7.1_all.deb	https://deb.debian.org/debian/pool/main/l/lm-sensors/libsensors-config_3.6.0-7.1_all.deb	Package: libsensors-config;Version: 1:3.6.0-7.1;Architecture: all
+artifact	adfdf7c7ee1a1c7bc61b5bf691d3a501e857c44243c7cdb6c8b81de86592e03b	33276	libsensors5_1%3a3.6.0-7.1_arm64.deb	https://deb.debian.org/debian/pool/main/l/lm-sensors/libsensors5_3.6.0-7.1_arm64.deb	Package: libsensors5;Version: 1:3.6.0-7.1;Architecture: arm64
+artifact	cf26049564c27b60e1de39c3207743ca05d9ee34e25d8ed4027033d1afa22852	44708	libserd-0-0_0.30.16-1_arm64.deb	https://deb.debian.org/debian/pool/main/s/serd/libserd-0-0_0.30.16-1_arm64.deb	Package: libserd-0-0;Version: 0.30.16-1;Architecture: arm64
+artifact	d64982ddfbdfcef714dc35a760a752ab1f3739aaee8011bc5c3f03afa73f465f	22980	libshine3_3.1.1-2_arm64.deb	https://deb.debian.org/debian/pool/main/s/shine/libshine3_3.1.1-2_arm64.deb	Package: libshine3;Version: 3.1.1-2;Architecture: arm64
+artifact	9dafcae211f5fccd147858384dd4ef161fae8a7d681256aaa7a772cbce15df55	501736	libslang2_2.3.3-3_arm64.deb	https://deb.debian.org/debian/pool/main/s/slang2/libslang2_2.3.3-3_arm64.deb	Package: libslang2;Version: 2.3.3-3;Architecture: arm64
+artifact	7d9a01c7f175cdc6f1ac23dde7b21c0ff840f098069e95a896fda56c824a5828	25412	libsnappy1v5_1.1.9-3_arm64.deb	https://deb.debian.org/debian/pool/main/s/snappy/libsnappy1v5_1.1.9-3_arm64.deb	Package: libsnappy1v5;Version: 1.1.9-3;Architecture: arm64
+artifact	9113167979c64bae0a73d2ee0740e662b25bb45b2f76e4745ea27db9f43f7b24	183460	libsndfile1_1.2.0-1+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/libs/libsndfile/libsndfile1_1.2.0-1%2bdeb12u1_arm64.deb	Package: libsndfile1;Version: 1.2.0-1+deb12u1;Architecture: arm64
+artifact	e7c787895eacf8363a4dea6a0cb3237a78857691d8d53f60a1a3ffeea3819808	25716	libsndio7.0_1.9.0-0.3+b2_arm64.deb	https://deb.debian.org/debian/pool/main/s/sndio/libsndio7.0_1.9.0-0.3%2bb2_arm64.deb	Package: libsndio7.0;Version: 1.9.0-0.3+b2;Architecture: arm64
+artifact	9ba45ca22ac46604f1ac2a48cd1dc9f38f8e72bcd84e51f65be2c89400017d7d	117556	libsodium23_1.0.18-1+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/libs/libsodium/libsodium23_1.0.18-1%2bdeb12u1_arm64.deb	Package: libsodium23;Version: 1.0.18-1+deb12u1;Architecture: arm64
+artifact	fbfcbb5115fc85c8e659ef283f1eb588f08c77d89f762feaa96589ad9143e58c	20004	libsord-0-0_0.16.14+git221008-1_arm64.deb	https://deb.debian.org/debian/pool/main/s/sord/libsord-0-0_0.16.14%2bgit221008-1_arm64.deb	Package: libsord-0-0;Version: 0.16.14+git221008-1;Architecture: arm64
+artifact	8f1b1780a5ced7a0821a8040d0f3ab5815acd5d2f38b12cca915a9a9d0ee28b7	54376	libsoxr0_0.1.3-4_arm64.deb	https://deb.debian.org/debian/pool/main/libs/libsoxr/libsoxr0_0.1.3-4_arm64.deb	Package: libsoxr0;Version: 0.1.3-4;Architecture: arm64
+artifact	5fc81ad2d0ead5b811381fbb47ef98c1bf063c9283470d795541f3c1cb95991a	48304	libspeex1_1.2.1-2_arm64.deb	https://deb.debian.org/debian/pool/main/s/speex/libspeex1_1.2.1-2_arm64.deb	Package: libspeex1;Version: 1.2.1-2;Architecture: arm64
+artifact	bd42e9aaf59b23e3c3d9014875b148e5cf056f0582d22ba9f882c09f57507060	108904	libsphinxbase3_0.8+5prealpha+1-16_arm64.deb	https://deb.debian.org/debian/pool/main/s/sphinxbase/libsphinxbase3_0.8%2b5prealpha%2b1-16_arm64.deb	Package: libsphinxbase3;Version: 0.8+5prealpha+1-16;Architecture: arm64
+artifact	a2f9d014bf2acaf67499b1cae7dd7f1a857a676d99849219b23ae2f4980a9b20	15868	libsratom-0-0_0.6.14-1_arm64.deb	https://deb.debian.org/debian/pool/main/s/sratom/libsratom-0-0_0.6.14-1_arm64.deb	Package: libsratom-0-0;Version: 0.6.14-1;Architecture: arm64
+artifact	3cfb9d8d26459e3538473683a8e297429d0662eea4c51a01c736bf06608354c5	272080	libsrt1.5-gnutls_1.5.1-1+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/s/srt/libsrt1.5-gnutls_1.5.1-1%2bdeb12u1_arm64.deb	Package: libsrt1.5-gnutls;Version: 1.5.1-1+deb12u1;Architecture: arm64
+artifact	439ccd23ed5cff148b4d75a0c3f0dbb9b139058d6702a2929a03001f8f753863	208388	libssh-gcrypt-4_0.10.6-0+deb12u3_arm64.deb	https://deb.debian.org/debian-security/pool/updates/main/libs/libssh/libssh-gcrypt-4_0.10.6-0%2bdeb12u3_arm64.deb	Package: libssh-gcrypt-4;Version: 0.10.6-0+deb12u3;Architecture: arm64
+artifact	8615692e13797a345b2aea777e396ad6f9c19e6ff49459625f9078bb33199afe	1074308	libsvtav1enc1_1.4.1+dfsg-1_arm64.deb	https://deb.debian.org/debian/pool/main/s/svt-av1/libsvtav1enc1_1.4.1%2bdfsg-1_arm64.deb	Package: libsvtav1enc1;Version: 1.4.1+dfsg-1;Architecture: arm64
+artifact	c723d38ce00cdcbf779add81d90d3510525424dd174ce6880520a0147453ddeb	98904	libswresample4_7%3a5.1.9-0+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/f/ffmpeg/libswresample4_5.1.9-0%2bdeb12u1_arm64.deb	Package: libswresample4;Version: 7:5.1.9-0+deb12u1;Architecture: arm64
+artifact	deb1abe7e40fdc9f38f54d7a87d1d2601f54447198221c4e1bb98da64a60d1ef	190152	libswscale6_7%3a5.1.9-0+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/f/ffmpeg/libswscale6_5.1.9-0%2bdeb12u1_arm64.deb	Package: libswscale6;Version: 7:5.1.9-0+deb12u1;Architecture: arm64
+artifact	eed65a75269411e47d7b393d82bc30471da5c499e9f311abbfd8c54ca1a42d9e	176200	libthai-data_0.1.29-1_all.deb	https://deb.debian.org/debian/pool/main/libt/libthai/libthai-data_0.1.29-1_all.deb	Package: libthai-data;Version: 0.1.29-1;Architecture: all
+artifact	1374f50f4e96397f2830f3fdf09e95a5fe8e4d584fdc70dd187eec5f8832d08c	56248	libthai0_0.1.29-1_arm64.deb	https://deb.debian.org/debian/pool/main/libt/libthai/libthai0_0.1.29-1_arm64.deb	Package: libthai0;Version: 0.1.29-1;Architecture: arm64
+artifact	d9da79696a6a886a606ecbc259497978f4d616dcb61544011a48a0e0486dd105	143864	libtheora0_1.1.1+dfsg.1-16.1+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/libt/libtheora/libtheora0_1.1.1%2bdfsg.1-16.1%2bdeb12u1_arm64.deb	Package: libtheora0;Version: 1.1.1+dfsg.1-16.1+deb12u1;Architecture: arm64
+artifact	d88aa87e5e786f322048683cab56ae922448f501e9b402747d0a883738ce35ce	300884	libtiff6_4.5.0-6+deb12u4_arm64.deb	https://deb.debian.org/debian/pool/main/t/tiff/libtiff6_4.5.0-6%2bdeb12u4_arm64.deb	Package: libtiff6;Version: 4.5.0-6+deb12u4;Architecture: arm64
+artifact	73780c555796569a252ec5cf1ea919e59ef4031298bc4be1516a6a0e83f06b5a	48548	libtwolame0_0.4.0-2_arm64.deb	https://deb.debian.org/debian/pool/main/t/twolame/libtwolame0_0.4.0-2_arm64.deb	Package: libtwolame0;Version: 0.4.0-2;Architecture: arm64
+artifact	693e1e62806759c6f55585cd1884cc851ac9a1b0a3ea7df55c51176b0b450fd4	15700	libudfread0_1.1.2-1_arm64.deb	https://deb.debian.org/debian/pool/main/libu/libudfread/libudfread0_1.1.2-1_arm64.deb	Package: libudfread0;Version: 1.1.2-1;Architecture: arm64
+artifact	e0648086b231c9204514d31480d517cb1b51e301ac39e69335a67d01ec785608	59976	libusb-1.0-0_2%3a1.0.26-1_arm64.deb	https://deb.debian.org/debian/pool/main/libu/libusb-1.0/libusb-1.0-0_1.0.26-1_arm64.deb	Package: libusb-1.0-0;Version: 2:1.0.26-1;Architecture: arm64
+artifact	dd1c3981a81171f3886f14b56e2c13cb879111109e5b1e3e786c26641ab2cc2f	16328	libva-drm2_2.17.0-1_arm64.deb	https://deb.debian.org/debian/pool/main/libv/libva/libva-drm2_2.17.0-1_arm64.deb	Package: libva-drm2;Version: 2.17.0-1;Architecture: arm64
+artifact	326f1a6d764adae4ccdc606913ba60b3aecc62788c509444751e7fea75a13584	20808	libva-x11-2_2.17.0-1_arm64.deb	https://deb.debian.org/debian/pool/main/libv/libva/libva-x11-2_2.17.0-1_arm64.deb	Package: libva-x11-2;Version: 2.17.0-1;Architecture: arm64
+artifact	b737136a783067f8f202115ed820d955aea16b95a6f06c406cc4305f99d20d3e	65168	libva2_2.17.0-1_arm64.deb	https://deb.debian.org/debian/pool/main/libv/libva/libva2_2.17.0-1_arm64.deb	Package: libva2;Version: 2.17.0-1;Architecture: arm64
+artifact	2f13f0bce02b7c5c5caecf5522e22852e296d93b2275c6a445dbf5427605b93c	23712	libvdpau1_1.5-2_arm64.deb	https://deb.debian.org/debian/pool/main/libv/libvdpau/libvdpau1_1.5-2_arm64.deb	Package: libvdpau1;Version: 1.5-2;Architecture: arm64
+artifact	39a88b11d1c727f43a4301d8408dfcbde2d6980e4d6295fe9f9f0447c9436971	36440	libvidstab1.1_1.1.0-2+b1_arm64.deb	https://deb.debian.org/debian/pool/main/libv/libvidstab/libvidstab1.1_1.1.0-2%2bb1_arm64.deb	Package: libvidstab1.1;Version: 1.1.0-2+b1;Architecture: arm64
+artifact	2f902ae456bcada7b0d494d7bd7c994feb81c4158209d8a12c0b2d9e255edda7	86196	libvorbis0a_1.3.7-1_arm64.deb	https://deb.debian.org/debian/pool/main/libv/libvorbis/libvorbis0a_1.3.7-1_arm64.deb	Package: libvorbis0a;Version: 1.3.7-1;Architecture: arm64
+artifact	f1089e220c81e267caec859bf2e440bb78ed9f318bbb51cfd6c85d35bf80144b	80416	libvorbisenc2_1.3.7-1_arm64.deb	https://deb.debian.org/debian/pool/main/libv/libvorbis/libvorbisenc2_1.3.7-1_arm64.deb	Package: libvorbisenc2;Version: 1.3.7-1;Architecture: arm64
+artifact	f8f418e15f99905d4a2d532617511a11d700e814f8ead1a883deea2f7241970c	25376	libvorbisfile3_1.3.7-1_arm64.deb	https://deb.debian.org/debian/pool/main/libv/libvorbis/libvorbisfile3_1.3.7-1_arm64.deb	Package: libvorbisfile3;Version: 1.3.7-1;Architecture: arm64
+artifact	4932b9515748ca48311e00ca548741aef7822300c9c149c400fd0a7cb0b6c394	892420	libvpx7_1.12.0-1+deb12u5_arm64.deb	https://deb.debian.org/debian/pool/main/libv/libvpx/libvpx7_1.12.0-1%2bdeb12u5_arm64.deb	Package: libvpx7;Version: 1.12.0-1+deb12u5;Architecture: arm64
+artifact	3a21d49fef3a9799a21ffd5faa5bd7a1bd35604417cd9f5cf74155afd3b5282e	111080	libvulkan1_1.3.239.0-1_arm64.deb	https://deb.debian.org/debian/pool/main/v/vulkan-loader/libvulkan1_1.3.239.0-1_arm64.deb	Package: libvulkan1;Version: 1.3.239.0-1;Architecture: arm64
+artifact	ae390cc04c2eb1de90b9a6373505b22c730ada5e72daa50c507b7f99c12faf06	27604	libwayland-client0_1.21.0-1_arm64.deb	https://deb.debian.org/debian/pool/main/w/wayland/libwayland-client0_1.21.0-1_arm64.deb	Package: libwayland-client0;Version: 1.21.0-1;Architecture: arm64
+artifact	8c8d1a3942bc3fc9dd3ea7c679c1a314e59cdaaa700883d54d1bb3ec89db256b	14120	libwayland-cursor0_1.21.0-1_arm64.deb	https://deb.debian.org/debian/pool/main/w/wayland/libwayland-cursor0_1.21.0-1_arm64.deb	Package: libwayland-cursor0;Version: 1.21.0-1;Architecture: arm64
+artifact	c08124a4d9af24f058b45c88867a84697882e755ea94965795d152fe26fe57c9	8696	libwayland-egl1_1.21.0-1_arm64.deb	https://deb.debian.org/debian/pool/main/w/wayland/libwayland-egl1_1.21.0-1_arm64.deb	Package: libwayland-egl1;Version: 1.21.0-1;Architecture: arm64
+artifact	4d99e7e0503fdaa999e67d47d8612c0465e775eafa47819573da50bdb09064f2	34940	libwayland-server0_1.21.0-1_arm64.deb	https://deb.debian.org/debian/pool/main/w/wayland/libwayland-server0_1.21.0-1_arm64.deb	Package: libwayland-server0;Version: 1.21.0-1;Architecture: arm64
+artifact	7aafdb66662df9e1f68c80980fe3567bd29f93a03677d0cf408c21ce49da29ff	259868	libwebp7_1.2.4-0.2+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/libw/libwebp/libwebp7_1.2.4-0.2%2bdeb12u1_arm64.deb	Package: libwebp7;Version: 1.2.4-0.2+deb12u1;Architecture: arm64
+artifact	e2780b058ecf06261ee1b7788307e56537dceb1da538cfd7fa44f379c12186e3	108976	libwebpmux3_1.2.4-0.2+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/libw/libwebp/libwebpmux3_1.2.4-0.2%2bdeb12u1_arm64.deb	Package: libwebpmux3;Version: 1.2.4-0.2+deb12u1;Architecture: arm64
+artifact	d1d533e983582282a9ea82c87ac5ce715a9b67bd6d1acbd2439a11c63c36549b	735284	libx11-6_2%3a1.8.4-2+deb12u2_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libx11/libx11-6_1.8.4-2%2bdeb12u2_arm64.deb	Package: libx11-6;Version: 2:1.8.4-2+deb12u2;Architecture: arm64
+artifact	987a848aeb1c358e4186368871b0526f10bb14c6b53214ab3bf8b69abb830191	291884	libx11-data_2%3a1.8.4-2+deb12u2_all.deb	https://deb.debian.org/debian/pool/main/libx/libx11/libx11-data_1.8.4-2%2bdeb12u2_all.deb	Package: libx11-data;Version: 2:1.8.4-2+deb12u2;Architecture: all
+artifact	21c7e6f19909bb1e02bb3c2089789791858c54d37e86cef9d7872782c1cb711e	192472	libx11-xcb1_2%3a1.8.4-2+deb12u2_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libx11/libx11-xcb1_1.8.4-2%2bdeb12u2_arm64.deb	Package: libx11-xcb1;Version: 2:1.8.4-2+deb12u2;Architecture: arm64
+artifact	95475856611f971affe2dfaccc85253d1c6bb2fcb1d67c3147b32021cf304b8e	442908	libx264-164_2%3a0.164.3095+gitbaee400-3_arm64.deb	https://deb.debian.org/debian/pool/main/x/x264/libx264-164_0.164.3095%2bgitbaee400-3_arm64.deb	Package: libx264-164;Version: 2:0.164.3095+gitbaee400-3;Architecture: arm64
+artifact	3142b9c9fb005013cee57abee51abbd78ca0a693fc61aa252fefd5be5d074b03	602616	libx265-199_3.5-2+b1_arm64.deb	https://deb.debian.org/debian/pool/main/x/x265/libx265-199_3.5-2%2bb1_arm64.deb	Package: libx265-199;Version: 3.5-2+b1;Architecture: arm64
+artifact	36c2bf400641a80521093771dc2562c903df4065f9eb03add50d90564337ea6c	19696	libxau6_1%3a1.0.9-1_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxau/libxau6_1.0.9-1_arm64.deb	Package: libxau6;Version: 1:1.0.9-1;Architecture: arm64
+artifact	ec012de2f5945a5662b32ab1eb59be944e4b5b5ddae89ae28765819df62817f6	106984	libxcb-dri2-0_1.15-1_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxcb/libxcb-dri2-0_1.15-1_arm64.deb	Package: libxcb-dri2-0;Version: 1.15-1;Architecture: arm64
+artifact	a4b2a700d0da1dcaddc6435986d2ae45e8efdb58a2892a2e87cebb0c85dca359	106796	libxcb-dri3-0_1.15-1_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxcb/libxcb-dri3-0_1.15-1_arm64.deb	Package: libxcb-dri3-0;Version: 1.15-1;Architecture: arm64
+artifact	4ad61651315a9267e4447af9cc1a63b08eded03697af34fa65cc3128f5466e37	122504	libxcb-glx0_1.15-1_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxcb/libxcb-glx0_1.15-1_arm64.deb	Package: libxcb-glx0;Version: 1.15-1;Architecture: arm64
+artifact	df2148b69f25b6a31af73bcfb355b2ae3724678167457996febb3d335377ca17	105532	libxcb-present0_1.15-1_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxcb/libxcb-present0_1.15-1_arm64.deb	Package: libxcb-present0;Version: 1.15-1;Architecture: arm64
+artifact	9e09fe9b7f6ac596f8b14499e9a10c336b7d3ff27e78f751dffeac9975113004	116728	libxcb-randr0_1.15-1_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxcb/libxcb-randr0_1.15-1_arm64.deb	Package: libxcb-randr0;Version: 1.15-1;Architecture: arm64
+artifact	8d431caeae9dd0f7490caef1d66de0b7a7d3817afe021b6d55bedbba7b19bf43	114956	libxcb-render0_1.15-1_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxcb/libxcb-render0_1.15-1_arm64.deb	Package: libxcb-render0;Version: 1.15-1;Architecture: arm64
+artifact	8fd520c537f00cc5d29ff3ef4417d1182c4a7475c5d5c0998f137a9f52eb02a5	105880	libxcb-shape0_1.15-1_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxcb/libxcb-shape0_1.15-1_arm64.deb	Package: libxcb-shape0;Version: 1.15-1;Architecture: arm64
+artifact	825931950d42f51cd795cf2e5b9399d840225491e95ec530e0c5a9145c4ba5a0	105620	libxcb-shm0_1.15-1_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxcb/libxcb-shm0_1.15-1_arm64.deb	Package: libxcb-shm0;Version: 1.15-1;Architecture: arm64
+artifact	63f165fb851ffacf021cdc4224fb93f5694a5c03dc699f2f4237aa67e1550d25	108904	libxcb-sync1_1.15-1_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxcb/libxcb-sync1_1.15-1_arm64.deb	Package: libxcb-sync1;Version: 1.15-1;Architecture: arm64
+artifact	e6cfc1f2a68d4c7f0c10e8bf24ebab20d791ba96ec1ca70824ccd927f0fa9e21	109596	libxcb-xfixes0_1.15-1_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxcb/libxcb-xfixes0_1.15-1_arm64.deb	Package: libxcb-xfixes0;Version: 1.15-1;Architecture: arm64
+artifact	041d9a68415c3ccf3ce8f4f8b88e4bbfb5dc1f0d97013c6ef8423e620ea50f84	142664	libxcb1_1.15-1_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxcb/libxcb1_1.15-1_arm64.deb	Package: libxcb1;Version: 1.15-1;Architecture: arm64
+artifact	a93dd172bdd940de4ac6fd2b7a3f0213604c975f9f2f51eb3013f50886aaa87c	40180	libxcursor1_1%3a1.2.1-1_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxcursor/libxcursor1_1.2.1-1_arm64.deb	Package: libxcursor1;Version: 1:1.2.1-1;Architecture: arm64
+artifact	e92569ac33247261aa09adfadc34ced3994ac301cf8b58de415a2d5dbf15ccfc	25358	libxdmcp6_1%3a1.1.2-3_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxdmcp/libxdmcp6_1.1.2-3_arm64.deb	Package: libxdmcp6;Version: 1:1.1.2-3;Architecture: arm64
+artifact	5e9c0ad606eb4674c645fe8e0e64330c47d2729f7a59ed569848610efd5d5b62	51744	libxext6_2%3a1.3.4-1+b1_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxext/libxext6_1.3.4-1%2bb1_arm64.deb	Package: libxext6;Version: 2:1.3.4-1+b1;Architecture: arm64
+artifact	d47bda8fed01b19b41d503e2df05d9166c58e30e2376f2f8784ceb7a834befe6	22880	libxfixes3_1%3a6.0.0-2_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxfixes/libxfixes3_6.0.0-2_arm64.deb	Package: libxfixes3;Version: 1:6.0.0-2;Architecture: arm64
+artifact	b26383c9929d8bfba051eee22301e064d17039ed022bbf31990feb0d7a03b36c	82304	libxi6_2%3a1.8-1+b1_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxi/libxi6_1.8-1%2bb1_arm64.deb	Package: libxi6;Version: 2:1.8-1+b1;Architecture: arm64
+artifact	ec518d8a19796a399ab95e7bc4dfbb6bd2ed8e151f77b222df26208db412d852	100032	libxkbcommon0_1.5.0-1_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxkbcommon/libxkbcommon0_1.5.0-1_arm64.deb	Package: libxkbcommon0;Version: 1.5.0-1;Architecture: arm64
+artifact	0bc00975e459387535a4bbabe98a398f0e77c9ab82474face18d01ae8ed0dae4	620500	libxml2_2.9.14+dfsg-1.3~deb12u6_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxml2/libxml2_2.9.14%2bdfsg-1.3%7edeb12u6_arm64.deb	Package: libxml2;Version: 2.9.14+dfsg-1.3~deb12u6;Architecture: arm64
+artifact	f0bc7f79fee182caae176652fdb1bf349d13b9591b10ad4dc1c896521da8e49f	38364	libxrandr2_2%3a1.5.2-2+b1_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxrandr/libxrandr2_1.5.2-2%2bb1_arm64.deb	Package: libxrandr2;Version: 2:1.5.2-2+b1;Architecture: arm64
+artifact	f260193deb4eaf0b410a1c61e1f84804366ee3372b8bad9f38005f7dbcd89aae	32004	libxrender1_1%3a0.9.10-1.1_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxrender/libxrender1_0.9.10-1.1_arm64.deb	Package: libxrender1;Version: 1:0.9.10-1.1;Architecture: arm64
+artifact	fa2edaae6902681ecd02534dcdf8389ac48714d3385d572cc17747160957acc8	8712	libxshmfence1_1.3-1_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxshmfence/libxshmfence1_1.3-1_arm64.deb	Package: libxshmfence1;Version: 1.3-1;Architecture: arm64
+artifact	e0ff80e309eacda5face68b9a3bd56718fed2750af429324c35d7c9491c335f4	17764	libxss1_1%3a1.2.3-1_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxss/libxss1_1.2.3-1_arm64.deb	Package: libxss1;Version: 1:1.2.3-1;Architecture: arm64
+artifact	61d831c3094903a9afe7cd148615d522f84254ccf952d28a68550d3d1ff9c964	24500	libxv1_2%3a1.0.11-1.1_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxv/libxv1_1.0.11-1.1_arm64.deb	Package: libxv1;Version: 2:1.0.11-1.1;Architecture: arm64
+artifact	b950edcb42803f158f94cd2ee44850082c98c92d54e20982ad933936f5f1d181	202152	libxvidcore4_2%3a1.3.7-1_arm64.deb	https://deb.debian.org/debian/pool/main/x/xvidcore/libxvidcore4_1.3.7-1_arm64.deb	Package: libxvidcore4;Version: 2:1.3.7-1;Architecture: arm64
+artifact	8a4826772ac480804d6b8d776a4130d95260c036b9b218de4c8a0f07eb9c5bba	20062	libxxf86vm1_1%3a1.1.4-1+b2_arm64.deb	https://deb.debian.org/debian/pool/main/libx/libxxf86vm/libxxf86vm1_1.1.4-1%2bb2_arm64.deb	Package: libxxf86vm1;Version: 1:1.1.4-1+b2;Architecture: arm64
+artifact	115080b0aee2d75f316da4be24c8a5e88ed7c362c7b4a4cd13f3af9b9da130f2	6281640	libz3-4_4.8.12-3.1_arm64.deb	https://deb.debian.org/debian/pool/main/z/z3/libz3-4_4.8.12-3.1_arm64.deb	Package: libz3-4;Version: 4.8.12-3.1;Architecture: arm64
+artifact	407502547272e72490f7434c51a2c5c69fedcbd627ff06d17b7ffedea7e9c310	110352	libzimg2_3.0.4+ds1-1_arm64.deb	https://deb.debian.org/debian/pool/main/z/zimg/libzimg2_3.0.4%2bds1-1_arm64.deb	Package: libzimg2;Version: 3.0.4+ds1-1;Architecture: arm64
+artifact	f5e6f10a2e01b016369f2d1687d39ab5ed5e5ecdb6ca5fb248b6100a3a7069e9	244304	libzmq5_4.3.4-6_arm64.deb	https://deb.debian.org/debian/pool/main/z/zeromq3/libzmq5_4.3.4-6_arm64.deb	Package: libzmq5;Version: 4.3.4-6;Architecture: arm64
+artifact	2115a125736144bc46bec2c185a24e4fd67b392f1b069950f4f45f11633de0e1	69944	libzvbi-common_0.2.41-1+deb12u1_all.deb	https://deb.debian.org/debian/pool/main/z/zvbi/libzvbi-common_0.2.41-1%2bdeb12u1_all.deb	Package: libzvbi-common;Version: 0.2.41-1+deb12u1;Architecture: all
+artifact	b6fb4091ca76c31d5ea1113e6ff9c482227a516508a7bff1d9e4baa723f3b49e	259548	libzvbi0_0.2.41-1+deb12u1_arm64.deb	https://deb.debian.org/debian/pool/main/z/zvbi/libzvbi0_0.2.41-1%2bdeb12u1_arm64.deb	Package: libzvbi0;Version: 0.2.41-1+deb12u1;Architecture: arm64
+artifact	00c6e3d9456411ac78b199b577f25231be80186796ebdff65089240154ebbcb0	3906316	locales_2.36-9+deb12u14_all.deb	https://deb.debian.org/debian/pool/main/g/glibc/locales_2.36-9%2bdeb12u14_all.deb	Package: locales;Version: 2.36-9+deb12u14;Architecture: all
+artifact	a021fd47d5c0d802e4f688694dae4c1e3601cd8b651294df3d327a5e6fa72a72	42068	ocl-icd-libopencl1_2.3.1-1_arm64.deb	https://deb.debian.org/debian/pool/main/o/ocl-icd/ocl-icd-libopencl1_2.3.1-1_arm64.deb	Package: ocl-icd-libopencl1;Version: 2.3.1-1;Architecture: arm64
+artifact	d27522479f4959d1dc9f5bf0ea68b43b3bb5b1c45041193201cb3b2cd857244b	726788	shared-mime-info_2.2-1_arm64.deb	https://deb.debian.org/debian/pool/main/s/shared-mime-info/shared-mime-info_2.2-1_arm64.deb	Package: shared-mime-info;Version: 2.2-1;Architecture: arm64
+artifact	fc97c2f4495eb33a77501c7960928c0d2001e5c4b2aa438f1713e2082c23bacd	252272	x11-common_1%3a7.7+23_all.deb	https://deb.debian.org/debian/pool/main/x/xorg/x11-common_7.7%2b23_all.deb	Package: x11-common;Version: 1:7.7+23;Architecture: all
+artifact	28a79c61b785f403da93af58c39aed13c022032935e3e54362c6707169cfe982	763516	xkb-data_2.35.1-1_all.deb	https://deb.debian.org/debian/pool/main/x/xkeyboard-config/xkb-data_2.35.1-1_all.deb	Package: xkb-data;Version: 2.35.1-1;Architecture: all

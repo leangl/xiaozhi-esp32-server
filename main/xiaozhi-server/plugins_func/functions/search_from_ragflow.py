@@ -1,5 +1,6 @@
 import json
 import httpx
+from config.service_policy import async_httpx_client, validate_endpoint, ServicePolicyError
 from config.logger import setup_logging
 from plugins_func.register import register_function, ToolType, ActionResponse, Action
 from typing import TYPE_CHECKING
@@ -10,15 +11,15 @@ if TYPE_CHECKING:
 TAG = __name__
 logger = setup_logging()
 
-# 定义基础的函数描述模板
+# Define the base tool-description template.
 SEARCH_FROM_RAGFLOW_FUNCTION_DESC = {
     "type": "function",
     "function": {
         "name": "search_from_ragflow",
-        "description": "从知识库中查询信息",
+        "description": "Retrieve information from the knowledge base",
         "parameters": {
             "type": "object",
-            "properties": {"question": {"type": "string", "description": "查询的问题"}},
+            "properties": {"question": {"type": "string", "description": "Question to look up"}},
             "required": ["question"],
         },
     },
@@ -29,9 +30,9 @@ SEARCH_FROM_RAGFLOW_FUNCTION_DESC = {
     "search_from_ragflow", SEARCH_FROM_RAGFLOW_FUNCTION_DESC, ToolType.SYSTEM_CTL
 )
 async def search_from_ragflow(conn: "ConnectionHandler", question=None):
-    # 确保字符串参数正确处理编码
+    # Handle string encoding for the question argument.
     if question and isinstance(question, str):
-        # 确保问题参数是UTF-8编码的字符串
+        # The question is already a string for UTF-8 serialization.
         pass
     else:
         question = str(question) if question is not None else ""
@@ -44,35 +45,37 @@ async def search_from_ragflow(conn: "ConnectionHandler", question=None):
     url = base_url + "/api/v1/retrieval"
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
 
-    # 确保payload中的字符串都是UTF-8编码
+    # Build the payload with strings for UTF-8 serialization.
     payload = {"question": question, "dataset_ids": dataset_ids}
 
     try:
-        # 使用ensure_ascii=False确保JSON序列化时正确处理中文
-        async with httpx.AsyncClient(timeout=httpx.Timeout(5.0, connect=3.0), verify=False) as client:
+        validate_endpoint(url, "tool")
+        # Send JSON through httpx; preserve the payload's Unicode text.
+        async with async_httpx_client("tool", timeout=httpx.Timeout(5.0, connect=3.0)) as client:
             response = await client.post(url, json=payload, headers=headers)
 
-        # 显式设置响应的编码为utf-8
+        # Set the response encoding to UTF-8.
         response.encoding = "utf-8"
 
         response.raise_for_status()
 
-        # 先获取文本内容，然后手动处理JSON解码
+        # Read response text before decoding JSON.
         response_text = response.text
 
         result = json.loads(response_text)
 
         if result.get("code") != 0:
+            # Keep the Chinese "unknown error" fallback and spoken error templates.
             error_detail = result.get("error", {}).get("detail", "未知错误")
             error_message = result.get("error", {}).get("message", "")
             error_code = result.get("code", "")
 
-            # 安全地记录错误信息
+            # Log the API error details.
             logger.bind(tag=TAG).error(
-                f"RAGFlow API调用失败，响应码：{error_code}，错误详情：{error_detail}，完整响应：{result}"
+                f"RAGFlow API call failed, code: {error_code}, details: {error_detail}, full response: {result}"
             )
 
-            # 构建详细的错误响应
+            # Build the localized direct error reply, preserving code/detail formatting.
             error_response = f"RAG接口返回异常（错误码：{error_code}）"
 
             if error_message:
@@ -87,7 +90,7 @@ async def search_from_ragflow(conn: "ConnectionHandler", question=None):
         for chunk in chunks:
             content = chunk.get("content", "")
             if content:
-                # 安全地处理内容字符串
+                # Handle content as text, bytes or another value.
                 if isinstance(content, str):
                     contents.append(content)
                 elif isinstance(content, bytes):
@@ -96,14 +99,17 @@ async def search_from_ragflow(conn: "ConnectionHandler", question=None):
                     contents.append(str(content))
 
         if contents:
-            # 组织知识库内容为引用模式
-            context_text = f"# 关于问题【{question}】查到知识库如下\n"
+            # Format retrieved knowledge as quoted context.
+            context_text = f"# Knowledge-base results for question【{question}】\n"
             context_text += "```\n\n\n".join(contents[:5])
             context_text += "\n```"
         else:
-            context_text = "根据知识库查询结果，没有相关信息。"
+            context_text = "The knowledge-base query returned no relevant information."
         return ActionResponse(Action.REQLLM, context_text, None)
 
+    # Keep the Chinese direct-response diagnostics and remedy text for spoken replies.
+    except ServicePolicyError:
+        return ActionResponse(Action.ERROR, "service_unavailable", "Knowledge-base service unavailable; configure a reviewed endpoint.")
     except httpx.TimeoutException as e:
         error_response = "RAG接口请求超时"
         error_response += "\n可能原因：RAGflow服务响应缓慢或网络延迟"
@@ -131,12 +137,12 @@ async def search_from_ragflow(conn: "ConnectionHandler", question=None):
         return ActionResponse(Action.RESPONSE, None, error_response)
 
     except Exception as e:
-        # 其他异常
+        # Handle other exceptions.
         error_type = type(e).__name__
         logger.bind(tag=TAG).error(
-            f"RAGflow处理异常，异常类型：{error_type}，详情：{str(e)}"
+            f"RAGFlow processing failed, type: {error_type}"
         )
 
-        # 提供详细的错误信息
+        # Include details in the localized direct reply.
         error_response = f"RAG接口处理异常（{error_type}）：{str(e)}"
         return ActionResponse(Action.RESPONSE, None, error_response)

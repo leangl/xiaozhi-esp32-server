@@ -1,0 +1,67 @@
+service-dependency-lock-v1
+kind	apk
+base	docker.io/bellsoft/liberica-runtime-container:jre-21-glibc@sha256:02537ff8ec5d24e67d4dccb64a785a300f6160e00fdce799fc10d29379340207
+arch	aarch64
+installed	apk-tools-3.0.8-r0	aarch64
+installed	bash-5.3.9-r2	aarch64
+installed	brotli-libs-1.2.0-r1	aarch64
+installed	busybox-1.38.0-r5	aarch64
+installed	busybox-binsh-1.38.0-r5	aarch64
+installed	ca-certificates-bundle-20260909-r0	aarch64
+installed	distro-baselayout-3.7.2-r1	aarch64
+installed	distro-baselayout-data-3.7.2-r1	aarch64
+installed	distro-keys-1.0-r4	aarch64
+installed	distro-release-25-r2	aarch64
+installed	encodings-1.1.0-r0	aarch64
+installed	font-dejavu-2.37-r6	aarch64
+installed	font-dejavu-core-2.37-r6	aarch64
+installed	font-dejavu-extra-2.37-r6	aarch64
+installed	fontconfig-2.18.1-r0	aarch64
+installed	freetype-2.14.3-r1	aarch64
+installed	glibc-2.43.0-r11	aarch64
+installed	glibc-utils-2.43.0-r11	aarch64
+installed	java-common-1.0-r3	aarch64
+installed	libapk-3.0.8-r0	aarch64
+installed	libbz2-1.0.8-r7	aarch64
+installed	libcrypto3-3.5.9-r0	aarch64
+installed	liberica21-container-jre-21.0.12.1_p1-r0	aarch64
+installed	libexpat-2.9.0-r0	aarch64
+installed	libfontenc-1.1.9-r0	aarch64
+installed	libncursesw-6.6_p20260822-r0	aarch64
+installed	libpng-1.6.59-r0	aarch64
+installed	libssl3-3.5.9-r0	aarch64
+installed	libxcrypt-4.5.2-r0	aarch64
+installed	mkfontscale-1.2.4-r0	aarch64
+installed	ncurses-terminfo-base-6.6_p20260822-r0	aarch64
+installed	nginx-1.30.4-r3	aarch64
+installed	pcre2-10.49-r0	aarch64
+installed	readline-8.3.3-r0	aarch64
+installed	ssl_client-1.38.0-r5	aarch64
+installed	zlib-1.3.2-r1	aarch64
+artifact	8575623e2851e5f6640c4ea486c6bba28bd0be322bc47424b2c0876df9c1669b	544458	bash-5.3.9-r2.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/bash-5.3.9-r2.apk	bash-5.3.9-r2:aarch64
+artifact	2862b74152dca35edf2c4202fcc608c5d0da005ab39f26c93126be0fb9d7b48d	387532	brotli-libs-1.2.0-r1.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/brotli-libs-1.2.0-r1.apk	brotli-libs-1.2.0-r1:aarch64
+artifact	6752f43c36451d0d87e7c1301f0a2be67873ae96f841c8bf79b6d194869093d7	511216	busybox-1.38.0-r5.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/busybox-1.38.0-r5.apk	busybox-1.38.0-r5:aarch64
+artifact	1b44797f008f55862d907c3ba7aeb64e63409176b006de3a395f13a38ea785c6	1560	busybox-binsh-1.38.0-r5.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/busybox-binsh-1.38.0-r5.apk	busybox-binsh-1.38.0-r5:aarch64
+artifact	19799cc42f45a411155e1f0ce81adc2b5ded8c1d737e6d26c36b38089e0b79e6	588782	encodings-1.1.0-r0.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/encodings-1.1.0-r0.apk	encodings-1.1.0-r0:aarch64
+artifact	0a3fec70268ccdbca70e3d12a33d813302c7294dd6ead4789dfb3b91b0365000	1409	font-dejavu-2.37-r6.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/font-dejavu-2.37-r6.apk	font-dejavu-2.37-r6:aarch64
+artifact	d6fb2c06f35b07ad67f5c901b3e0a9dff41205e1fb40cfb7680a39498ab91f15	1557106	font-dejavu-core-2.37-r6.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/font-dejavu-core-2.37-r6.apk	font-dejavu-core-2.37-r6:aarch64
+artifact	6259131b797cfa63c187bec25fcaef48b625bda9de2f50961d9ba25b604d8fb2	3876204	font-dejavu-extra-2.37-r6.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/font-dejavu-extra-2.37-r6.apk	font-dejavu-extra-2.37-r6:aarch64
+artifact	1221078e3b850cc1763ec8d25d36fde48f9fe34a0abfd8446f2cb5e9a7562ca3	187855	fontconfig-2.18.1-r0.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/fontconfig-2.18.1-r0.apk	fontconfig-2.18.1-r0:aarch64
+artifact	166862ca0f89a9c905a10e3324f9cc8b2edde6470c21e234b71ee317a1d012d9	355024	freetype-2.14.3-r1.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/freetype-2.14.3-r1.apk	freetype-2.14.3-r1:aarch64
+artifact	d82a3eeb457706e3d42a4eb9fd47a0a097f3d412c4ddb095454b65fe23907d52	3280517	glibc-2.43.0-r11.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/glibc-2.43.0-r11.apk	glibc-2.43.0-r11:aarch64
+artifact	15818304e953fffb1b3a706f08effe2d3aa00c372a22141e56af8f1d693a77f0	254266	glibc-utils-2.43.0-r11.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/glibc-utils-2.43.0-r11.apk	glibc-utils-2.43.0-r11:aarch64
+artifact	a9df07408a1be2f136082aa5f8566a8f3b2d7bb45c6e6ff6ab8befbbfba48208	34273	libbz2-1.0.8-r7.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/libbz2-1.0.8-r7.apk	libbz2-1.0.8-r7:aarch64
+artifact	2126fd9d706b42324c5fa2673e5bbcc07929aa2f376837d00be66201e9a90982	2276197	libcrypto3-3.5.9-r0.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/libcrypto3-3.5.9-r0.apk	libcrypto3-3.5.9-r0:aarch64
+artifact	c3452b7b8df684b4b64a71459ef5431be63a83c92a5b36d82ee7f8baedcc6e90	61658	libexpat-2.9.0-r0.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/libexpat-2.9.0-r0.apk	libexpat-2.9.0-r0:aarch64
+artifact	795b0f15b130c49d7d0f818f13780e0624023e80396984cd8cb6308e0e7b2671	11976	libfontenc-1.1.9-r0.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/libfontenc-1.1.9-r0.apk	libfontenc-1.1.9-r0:aarch64
+artifact	b376ebdb07084b8dbc7e70d1ffa49d51096e698aef3d191fda18281de2e18bf5	160191	libncursesw-6.6_p20260822-r0.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/libncursesw-6.6_p20260822-r0.apk	libncursesw-6.6_p20260822-r0:aarch64
+artifact	84c0bdd494cde6d6c3c0d170a50b38bc69f8114a961689a652d80bec9e00b4b7	96466	libpng-1.6.59-r0.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/libpng-1.6.59-r0.apk	libpng-1.6.59-r0:aarch64
+artifact	c865647a67234381849fee8681f7ef78a8566a900cbe0e2a9a48031473229d9a	368759	libssl3-3.5.9-r0.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/libssl3-3.5.9-r0.apk	libssl3-3.5.9-r0:aarch64
+artifact	3d1d6efb9cfbbf966336c81d3ad30f2b3ff79a020e221fe4bfe24b003f486b7e	79982	libxcrypt-4.5.2-r0.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/libxcrypt-4.5.2-r0.apk	libxcrypt-4.5.2-r0:aarch64
+artifact	de6affa27ab1d9bd5c976c37b554134fa81bdf856a54f56d608f10f7a0cd12d9	16241	mkfontscale-1.2.4-r0.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/mkfontscale-1.2.4-r0.apk	mkfontscale-1.2.4-r0:aarch64
+artifact	5870ec0d2dc7a83176206caa2edcd4162552917a567fcc3681ec73dd385246c3	22260	ncurses-terminfo-base-6.6_p20260822-r0.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/ncurses-terminfo-base-6.6_p20260822-r0.apk	ncurses-terminfo-base-6.6_p20260822-r0:aarch64
+artifact	8b9aa8d24ac38cc67cced1ae44cd3c4df1ecfc554d3bc5a310be62406ff7ee8c	530127	nginx-1.30.4-r3.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/universe/aarch64/nginx-1.30.4-r3.apk	nginx-1.30.4-r3:aarch64
+artifact	1f606a3798a9315e7669df55471eefe0f1c1a588707fb75dfd5d6a8abd6dfe1a	317808	pcre2-10.49-r0.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/pcre2-10.49-r0.apk	pcre2-10.49-r0:aarch64
+artifact	fb847bd984390636c1673be68bf2446ea0160cb3721962bb16119df5508b269b	130374	readline-8.3.3-r0.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/readline-8.3.3-r0.apk	readline-8.3.3-r0:aarch64
+artifact	a488c363ca48060368e676166a2750ad2ca2c52f197beadab87c997e3aafe42c	5124	ssl_client-1.38.0-r5.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/ssl_client-1.38.0-r5.apk	ssl_client-1.38.0-r5:aarch64
+artifact	e5a8459a473790402a0855b1043ca35477434e483735069d3149a9d10f4b5504	53670	zlib-1.3.2-r1.apk	https://packages.bell-sw.com/alpaquita/glibc/stream/core/aarch64/zlib-1.3.2-r1.apk	zlib-1.3.2-r1:aarch64

@@ -4,13 +4,14 @@ import json
 import copy
 import wave
 import socket
+import ipaddress
 import sys
 import asyncio
 import threading
-import requests
 import subprocess
 import numpy as np
 import opuslib_next
+import psutil
 from io import BytesIO
 from contextlib import contextmanager
 from core.utils import p3
@@ -20,14 +21,14 @@ from typing import Callable, Any
 TAG = __name__
 
 
-# 绕开 IDE（Trae CN 等）注入的精简版 ffmpeg/ffprobe PATH 占位：调用期间把
-# Python 解释器同目录的 bin 加到 PATH 前缀，pydub.utils.which() 会优先找到
-# conda env 自带的完整版，调用结束恢复原 PATH，不污染 import 后的全局。
-# 环境变量 XIAOZHI_PYDUB_OVERRIDE_FFMPEG=0 时关闭。
+# Bypass stripped-down ffmpeg/ffprobe PATH shims injected by IDEs (such as Trae CN): during calls,
+# prepend the Python interpreter's bin directory so pydub.utils.which() finds
+# the conda environment's full binaries first. Restore PATH afterward without changing import-time globals.
+# Disable with XIAOZHI_PYDUB_OVERRIDE_FFMPEG=0.
 #
-# 引用计数 + 锁：多线程并发进出 with 块时，只在第一个进入时记下原始 PATH
-# 并改写，ref_count 归零时才恢复。这样 finally 不会因多次保存/恢复错位
-# 导致 bin 前缀永久残留，也避免 try/finally 契约被多 thread 互相覆盖。
+# Reference count plus lock: concurrent with blocks save and rewrite PATH only on first entry,
+# restoring it only when ref_count reaches zero. This prevents mismatched save/restore operations
+# from leaving the bin prefix behind or overlapping threads from violating try/finally guarantees.
 _ffmpeg_path_lock = threading.Lock()
 _ffmpeg_ref_count = 0
 _ffmpeg_original_path: str | None = None
@@ -61,20 +62,34 @@ def _ffmpeg_path_override():
                 _ffmpeg_original_path = None
 
 
-# 委托给 util.ffmpeg_path_override，import util 后调用方一行就能用
+# Delegate to util.ffmpeg_path_override for one-line use after importing util.
 ffmpeg_path_override = _ffmpeg_path_override
 
 
 def get_local_ip():
+    """Return the first active local IPv4 address without sockets or DNS probes.
+
+    Interface order comes from the OS, not remote reachability. On multihomed
+    hosts this is an advertised-address hint, not a route to a specific peer.
+    """
     try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        # Connect to Google's DNS servers
-        s.connect(("8.8.8.8", 80))
-        local_ip = s.getsockname()[0]
-        s.close()
-        return local_ip
-    except Exception as e:
-        return "127.0.0.1"
+        stats = psutil.net_if_stats()
+        for name, addresses in psutil.net_if_addrs().items():
+            if name not in stats or not stats[name].isup:
+                continue
+            for entry in addresses:
+                if entry.family != socket.AF_INET:
+                    continue
+                try:
+                    address = ipaddress.IPv4Address(entry.address)
+                except ipaddress.AddressValueError:
+                    continue
+                if not (address.is_loopback or address.is_unspecified or address.is_multicast):
+                    return str(address)
+    except Exception:
+        # Address discovery must not block startup or fall back to a network probe.
+        pass
+    return "127.0.0.1"
 
 
 def is_private_ip(ip_addr):
@@ -122,46 +137,30 @@ def is_private_ip(ip_addr):
 
 
 def get_ip_info(ip_addr, logger):
-    try:
-        # 导入全局缓存管理器
-        from core.utils.cache.manager import cache_manager, CacheType
+    """Compatibility shim: IP-derived location is unavailable, without a lookup.
 
-        # 先从缓存获取
-        cached_ip_info = cache_manager.get(CacheType.IP_INFO, ip_addr)
-        if cached_ip_info is not None:
-            return cached_ip_info
-
-        # 缓存未命中，调用API
-        if is_private_ip(ip_addr):
-            ip_addr = ""
-        url = f"https://whois.pconline.com.cn/ipJson.jsp?json=true&ip={ip_addr}"
-        resp = requests.get(url).json()
-        ip_info = {"city": resp.get("city")}
-
-        # 存入缓存
-        cache_manager.set(CacheType.IP_INFO, ip_addr, ip_info)
-        return ip_info
-    except Exception as e:
-        logger.bind(tag=TAG).error(f"Error getting client ip info: {e}")
-        return {}
+    Do not forward a child's device IP or reuse results from the retired service.
+    A future parent-configured location must be explicit, not inferred from IP.
+    """
+    return {}
 
 
 def write_json_file(file_path, data):
-    """将数据写入 JSON 文件"""
+    """Write data to a JSON file."""
     with open(file_path, "w", encoding="utf-8") as file:
         json.dump(data, file, ensure_ascii=False, indent=4)
 
 
 def remove_punctuation_and_length(text):
-    # 全角符号和半角符号的Unicode范围
+    # Unicode ranges for full-width and half-width symbols.
     full_width_punctuations = (
         "！＂＃＄％＆＇（）＊＋，－。／：；＜＝＞？＠［＼］＾＿｀｛｜｝～"
     )
     half_width_punctuations = r'!"#$%&\'()*+,-./:;<=>?@[\]^_`{|}~'
-    space = " "  # 半角空格
-    full_width_space = "　"  # 全角空格
+    space = " "  # Half-width space.
+    full_width_space = "　"  # Full-width space.
 
-    # 去除全角和半角符号以及空格
+    # Remove full-width/half-width symbols and spaces.
     result = "".join(
         [
             char
@@ -180,18 +179,18 @@ def remove_punctuation_and_length(text):
 
 def check_model_key(modelType, modelKey):
     if "你" in modelKey:
-        return f"配置错误: {modelType} 的 API key 未设置,当前值为: {modelKey}"
+        return f"Configuration error: {modelType} API key is not set; current value: {modelKey}"
     return None
 
 
 def parse_string_to_list(value, separator=";"):
     """
-    将输入值转换为列表
+    Convert an input value to a list.
     Args:
-        value: 输入值，可以是 None、字符串或列表
-        separator: 分隔符，默认为分号
+        value: Input value: None, a string or a list.
+        separator: Delimiter; defaults to a semicolon.
     Returns:
-        list: 处理后的列表
+        list: Processed values.
     """
     if value is None or value == "":
         return []
@@ -204,73 +203,73 @@ def parse_string_to_list(value, separator=";"):
 
 def check_ffmpeg_installed() -> bool:
     """
-    检查当前环境中是否已正确安装并可执行 ffmpeg。
+    Check whether ffmpeg is installed and executable in the current environment.
 
     Returns:
-        bool: 如果 ffmpeg 正常可用，返回 True；否则抛出 ValueError 异常。
+        bool: True if ffmpeg works; otherwise raise ValueError.
 
     Raises:
-        ValueError: 当检测到 ffmpeg 未安装或依赖缺失时，抛出详细的提示信息。
+        ValueError: Detailed guidance when ffmpeg is missing or its dependencies are unavailable.
     """
     try:
-        # 尝试执行 ffmpeg 命令
+        # Try executing ffmpeg.
         result = subprocess.run(
             ["ffmpeg", "-version"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            check=True,  # 非零退出码会触发 CalledProcessError
+            check=True,  # A nonzero exit code raises CalledProcessError.
         )
 
         output = (result.stdout + result.stderr).lower()
         if "ffmpeg version" in output:
             return True
 
-        # 如果未检测到版本信息，也视为异常情况
-        raise ValueError("未检测到有效的 ffmpeg 版本输出。")
+        # Treat missing version output as an error too.
+        raise ValueError("No valid ffmpeg version output detected.")
 
     except (subprocess.CalledProcessError, FileNotFoundError) as e:
-        # 提取错误输出
+        # Extract error output.
         stderr_output = ""
         if isinstance(e, subprocess.CalledProcessError):
             stderr_output = (e.stderr or "").strip()
         else:
             stderr_output = str(e).strip()
 
-        # 构建基础错误提示
+        # Build the basic error guidance.
         error_msg = [
-            "❌ 检测到 ffmpeg 无法正常运行。\n",
-            "建议您：",
-            "1. 确认已正确激活 conda 环境；",
-            "2. 查阅项目安装文档，了解如何在 conda 环境中安装 ffmpeg。\n",
+            "❌ ffmpeg is not working correctly.\n",
+            "Recommended steps:",
+            "1. Ensure the correct conda environment is activated;",
+            "2. See the project setup guide for installing ffmpeg in conda.\n",
         ]
 
-        # 🎯 针对具体错误信息提供额外提示
+        # 🎯 Add guidance for specific errors.
         if "libiconv.so.2" in stderr_output:
-            error_msg.append("⚠️ 发现缺少依赖库：libiconv.so.2")
-            error_msg.append("解决方法：在当前 conda 环境中执行：")
+            error_msg.append("⚠️ Missing dependency: libiconv.so.2")
+            error_msg.append("Fix: run this in the current conda environment:")
             error_msg.append("   conda install -c conda-forge libiconv\n")
         elif (
             "no such file or directory" in stderr_output
             and "ffmpeg" in stderr_output.lower()
         ):
-            error_msg.append("⚠️ 系统未找到 ffmpeg 可执行文件。")
-            error_msg.append("解决方法：在当前 conda 环境中执行：")
+            error_msg.append("⚠️ The ffmpeg executable was not found.")
+            error_msg.append("Fix: run this in the current conda environment:")
             error_msg.append("   conda install -c conda-forge ffmpeg\n")
         else:
-            error_msg.append("错误详情：")
-            error_msg.append(stderr_output or "未知错误。")
+            error_msg.append("Error details:")
+            error_msg.append(stderr_output or "Unknown error.")
 
-        # 抛出详细异常信息
+        # Raise the detailed exception.
         raise ValueError("\n".join(error_msg)) from e
 
 
 def extract_json_from_string(input_string):
-    """提取字符串中的 JSON 部分"""
+    """Extract the JSON portion of a string."""
     pattern = r"(\{.*\})"
-    match = re.search(pattern, input_string, re.DOTALL)  # 添加 re.DOTALL
+    match = re.search(pattern, input_string, re.DOTALL)  # Enable re.DOTALL.
     if match:
-        return match.group(1)  # 返回提取的 JSON 字符串
+        return match.group(1)  # Return the extracted JSON string.
     return None
 
 
@@ -289,7 +288,7 @@ def _audio_to_data_stream_inner(
     file_type = os.path.splitext(audio_file_path)[1]
     if file_type:
         file_type = file_type.lstrip(".")
-    # -nostdin：避免 ffmpeg 阻塞等 stdin
+    # -nostdin prevents ffmpeg from blocking while waiting for standard input.
     audio = AudioSegment.from_file(
         audio_file_path, format=file_type, parameters=["-nostdin"]
     )
@@ -301,62 +300,62 @@ async def audio_to_data(
     audio_file_path: str, is_opus: bool = True, use_cache: bool = True
 ) -> list[bytes]:
     """
-    将音频文件转换为Opus/PCM编码的帧列表
+    Convert an audio file to a list of Opus/PCM frames.
     Args:
-        audio_file_path: 音频文件路径
-        is_opus: 是否进行Opus编码
-        use_cache: 是否使用缓存
+        audio_file_path: Audio file path.
+        is_opus: Whether to encode as Opus.
+        use_cache: Whether to use the cache.
     """
     from core.utils.cache.manager import cache_manager
     from core.utils.cache.config import CacheType
 
-    # 生成缓存键，包含文件路径和编码类型
+    # Build a cache key containing the file path and encoding type.
     cache_key = f"{audio_file_path}:{is_opus}"
 
-    # 尝试从缓存获取结果
+    # Try retrieving results from the cache.
     if use_cache:
         cached_result = cache_manager.get(CacheType.AUDIO_DATA, cache_key)
         if cached_result is not None:
             return cached_result
 
     def _sync_audio_to_data():
-        # 获取文件后缀名
+        # Get the filename extension.
         file_type = os.path.splitext(audio_file_path)[1]
         if file_type:
             file_type = file_type.lstrip(".")
-        # 读取音频文件，-nostdin 参数：不要从标准输入读取数据，否则FFmpeg会阻塞
+        # Read the audio file with -nostdin: reading standard input would block FFmpeg.
         with _ffmpeg_path_override():
             audio = AudioSegment.from_file(
                 audio_file_path, format=file_type, parameters=["-nostdin"]
             )
 
-        # 转换为单声道/16kHz采样率/16位小端编码（确保与编码器匹配）
+        # Convert to mono, 16 kHz, 16-bit little-endian audio to match the encoder.
         audio = audio.set_channels(1).set_frame_rate(16000).set_sample_width(2)
 
-        # 获取原始PCM数据（16位小端）
+        # Get raw PCM data (16-bit little-endian).
         raw_data = audio.raw_data
 
-        # 初始化Opus编码器
+        # Initialize the Opus encoder.
         encoder = opuslib_next.Encoder(16000, 1, opuslib_next.APPLICATION_AUDIO)
 
-        # 编码参数
+        # Encoding parameters.
         frame_duration = 60  # 60ms per frame
         frame_size = int(16000 * frame_duration / 1000)  # 960 samples/frame
 
         datas = []
-        # 按帧处理所有音频数据（包括最后一帧可能补零）
+        # Process all audio by frame, zero-padding the final frame if necessary.
         for i in range(0, len(raw_data), frame_size * 2):  # 16bit=2bytes/sample
-            # 获取当前帧的二进制数据
+            # Get the current frame's binary data.
             chunk = raw_data[i : i + frame_size * 2]
 
-            # 如果最后一帧不足，补零
+            # Zero-pad an incomplete final frame.
             if len(chunk) < frame_size * 2:
                 chunk += b"\x00" * (frame_size * 2 - len(chunk))
 
             if is_opus:
-                # 转换为numpy数组处理
+                # Convert to a NumPy array for processing.
                 np_frame = np.frombuffer(chunk, dtype=np.int16)
-                # 编码Opus数据
+                # Encode Opus data.
                 frame_data = encoder.encode(np_frame.tobytes(), frame_size)
             else:
                 frame_data = chunk if isinstance(chunk, bytes) else bytes(chunk)
@@ -366,10 +365,10 @@ async def audio_to_data(
         return datas
 
     loop = asyncio.get_running_loop()
-    # 在单独的线程中执行同步的音频处理操作
+    # Run synchronous audio processing in a separate thread.
     result = await loop.run_in_executor(None, _sync_audio_to_data)
 
-    # 将结果存入缓存，使用配置中定义的TTL（10分钟）
+    # Cache the result using the configured TTL (ten minutes).
     if use_cache:
         cache_manager.set(CacheType.AUDIO_DATA, cache_key, result)
 
@@ -380,13 +379,13 @@ def audio_bytes_to_data_stream(
     audio_bytes, file_type, is_opus, callback: Callable[[Any], Any], sample_rate=16000, opus_encoder=None
 ) -> None:
     """
-    直接用音频二进制数据转为opus/pcm数据，支持wav、mp3、p3
+    Convert audio bytes directly to Opus/PCM; supports wav, mp3 and p3.
     """
     if file_type == "p3":
-        # 直接用p3解码
+        # Decode p3 directly.
         return p3.decode_opus_from_bytes_stream(audio_bytes, callback)
     else:
-        # 其他格式用pydub
+        # Use pydub for other formats.
         with _ffmpeg_path_override():
             audio = AudioSegment.from_file(
                 BytesIO(audio_bytes), format=file_type, parameters=["-nostdin"]
@@ -398,52 +397,52 @@ def audio_bytes_to_data_stream(
 
 def pcm_to_data_stream(raw_data, is_opus=True, callback: Callable[[Any], Any] = None, sample_rate=16000, opus_encoder=None):
     """
-    将PCM数据流式编码为Opus或直接输出PCM
+    Stream-encode PCM as Opus or output PCM directly.
 
     Args:
-        raw_data: PCM原始数据
-        is_opus: 是否编码为Opus
-        callback: 回调函数
-        sample_rate: 采样率
-        opus_encoder: OpusEncoderUtils对象(推荐提供以保持编码器状态连续)
+        raw_data: Raw PCM data.
+        is_opus: Whether to encode as Opus.
+        callback: Callback.
+        sample_rate: Sample rate.
+        opus_encoder: OpusEncoderUtils instance (recommended to preserve encoder state across chunks).
     """
     using_temp_encoder = False
     if is_opus and opus_encoder is None:
         encoder = opuslib_next.Encoder(sample_rate, 1, opuslib_next.APPLICATION_AUDIO)
         using_temp_encoder = True
 
-    # 编码参数
+    # Encoding parameters.
     frame_duration = 60  # 60ms per frame
     frame_size = int(sample_rate * frame_duration / 1000)  # samples/frame
 
-    # 按帧处理所有音频数据（包括最后一帧可能补零）
+    # Process all audio by frame, zero-padding the final frame if necessary.
     for i in range(0, len(raw_data), frame_size * 2):  # 16bit=2bytes/sample
-        # 获取当前帧的二进制数据
+        # Get the current frame's binary data.
         chunk = raw_data[i : i + frame_size * 2]
 
-        # 如果最后一帧不足，补零
+        # Zero-pad an incomplete final frame.
         if len(chunk) < frame_size * 2:
             chunk += b"\x00" * (frame_size * 2 - len(chunk))
 
         if is_opus:
             if using_temp_encoder:
-                # 使用临时编码器（仅用于独立音频场景）
+                # Use a temporary encoder for standalone audio only.
                 np_frame = np.frombuffer(chunk, dtype=np.int16)
                 frame_data = encoder.encode(np_frame.tobytes(), frame_size)
                 callback(frame_data)
             else:
-                # 使用外部编码器（TTS流式场景,保持状态连续）
+                # Use the supplied encoder for streaming TTS to preserve state.
                 is_last = (i + frame_size * 2 >= len(raw_data))
                 opus_encoder.encode_pcm_to_opus_stream(chunk, end_of_stream=is_last, callback=callback)
         else:
-            # PCM模式,直接输出
+            # PCM mode: output directly.
             frame_data = chunk if isinstance(chunk, bytes) else bytes(chunk)
             callback(frame_data)
 
 
 def opus_datas_to_wav_bytes(opus_datas, sample_rate=16000, channels=1):
     """
-    将opus帧列表解码为wav字节流
+    Decode a list of Opus frames to WAV bytes.
     """
     decoder = opuslib_next.Decoder(sample_rate, channels)
     try:
@@ -453,13 +452,13 @@ def opus_datas_to_wav_bytes(opus_datas, sample_rate=16000, channels=1):
         frame_size = int(sample_rate * frame_duration / 1000)  # 960
 
         for opus_frame in opus_datas:
-            # 解码为PCM（返回bytes，2字节/采样点）
+            # Decode to PCM (bytes, two bytes per sample).
             pcm = decoder.decode(opus_frame, frame_size)
             pcm_datas.append(pcm)
 
         pcm_bytes = b"".join(pcm_datas)
 
-        # 写入wav字节流
+        # Write WAV bytes.
         wav_buffer = BytesIO()
         with wave.open(wav_buffer, "wb") as wf:
             wf.setnchannels(channels)
@@ -508,11 +507,11 @@ def check_asr_update(before_config, new_config):
     current_asr_module = before_config["selected_module"]["ASR"]
     new_asr_module = new_config["selected_module"]["ASR"]
 
-    # 如果模块名称不同，就需要更新
+    # Update if the module names differ.
     if current_asr_module != new_asr_module:
         return True
 
-    # 如果模块名称相同，再比较类型
+    # If module names match, compare their types.
     current_asr_type = (
         current_asr_module
         if "type" not in before_config["ASR"][current_asr_module]
@@ -529,11 +528,11 @@ def check_asr_update(before_config, new_config):
 
 def filter_sensitive_info(config: dict) -> dict:
     """
-    过滤配置中的敏感信息
+    Filter sensitive information from configuration.
     Args:
-        config: 原始配置字典
+        config: Original configuration dictionary.
     Returns:
-        过滤后的配置字典
+        Filtered configuration dictionary.
     """
     sensitive_keys = [
         "api_key",
@@ -573,10 +572,10 @@ def filter_sensitive_info(config: dict) -> dict:
 
 
 def get_vision_url(config: dict) -> str:
-    """获取 vision URL
+    """Get the vision URL.
 
     Args:
-        config: 配置字典
+        config: Configuration dictionary.
 
     Returns:
         str: vision URL
@@ -592,15 +591,15 @@ def get_vision_url(config: dict) -> str:
 
 def is_valid_image_file(file_data: bytes) -> bool:
     """
-    检查文件数据是否为有效的图片格式
+    Check whether file data is a valid image format.
 
     Args:
-        file_data: 文件的二进制数据
+        file_data: Binary file data.
 
     Returns:
-        bool: 如果是有效的图片格式返回True，否则返回False
+        bool: True for a valid image format, otherwise False.
     """
-    # 常见图片格式的魔数（文件头）
+    # Magic bytes (headers) for common image formats.
     image_signatures = {
         b"\xff\xd8\xff": "JPEG",
         b"\x89PNG\r\n\x1a\n": "PNG",
@@ -612,7 +611,7 @@ def is_valid_image_file(file_data: bytes) -> bool:
         b"RIFF": "WEBP",
     }
 
-    # 检查文件头是否匹配任何已知的图片格式
+    # Check the header against known image formats.
     for signature in image_signatures:
         if file_data.startswith(signature):
             return True
@@ -622,41 +621,41 @@ def is_valid_image_file(file_data: bytes) -> bool:
 
 def sanitize_tool_name(name: str) -> str:
     """Sanitize tool names for OpenAI compatibility."""
-    # 支持中文、英文字母、数字、下划线和连字符
+    # Support Chinese characters, English letters, digits, underscores and hyphens.
     return re.sub(r"[^a-zA-Z0-9_\-\u4e00-\u9fff]", "_", name)
 
 
 def validate_mcp_endpoint(mcp_endpoint: str) -> bool:
     """
-    校验MCP接入点格式
+    Validate the MCP endpoint format.
 
     Args:
-        mcp_endpoint: MCP接入点字符串
+        mcp_endpoint: MCP endpoint string.
 
     Returns:
-        bool: 是否有效
+        bool: Whether the endpoint is valid.
     """
-    # 1. 检查是否以ws开头
+    # 1. Check for the ws prefix.
     if not mcp_endpoint.startswith("ws"):
         return False
 
-    # 2. 检查是否包含key、call字样
+    # 2. Check for key or call.
     if "key" in mcp_endpoint.lower() or "call" in mcp_endpoint.lower():
         return False
 
-    # 3. 检查是否包含/mcp/字样
+    # 3. Check for /mcp/.
     if "/mcp/" not in mcp_endpoint:
         return False
 
     return True
 
 def get_system_error_response(config: dict) -> str:
-    """获取系统错误时的回复
+    """Get the spoken response for system errors.
 
     Args:
-        config: 配置字典
+        config: Configuration dictionary.
 
     Returns:
-        str: 系统错误时的回复
+        str: Spoken system-error response in the existing user-facing language.
     """
     return config.get("system_error_response", "主人，小智现在有点忙，我们稍后再试吧。")

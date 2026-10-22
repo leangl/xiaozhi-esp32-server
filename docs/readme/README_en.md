@@ -12,12 +12,12 @@ Support for MQTT+UDP protocol, Websocket protocol, MCP access point, voiceprint 
 <p align="center">
 <a href="../FAQ.md">FAQ</a>
 · <a href="https://github.com/xinnan-tech/xiaozhi-esp32-server/issues">Report Issues</a>
-· <a href="../../README.md#%E9%83%A8%E7%BD%B2%E6%96%87%E6%A1%A3">Deployment Docs</a>
+· <a href="../../README.md#deployment-documentation">Deployment Docs</a>
 · <a href="https://github.com/xinnan-tech/xiaozhi-esp32-server/releases">Release Notes</a>
 </p>
 
 <p align="center">
-  <a href="../../README.md"><img alt="简体中文版自述文件" src="https://img.shields.io/badge/简体中文-DFE0E5"></a>
+  <a href="../../README.md"><img alt="Project README" src="https://img.shields.io/badge/Project-DFE0E5"></a>
   <a href="./README_en.md"><img alt="README in English" src="https://img.shields.io/badge/English-DBEDFA"></a>
   <a href="./README_vi.md"><img alt="Tiếng Việt" src="https://img.shields.io/badge/Tiếng Việt-DFE0E5"></a>
   <a href="./README_de.md"><img alt="Deutsch" src="https://img.shields.io/badge/Deutsch-DFE0E5"></a>
@@ -36,7 +36,7 @@ Support for MQTT+UDP protocol, Websocket protocol, MCP access point, voiceprint 
 <p align="center">
 Spearheaded by Professor Siyuan Liu's Team (South China University of Technology)
 </br>
-刘思源教授团队主导研发（华南理工大学）
+Led by Professor Siyuan Liu's team at South China University of Technology
 </br>
 <img src="../images/hnlg.jpg" alt="South China University of Technology" width="50%">
 </p>
@@ -54,31 +54,31 @@ Want to see the usage effects? Click the videos below 🎥
     <td>
       <a href="https://www.bilibili.com/video/BV1FMFyejExX" target="_blank">
         <picture>
-          <img alt="响应速度感受" src="docs/images/demo9.png" /></picture>
+          <img alt="Response latency demonstration" src="../images/demo9.png" /></picture>
       </a>
     </td>
     <td>
       <a href="https://www.bilibili.com/video/BV1vchQzaEse" target="_blank">
         <picture>
-          <img alt="速度优化秘诀" src="docs/images/demo6.png" /></picture>
+          <img alt="Response speed optimization" src="../images/demo6.png" /></picture>
       </a>
     </td>
     <td>
       <a href="https://www.bilibili.com/video/BV1WEcxzFEAT" target="_blank">
         <picture>
-          <img alt="小智数字人 支持语音唤醒" src="docs/images/demo8.png" /></picture>
+          <img alt="Digital human with voice wake-up" src="../images/demo8.png" /></picture>
       </a>
     </td>
     <td>
       <a href="https://www.bilibili.com/video/BV1CKVz6UEuB" target="_blank">
         <picture>
-          <img alt="设备呼叫设备，打电话" src="docs/images/demo0.png" /></picture>
+          <img alt="Device-to-device calling" src="../images/demo0.png" /></picture>
       </a>
     </td>
     <td>
       <a href="https://www.bilibili.com/video/BV1C1tCzUEZh" target="_blank">
         <picture>
-          <img alt="复杂医疗场景" src="docs/images/demo1.png" /></picture>
+          <img alt="Complex medical scenarios" src="../images/demo1.png" /></picture>
       </a>
     </td>
   </tr>
@@ -86,31 +86,31 @@ Want to see the usage effects? Click the videos below 🎥
     <td>
       <a href="https://www.bilibili.com/video/BV1VC96Y5EMH" target="_blank">
         <picture>
-          <img alt="播放音乐查询天气播报新闻" src="docs/images/demo7.png" /></picture>
+          <img alt="Music, weather, and news" src="../images/demo7.png" /></picture>
       </a>
     </td>
     <td>
       <a href="https://www.bilibili.com/video/BV12J7WzBEaH" target="_blank">
         <picture>
-          <img alt="实时打断" src="docs/images/demo10.png" /></picture>
+          <img alt="Real-time interruption" src="../images/demo10.png" /></picture>
       </a>
     </td>
     <td>
       <a href="https://www.bilibili.com/video/BV1Co76z7EvK" target="_blank">
         <picture>
-          <img alt="拍照识物品" src="docs/images/demo12.png" /></picture>
+          <img alt="Visual object recognition" src="../images/demo12.png" /></picture>
       </a>
     </td>
     <td>
       <a href="https://www.bilibili.com/video/BV1pNXWYGEx1" target="_blank">
         <picture>
-          <img alt="控制家电开关" src="docs/images/demo5.png" /></picture>
+          <img alt="Home appliance control" src="../images/demo5.png" /></picture>
       </a>
     </td>
     <td>
       <a href="https://www.bilibili.com/video/BV1TJ7WzzEo6" target="_blank">
         <picture>
-          <img alt="多指令任务" src="docs/images/demo11.png" /></picture>
+          <img alt="Multiple-command tasks" src="../images/demo11.png" /></picture>
       </a>
     </td>
   </tr>
@@ -118,31 +118,31 @@ Want to see the usage effects? Click the videos below 🎥
     <td>
       <a href="https://www.bilibili.com/video/BV1ZQKUzYExM" target="_blank">
         <picture>
-          <img alt="MCP接入点" src="docs/images/demo13.png" /></picture>
+          <img alt="MCP endpoint" src="../images/demo13.png" /></picture>
       </a>
     </td>
     <td>
       <a href="https://www.bilibili.com/video/BV1zUW5zJEkq" target="_blank">
         <picture>
-          <img alt="MQTT指令下发" src="docs/images/demo4.png" /></picture>
+          <img alt="MQTT command delivery" src="../images/demo4.png" /></picture>
       </a>
     </td>
     <td>
       <a href="https://www.bilibili.com/video/BV1Exu3zqEDe" target="_blank">
         <picture>
-          <img alt="声纹识别" src="docs/images/demo14.png" /></picture>
+          <img alt="Voiceprint recognition" src="../images/demo14.png" /></picture>
       </a>
     </td>
     <td>
       <a href="https://www.bilibili.com/video/BV1CDKWemEU6" target="_blank">
         <picture>
-          <img alt="自定义音色" src="docs/images/demo2.png" /></picture>
+          <img alt="Custom voices" src="../images/demo2.png" /></picture>
       </a>
     </td>
     <td>
       <a href="https://www.bilibili.com/video/BV12yA2egEaC" target="_blank">
         <picture>
-          <img alt="使用粤语交流" src="docs/images/demo3.png" /></picture>
+          <img alt="Cantonese conversation" src="../images/demo3.png" /></picture>
       </a>
     </td>
   </tr>
@@ -165,10 +165,10 @@ Want to see the usage effects? Click the videos below 🎥
 This project provides two deployment methods. Please choose based on your specific needs:
 
 #### 🚀 Deployment Method Selection
-| Deployment Method | Features | Applicable Scenarios | Deployment Docs | Configuration Requirements | Video Tutorials | 
+| Deployment Method | Features | Applicable Scenarios | Deployment Docs | Configuration Requirements | Video Tutorials |
 |---------|------|---------|---------|---------|---------|
-| **Simplified Installation** | Intelligent dialogue, single agent management | Low-configuration environments, data stored in config files, no database required | [①Docker Version](../Deployment.md#%E6%96%B9%E5%BC%8F%E4%B8%80docker%E5%8F%AA%E8%BF%90%E8%A1%8Cserver) / [②Source Code Deployment](../Deployment.md#%E6%96%B9%E5%BC%8F%E4%BA%8C%E6%9C%AC%E5%9C%B0%E6%BA%90%E7%A0%81%E5%8F%AA%E8%BF%90%E8%A1%8Cserver)| 2 cores 4GB if using `FunASR`, 2 cores 2GB if all APIs | - | 
-| **Full Module Installation** | Intelligent dialogue, multi-user management, multi-agent management, intelligent console interface operation | Complete functionality experience, data stored in database |[①Docker Version](../Deployment_all.md#%E6%96%B9%E5%BC%8F%E4%B8%80docker%E8%BF%90%E8%A1%8C%E5%85%A8%E6%A8%A1%E5%9D%97) / [②Source Code Deployment](../Deployment_all.md#%E6%96%B9%E5%BC%8F%E4%BA%8C%E6%9C%AC%E5%9C%B0%E6%BA%90%E7%A0%81%E8%BF%90%E8%A1%8C%E5%85%A8%E6%A8%A1%E5%9D%97) / [③Source Code Deployment Auto-Update Tutorial](../dev-ops-integration.md) | 4 cores 8GB if using `FunASR`, 2 cores 4GB if all APIs| [Local Source Code Startup Video Tutorial](https://www.bilibili.com/video/BV1wBJhz4Ewe) |
+| **Simplified Installation** | Intelligent dialogue, single agent management | Low-configuration environments, data stored in config files, no database required | [①Docker Version](../Deployment.md#method-1-docker-server-only) / [②Source Code Deployment](../Deployment.md#method-2-local-source-server-only)| 2 cores 4GB if using `FunASR`, 2 cores 2GB if all APIs | - |
+| **Full Module Installation** | Intelligent dialogue, multi-user management, multi-agent management, intelligent console interface operation | Complete functionality experience, data stored in database |[①Docker Version](../Deployment_all.md#method-1-docker-full-module-deployment) / [②Source Code Deployment](../Deployment_all.md#method-2-local-source-full-module-deployment) / [③Source Code Deployment Auto-Update Tutorial](../dev-ops-integration.md) | 4 cores 8GB if using `FunASR`, 2 cores 4GB if all APIs| [Local Source Code Startup Video Tutorial](https://www.bilibili.com/video/BV1wBJhz4Ewe) |
 
 For frequently asked questions and related tutorials, please refer to [this link](../FAQ.md)
 
@@ -210,14 +210,16 @@ This project provides the following testing tools to help you verify the system 
 | Tool Name | Location | Usage Method | Function Description |
 |:---:|:---|:---:|:---:|
 | Audio Interaction Test Tool | main》digital-human》index.html | Run `python start.py` in `main/digital-human`, then open `http://127.0.0.1:8006/index.html` | Tests audio playback and reception functions, verifies if Python-side audio processing is normal |
-| Model Response Test Tool | main》xiaozhi-server》performance_tester.py | Execute `python performance_tester.py` | Tests response speed of three core modules: ASR(speech recognition), LLM(large model), VLLM(vision model), TTS(speech synthesis) |
+| Provider benchmark | [Status and future benchmark requirements](../performance_tester.md) | Unavailable in the supported profile | The retired runner performs no provider calls. |
 
 > 💡 Note: When testing model speed, only models with configured keys will be tested.
 
 ---
 ## Feature List ✨
 ### Implemented ✅
-![请参考-全模块安装架构图](../images/deploy2.png)
+![Full-module deployment architecture](../images/deploy2.png)
+
+English architecture equivalent: ESP32 devices send voice over WebSocket to the Python `xiaozhi-server`. The engine runs VAD, ASR, LLM/tool processing, memory, and TTS, then streams audio back. Administrators use `manager-web` to call the Java `manager-api`; MySQL stores management data and Redis caches it. The engine fetches configuration from `manager-api`. See the [full deployment guide](../Deployment_all.md) for ports, OTA, and startup steps. Image labels and video previews remain in their original language; the feature table below explains their functions. The diagram also labels the optional MQTT gateway: MQTT text/events on TCP 1883, UDP audio on UDP 8884, and the command-delivery API on TCP 8007; the gateway bridges these to the engine over WebSocket. Vision uses HTTP 8003. MCP endpoint registration/message forwarding uses WebSocket 8004 and connects calculator, smart-home, computer-system, or other MCP clients. The 3D-Speaker voiceprint API uses HTTP 8005; voiceprint identification runs alongside ASR, supplying speaker identity while ASR supplies text/emotion to the LLM. The engine streams sentence/chunk output to TTS, calls MCP tools, uses memory, and applies private configuration. The management API serves static web resources and dynamic API requests, covering agents, devices, role presets, models, users, and OTA. MySQL 3306 provides persistent storage; Redis 6379 stores hot data.
 | Feature Module | Description |
 |:---:|:---|
 | Core Architecture | Based on [MQTT+UDP gateway](https://github.com/xinnan-tech/xiaozhi-esp32-server/blob/main/docs/mqtt-gateway-integration.md), WebSocket and HTTP servers, provides complete console management and authentication system |

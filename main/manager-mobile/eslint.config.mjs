@@ -7,14 +7,14 @@ export default uniHelper({
   ignores: [
     'src/uni_modules/',
     'dist',
-    // unplugin-auto-import 生成的类型文件，每次提交都改变，所以加入这里吧，与 .gitignore 配合使用
+    // Generated unplugin-auto-import types change on each commit; exclude them here and in .gitignore
     'auto-import.d.ts',
-    // vite-plugin-uni-pages 生成的类型文件，每次切换分支都一堆不同的，所以直接 .gitignore
+    // Generated vite-plugin-uni-pages types vary across branches; exclude them in .gitignore
     'uni-pages.d.ts',
-    // 插件生成的文件
+    // Plugin-generated files
     'src/pages.json',
     'src/manifest.json',
-    // 忽略自动生成文件
+    // Ignore generated files
     'src/service/app/**',
   ],
   rules: {

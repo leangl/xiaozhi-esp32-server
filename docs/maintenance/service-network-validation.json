@@ -1,0 +1,1498 @@
+{
+  "dns": {
+    "allowed_questions": {
+      "candidate-db/1": 1,
+      "candidate-db/28": 1,
+      "candidate-redis/1": 1,
+      "candidate-redis/28": 1
+    },
+    "counts": {
+      "udp": 4
+    },
+    "forwarded_requests": 0,
+    "kind": "candidate-dns-witness",
+    "payload_bytes_recorded": 0,
+    "rejected_question_hashes": {},
+    "result": "pass"
+  },
+  "dns_by_phase": [
+    {
+      "allowed": true,
+      "count": 1,
+      "phase": "startup",
+      "question": "candidate-db",
+      "type": 1
+    },
+    {
+      "allowed": true,
+      "count": 1,
+      "phase": "startup",
+      "question": "candidate-db",
+      "type": 28
+    },
+    {
+      "allowed": true,
+      "count": 1,
+      "phase": "startup",
+      "question": "candidate-redis",
+      "type": 1
+    },
+    {
+      "allowed": true,
+      "count": 1,
+      "phase": "startup",
+      "question": "candidate-redis",
+      "type": 28
+    }
+  ],
+  "failures": [],
+  "firewall_drop_packets": {
+    "ip6tables": 0,
+    "iptables": 0
+  },
+  "fixture": "service-policy-rehearsal-20261021",
+  "kind": "full-candidate-dns-egress-observation",
+  "limits": [
+    "Only the explicitly exercised synthetic scenarios, not real AI quality.",
+    "Not adversarial containment; no privileged/unconfined or host-PID access.",
+    "Application execs and ordinary descendants traced from startup; infrastructure DNS/firewall are trusted fixtures.",
+    "DNS names witnessed by the nonforwarding local resolver; other destinations and unsupported io_uring fail closed.",
+    "MySQL/Redis and local AI are isolated fixture infrastructure, not traced application roles.",
+    "Final locked-image synthetic acceptance only; no real AI quality, child-data certification, final owner acceptance or live cutover."
+  ],
+  "negative_controls": {
+    "firewall_drop_packets": {
+      "ip6tables": 0,
+      "iptables": 2
+    },
+    "kind": "candidate-egress-negative-controls",
+    "parse_errors": {},
+    "payload_bytes_recorded": 0,
+    "result": "pass",
+    "unknown_dns_questions_detected": 1,
+    "unknown_numeric_attempts_detected": 2
+  },
+  "observed_attempts": [
+    {
+      "allowed": true,
+      "count": 10,
+      "family": "AF_UNIX",
+      "ip": null,
+      "phase": "startup",
+      "port": null,
+      "role": "manager",
+      "syscall": "connect"
+    },
+    {
+      "allowed": true,
+      "count": 6,
+      "family": "AF_UNIX",
+      "ip": null,
+      "phase": "startup",
+      "port": null,
+      "role": "manager",
+      "syscall": "sendmsg"
+    },
+    {
+      "allowed": true,
+      "count": 2,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "startup",
+      "port": 53,
+      "role": "manager",
+      "syscall": "connect"
+    },
+    {
+      "allowed": true,
+      "count": 4,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "startup",
+      "port": 53,
+      "role": "manager",
+      "syscall": "sendmmsg"
+    },
+    {
+      "allowed": true,
+      "count": 2,
+      "family": "AF_INET6",
+      "ip": "172.20.0.2",
+      "phase": "startup",
+      "port": 3306,
+      "role": "manager",
+      "syscall": "connect"
+    },
+    {
+      "allowed": true,
+      "count": 1,
+      "family": "AF_INET6",
+      "ip": "172.20.0.3",
+      "phase": "startup",
+      "port": 6379,
+      "role": "manager",
+      "syscall": "connect"
+    },
+    {
+      "allowed": true,
+      "count": 3,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "startup",
+      "port": 8003,
+      "role": "manager",
+      "syscall": "connect"
+    },
+    {
+      "allowed": true,
+      "count": 95,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "account-binding-config-history",
+      "port": 8003,
+      "role": "manager",
+      "syscall": "connect"
+    },
+    {
+      "allowed": true,
+      "count": 5,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "websocket-turn",
+      "port": 8003,
+      "role": "manager",
+      "syscall": "connect"
+    },
+    {
+      "allowed": true,
+      "count": 2,
+      "family": "AF_INET6",
+      "ip": "127.0.0.1",
+      "phase": "mqtt-udp-turn",
+      "port": 19200,
+      "role": "manager",
+      "syscall": "connect"
+    },
+    {
+      "allowed": true,
+      "count": 5,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "mqtt-udp-turn",
+      "port": 8003,
+      "role": "manager",
+      "syscall": "connect"
+    },
+    {
+      "allowed": true,
+      "count": 15,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "summary-history",
+      "port": 8003,
+      "role": "manager",
+      "syscall": "connect"
+    },
+    {
+      "allowed": true,
+      "count": 2,
+      "family": "AF_INET6",
+      "ip": "127.0.0.1",
+      "phase": "summary-history",
+      "port": 19200,
+      "role": "manager",
+      "syscall": "connect"
+    },
+    {
+      "allowed": true,
+      "count": 1,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "removed-features",
+      "port": 8003,
+      "role": "manager",
+      "syscall": "connect"
+    },
+    {
+      "allowed": true,
+      "count": 1,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "account-binding-config-history",
+      "port": 8002,
+      "role": "voice",
+      "syscall": "connect"
+    },
+    {
+      "allowed": true,
+      "count": 1,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "account-binding-config-history",
+      "port": 8002,
+      "role": "voice",
+      "syscall": "sendto"
+    },
+    {
+      "allowed": true,
+      "count": 4,
+      "family": "AF_NETLINK",
+      "ip": null,
+      "phase": "account-binding-config-history",
+      "port": null,
+      "role": "voice",
+      "syscall": "sendto"
+    },
+    {
+      "allowed": true,
+      "count": 3,
+      "family": "AF_UNIX",
+      "ip": null,
+      "phase": "account-binding-config-history",
+      "port": null,
+      "role": "voice",
+      "syscall": "sendto"
+    },
+    {
+      "allowed": true,
+      "count": 14,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "websocket-turn",
+      "port": 60166,
+      "role": "voice",
+      "syscall": "sendto"
+    },
+    {
+      "allowed": true,
+      "count": 5,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "websocket-turn",
+      "port": 8002,
+      "role": "voice",
+      "syscall": "connect"
+    },
+    {
+      "allowed": true,
+      "count": 9,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "websocket-turn",
+      "port": 8002,
+      "role": "voice",
+      "syscall": "sendto"
+    },
+    {
+      "allowed": true,
+      "count": 32,
+      "family": "AF_UNIX",
+      "ip": null,
+      "phase": "websocket-turn",
+      "port": null,
+      "role": "voice",
+      "syscall": "sendto"
+    },
+    {
+      "allowed": true,
+      "count": 3,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "websocket-turn",
+      "port": 19200,
+      "role": "voice",
+      "syscall": "connect"
+    },
+    {
+      "allowed": true,
+      "count": 6,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "websocket-turn",
+      "port": 19200,
+      "role": "voice",
+      "syscall": "sendto"
+    },
+    {
+      "allowed": true,
+      "count": 15,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "mqtt-udp-turn",
+      "port": 32910,
+      "role": "voice",
+      "syscall": "sendto"
+    },
+    {
+      "allowed": true,
+      "count": 5,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "mqtt-udp-turn",
+      "port": 8002,
+      "role": "voice",
+      "syscall": "connect"
+    },
+    {
+      "allowed": true,
+      "count": 9,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "mqtt-udp-turn",
+      "port": 8002,
+      "role": "voice",
+      "syscall": "sendto"
+    },
+    {
+      "allowed": true,
+      "count": 32,
+      "family": "AF_UNIX",
+      "ip": null,
+      "phase": "mqtt-udp-turn",
+      "port": null,
+      "role": "voice",
+      "syscall": "sendto"
+    },
+    {
+      "allowed": true,
+      "count": 3,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "mqtt-udp-turn",
+      "port": 19200,
+      "role": "voice",
+      "syscall": "connect"
+    },
+    {
+      "allowed": true,
+      "count": 6,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "mqtt-udp-turn",
+      "port": 19200,
+      "role": "voice",
+      "syscall": "sendto"
+    },
+    {
+      "allowed": true,
+      "count": 1,
+      "family": "AF_UNIX",
+      "ip": null,
+      "phase": "summary-history",
+      "port": null,
+      "role": "voice",
+      "syscall": "sendto"
+    },
+    {
+      "allowed": true,
+      "count": 3,
+      "family": "KERNEL_ONLY",
+      "ip": null,
+      "phase": "account-binding-config-history",
+      "port": null,
+      "role": "gateway",
+      "syscall": "io_uring_setup"
+    },
+    {
+      "allowed": true,
+      "count": 1,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "mqtt-udp-turn",
+      "port": 8000,
+      "role": "gateway",
+      "syscall": "connect"
+    },
+    {
+      "allowed": true,
+      "count": 6,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "mqtt-udp-turn",
+      "port": 55376,
+      "role": "gateway",
+      "syscall": "sendmsg"
+    },
+    {
+      "allowed": true,
+      "count": 1,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "removed-features",
+      "port": 8002,
+      "role": "removed-features",
+      "syscall": "connect"
+    },
+    {
+      "allowed": true,
+      "count": 1,
+      "family": "AF_INET",
+      "ip": "127.0.0.1",
+      "phase": "removed-features",
+      "port": 8002,
+      "role": "removed-features",
+      "syscall": "sendto"
+    }
+  ],
+  "payload_bytes_recorded": 0,
+  "phase_names": [
+    "startup",
+    "account-binding-config-history",
+    "websocket-turn",
+    "mqtt-udp-turn",
+    "summary-history",
+    "removed-features",
+    "shutdown",
+    "finish"
+  ],
+  "policy": {
+    "af_netlink_kernel_unicast_allowed": true,
+    "af_unix_allowed": true,
+    "af_unspec_connect_disconnect_allowed": true,
+    "endpoints": [
+      {
+        "ip": "127.0.0.1",
+        "port": 53
+      },
+      {
+        "ip": "127.0.0.1",
+        "port": 8000
+      },
+      {
+        "ip": "127.0.0.1",
+        "port": 8002
+      },
+      {
+        "ip": "127.0.0.1",
+        "port": 8003
+      },
+      {
+        "ip": "127.0.0.1",
+        "port": 8005
+      },
+      {
+        "ip": "127.0.0.1",
+        "port": 8007
+      },
+      {
+        "ip": "127.0.0.1",
+        "port": 18883
+      },
+      {
+        "ip": "127.0.0.1",
+        "port": 18884
+      },
+      {
+        "ip": "127.0.0.1",
+        "port": 19200
+      },
+      {
+        "ip": "127.0.0.1",
+        "port": 55376
+      },
+      {
+        "ip": "172.20.0.2",
+        "port": 3306
+      },
+      {
+        "ip": "172.20.0.3",
+        "port": 6379
+      },
+      {
+        "ip": "::1",
+        "port": 53
+      },
+      {
+        "ip": "::1",
+        "port": 8000
+      },
+      {
+        "ip": "::1",
+        "port": 8002
+      },
+      {
+        "ip": "::1",
+        "port": 8003
+      },
+      {
+        "ip": "::1",
+        "port": 8005
+      },
+      {
+        "ip": "::1",
+        "port": 8007
+      },
+      {
+        "ip": "::1",
+        "port": 18883
+      },
+      {
+        "ip": "::1",
+        "port": 18884
+      },
+      {
+        "ip": "::1",
+        "port": 19200
+      }
+    ],
+    "local_reply_endpoints": [
+      {
+        "ip": "127.0.0.1",
+        "port": 53
+      },
+      {
+        "ip": "127.0.0.1",
+        "port": 8000
+      },
+      {
+        "ip": "127.0.0.1",
+        "port": 8002
+      },
+      {
+        "ip": "127.0.0.1",
+        "port": 8003
+      },
+      {
+        "ip": "127.0.0.1",
+        "port": 8005
+      },
+      {
+        "ip": "127.0.0.1",
+        "port": 8007
+      },
+      {
+        "ip": "127.0.0.1",
+        "port": 18883
+      },
+      {
+        "ip": "127.0.0.1",
+        "port": 18884
+      },
+      {
+        "ip": "127.0.0.1",
+        "port": 19200
+      },
+      {
+        "ip": "::1",
+        "port": 53
+      },
+      {
+        "ip": "::1",
+        "port": 8000
+      },
+      {
+        "ip": "::1",
+        "port": 8002
+      },
+      {
+        "ip": "::1",
+        "port": 8003
+      },
+      {
+        "ip": "::1",
+        "port": 8005
+      },
+      {
+        "ip": "::1",
+        "port": 8007
+      },
+      {
+        "ip": "::1",
+        "port": 18883
+      },
+      {
+        "ip": "::1",
+        "port": 18884
+      },
+      {
+        "ip": "::1",
+        "port": 19200
+      }
+    ],
+    "mode": "exact_candidate_endpoints",
+    "port_coverage": "exact listed destination ports; TCP replies from exact local listener and peer-IP pairs",
+    "reply_peer_ips": [
+      "127.0.0.1",
+      "::1"
+    ]
+  },
+  "result": "pass",
+  "roles": {
+    "gateway": {
+      "attempt_count": 10,
+      "denied_count": 0,
+      "inet_attempt_count": 7,
+      "parse_errors": {}
+    },
+    "manager": {
+      "attempt_count": 153,
+      "denied_count": 0,
+      "inet_attempt_count": 137,
+      "parse_errors": {}
+    },
+    "removed-features": {
+      "attempt_count": 2,
+      "denied_count": 0,
+      "inet_attempt_count": 2,
+      "parse_errors": {}
+    },
+    "voice": {
+      "attempt_count": 149,
+      "denied_count": 0,
+      "inet_attempt_count": 77,
+      "parse_errors": {}
+    }
+  },
+  "scenarios": {
+    "api": {
+      "failed": 0,
+      "http_requests": 94,
+      "passed": 22,
+      "result": "pass"
+    },
+    "mqtt_udp": {
+      "incoming_opus_packets": 20,
+      "outgoing_opus_packets": 6,
+      "outgoing_pcm_samples": 5760,
+      "result": "pass"
+    },
+    "removed_features": {
+      "location_lookup_unavailable": 1,
+      "removed_provider_rejected": 1,
+      "result": "pass",
+      "stale_tool_rejected": 5,
+      "unapproved_endpoint_rejected": 8
+    },
+    "summary_history": {
+      "failed": 0,
+      "http_requests": 15,
+      "passed": 2,
+      "result": "pass"
+    },
+    "websocket": {
+      "incoming_opus_packets": 20,
+      "outgoing_opus_packets": 6,
+      "outgoing_pcm_samples": 5760,
+      "result": "pass"
+    }
+  },
+  "date": "2026-10-21",
+  "sourceCommit": "eb9dc8ca0fc8a30bc8afb0f302dcfc1578f76a7b",
+  "workingTree": "Uncommitted translation and service-removal changes; sourceCommit identifies the baseline, not a released artifact.",
+  "runtimeImages": {
+    "manager": "sha256:74cdf0eebde8b326cacf6233e02efdd7ebaeff4cbc968ff93fb66eb38f325ce7",
+    "voiceBase": "sha256:2ca9f4579592e08f54d99ecf2d21a1575378aeb255c5b9414cb731c1ea3c6316",
+    "voice": "sha256:13513a577aa1c7570023f6dc238161325aaf720bd350f381f069ae29cb02fc13",
+    "gateway": "sha256:239eecfb752004c8a23590f8120174461b46eba98c9e8b9e12b5bb22117b1e25",
+    "networkFixture": "sha256:20bc045da714dfbb033dbd0933f8127667df7d3d0624e605f0714884d23356be",
+    "fakeAiBase": "sha256:f19225fab54bf448cb8076e599a260a4935f55bdaeef29d0380ef900c3de2ed4"
+  },
+  "findings": [
+    {
+      "id": "preexisting-local-ip-route-probe",
+      "status": "resolved-in-candidate",
+      "explicitUserApproval": true,
+      "source": "main/xiaozhi-server/core/utils/util.py",
+      "sourceSha256": "89654c34468c808e07f4d2fb7872efa00445bbdf4d3374578fce6af91c119a7c",
+      "regressionSource": "main/xiaozhi-server/tests/core/utils/test_local_ip.py",
+      "regressionSourceSha256": "e9ef1156abad22e3ad5e402bfa689d47d4434c9333d50a0ee10d07cdc60eba41",
+      "previousTarget": "8.8.8.8:80",
+      "remediation": "Existing locked psutil dependency reads local interface states/addresses; no outbound or DNS discovery. First usable active IPv4 in OS order, otherwise loopback.",
+      "regressionCases": 9,
+      "redRunDetectedPreviousProbe": true,
+      "pythonSuitePassed": 226,
+      "pythonSuiteSkipped": 5,
+      "voiceRebuiltWithNetworkDisabled": true,
+      "pythonVersionsPreserved": 70,
+      "voiceOsIdentitiesPreserved": 296,
+      "actualCandidateInterfaceAddressVerified": true,
+      "limits": [
+        "OS interface reads may use local ioctl/netlink, not a remote route probe.",
+        "Multihomed selection is an advertised-address hint, not a per-peer route decision."
+      ]
+    }
+  ],
+  "setupRetries": [
+    {
+      "role": "voice",
+      "reason": "Initial startup preceded synthetic server-secret seeding and correctly failed authentication.",
+      "observedInetAttempts": 2,
+      "deniedAttempts": 0,
+      "parseErrors": 0,
+      "observation": "Sanitized counters checked before restart; the final voice trace starts at the authenticated retry exec.",
+      "resolution": "Retried under tracing after fixture seeding, with no auth or endpoint policy relaxation."
+    }
+  ],
+  "fakeCounts": {
+    "asr_received_pcm_samples": 38400,
+    "asr_requests": 2,
+    "asr_pcm_samples": 38400,
+    "llm_requests": 2,
+    "llm_sse_events": 10,
+    "tts_requests": 2,
+    "tts_wave_bytes": 34648,
+    "llm_title_requests": 3,
+    "llm_summary_requests": 1
+  },
+  "validationTests": {
+    "linuxParserIncludingLiveStrace": 75,
+    "dnsFixture": 7,
+    "reportAggregation": 6,
+    "apiClientOffline": 6,
+    "localIpRegressions": 9,
+    "pythonSuitePassed": 226,
+    "pythonSuiteSkipped": 5,
+    "dependencyLock": 17,
+    "buildPolicy": 14,
+    "npmLock": 7,
+    "protectedHashesVerified": 118,
+    "publicFixtureHashesVerified": 16
+  },
+  "cleanup": {
+    "candidateContainersRemaining": 0,
+    "candidateVolumesRemaining": 0,
+    "candidateNetworksRemaining": 0,
+    "rawTracesRemoved": true,
+    "originalServicesHealthy": 5,
+    "originalContainerImageAndStartIdentitiesUnchanged": true,
+    "liveCutoverPerformed": false
+  },
+  "previousRun": {
+    "dns": {
+      "allowed_questions": {
+        "candidate-db/1": 1,
+        "candidate-db/28": 1,
+        "candidate-redis/1": 1,
+        "candidate-redis/28": 1
+      },
+      "counts": {
+        "udp": 4
+      },
+      "forwarded_requests": 0,
+      "kind": "candidate-dns-witness",
+      "payload_bytes_recorded": 0,
+      "rejected_question_hashes": {},
+      "result": "pass"
+    },
+    "dns_by_phase": [
+      {
+        "allowed": true,
+        "count": 1,
+        "phase": "startup",
+        "question": "candidate-db",
+        "type": 1
+      },
+      {
+        "allowed": true,
+        "count": 1,
+        "phase": "startup",
+        "question": "candidate-db",
+        "type": 28
+      },
+      {
+        "allowed": true,
+        "count": 1,
+        "phase": "startup",
+        "question": "candidate-redis",
+        "type": 1
+      },
+      {
+        "allowed": true,
+        "count": 1,
+        "phase": "startup",
+        "question": "candidate-redis",
+        "type": 28
+      }
+    ],
+    "failures": [
+      "voice_observation_failed"
+    ],
+    "firewall_drop_packets": {
+      "ip6tables": 0,
+      "iptables": 0
+    },
+    "fixture": "service-policy-rehearsal-20261021",
+    "kind": "full-candidate-dns-egress-observation",
+    "limits": [
+      "Only the explicitly exercised synthetic scenarios, not real AI quality.",
+      "Not adversarial containment; no privileged/unconfined or host-PID access.",
+      "Application execs and ordinary descendants traced from startup; infrastructure DNS/firewall are trusted fixtures.",
+      "DNS names witnessed by the nonforwarding local resolver; other destinations and unsupported io_uring fail closed.",
+      "MySQL/Redis and local AI are isolated fixture infrastructure, not traced application roles.",
+      "This network run used the preceding owned application images; new locked variants are built but not network-approved or deployed."
+    ],
+    "negative_controls": {
+      "firewall_drop_packets": {
+        "ip6tables": 0,
+        "iptables": 4
+      },
+      "kind": "candidate-egress-negative-controls",
+      "parse_errors": {},
+      "payload_bytes_recorded": 0,
+      "result": "pass",
+      "unknown_dns_questions_detected": 2,
+      "unknown_numeric_attempts_detected": 2
+    },
+    "observed_attempts": [
+      {
+        "allowed": true,
+        "count": 10,
+        "family": "AF_UNIX",
+        "ip": null,
+        "phase": "startup",
+        "port": null,
+        "role": "manager",
+        "syscall": "connect"
+      },
+      {
+        "allowed": true,
+        "count": 6,
+        "family": "AF_UNIX",
+        "ip": null,
+        "phase": "startup",
+        "port": null,
+        "role": "manager",
+        "syscall": "sendmsg"
+      },
+      {
+        "allowed": true,
+        "count": 2,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "startup",
+        "port": 53,
+        "role": "manager",
+        "syscall": "connect"
+      },
+      {
+        "allowed": true,
+        "count": 4,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "startup",
+        "port": 53,
+        "role": "manager",
+        "syscall": "sendmmsg"
+      },
+      {
+        "allowed": true,
+        "count": 2,
+        "family": "AF_INET6",
+        "ip": "172.20.0.2",
+        "phase": "startup",
+        "port": 3306,
+        "role": "manager",
+        "syscall": "connect"
+      },
+      {
+        "allowed": true,
+        "count": 1,
+        "family": "AF_INET6",
+        "ip": "172.20.0.3",
+        "phase": "startup",
+        "port": 6379,
+        "role": "manager",
+        "syscall": "connect"
+      },
+      {
+        "allowed": true,
+        "count": 2,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "startup",
+        "port": 8003,
+        "role": "manager",
+        "syscall": "connect"
+      },
+      {
+        "allowed": true,
+        "count": 95,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "account-binding-config-history",
+        "port": 8003,
+        "role": "manager",
+        "syscall": "connect"
+      },
+      {
+        "allowed": true,
+        "count": 5,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "websocket-turn",
+        "port": 8003,
+        "role": "manager",
+        "syscall": "connect"
+      },
+      {
+        "allowed": true,
+        "count": 1,
+        "family": "AF_INET6",
+        "ip": "127.0.0.1",
+        "phase": "websocket-turn",
+        "port": 19200,
+        "role": "manager",
+        "syscall": "connect"
+      },
+      {
+        "allowed": true,
+        "count": 5,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "mqtt-udp-turn",
+        "port": 8003,
+        "role": "manager",
+        "syscall": "connect"
+      },
+      {
+        "allowed": true,
+        "count": 1,
+        "family": "AF_INET6",
+        "ip": "127.0.0.1",
+        "phase": "mqtt-udp-turn",
+        "port": 19200,
+        "role": "manager",
+        "syscall": "connect"
+      },
+      {
+        "allowed": true,
+        "count": 27,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "summary-history",
+        "port": 8003,
+        "role": "manager",
+        "syscall": "connect"
+      },
+      {
+        "allowed": true,
+        "count": 2,
+        "family": "AF_INET6",
+        "ip": "127.0.0.1",
+        "phase": "summary-history",
+        "port": 19200,
+        "role": "manager",
+        "syscall": "connect"
+      },
+      {
+        "allowed": true,
+        "count": 2,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "removed-features",
+        "port": 8003,
+        "role": "manager",
+        "syscall": "connect"
+      },
+      {
+        "allowed": true,
+        "count": 1,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "account-binding-config-history",
+        "port": 8002,
+        "role": "voice",
+        "syscall": "connect"
+      },
+      {
+        "allowed": true,
+        "count": 1,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "account-binding-config-history",
+        "port": 8002,
+        "role": "voice",
+        "syscall": "sendto"
+      },
+      {
+        "allowed": false,
+        "count": 2,
+        "family": "AF_INET",
+        "ip": "8.8.8.8",
+        "phase": "account-binding-config-history",
+        "port": 80,
+        "role": "voice",
+        "syscall": "connect"
+      },
+      {
+        "allowed": true,
+        "count": 4,
+        "family": "AF_UNIX",
+        "ip": null,
+        "phase": "account-binding-config-history",
+        "port": null,
+        "role": "voice",
+        "syscall": "sendto"
+      },
+      {
+        "allowed": true,
+        "count": 14,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "websocket-turn",
+        "port": 35708,
+        "role": "voice",
+        "syscall": "sendto"
+      },
+      {
+        "allowed": true,
+        "count": 5,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "websocket-turn",
+        "port": 8002,
+        "role": "voice",
+        "syscall": "connect"
+      },
+      {
+        "allowed": true,
+        "count": 9,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "websocket-turn",
+        "port": 8002,
+        "role": "voice",
+        "syscall": "sendto"
+      },
+      {
+        "allowed": true,
+        "count": 32,
+        "family": "AF_UNIX",
+        "ip": null,
+        "phase": "websocket-turn",
+        "port": null,
+        "role": "voice",
+        "syscall": "sendto"
+      },
+      {
+        "allowed": true,
+        "count": 3,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "websocket-turn",
+        "port": 19200,
+        "role": "voice",
+        "syscall": "connect"
+      },
+      {
+        "allowed": true,
+        "count": 6,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "websocket-turn",
+        "port": 19200,
+        "role": "voice",
+        "syscall": "sendto"
+      },
+      {
+        "allowed": true,
+        "count": 15,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "mqtt-udp-turn",
+        "port": 54390,
+        "role": "voice",
+        "syscall": "sendto"
+      },
+      {
+        "allowed": true,
+        "count": 5,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "mqtt-udp-turn",
+        "port": 8002,
+        "role": "voice",
+        "syscall": "connect"
+      },
+      {
+        "allowed": true,
+        "count": 9,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "mqtt-udp-turn",
+        "port": 8002,
+        "role": "voice",
+        "syscall": "sendto"
+      },
+      {
+        "allowed": true,
+        "count": 33,
+        "family": "AF_UNIX",
+        "ip": null,
+        "phase": "mqtt-udp-turn",
+        "port": null,
+        "role": "voice",
+        "syscall": "sendto"
+      },
+      {
+        "allowed": true,
+        "count": 3,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "mqtt-udp-turn",
+        "port": 19200,
+        "role": "voice",
+        "syscall": "connect"
+      },
+      {
+        "allowed": true,
+        "count": 6,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "mqtt-udp-turn",
+        "port": 19200,
+        "role": "voice",
+        "syscall": "sendto"
+      },
+      {
+        "allowed": true,
+        "count": 1,
+        "family": "AF_UNIX",
+        "ip": null,
+        "phase": "summary-history",
+        "port": null,
+        "role": "voice",
+        "syscall": "sendto"
+      },
+      {
+        "allowed": true,
+        "count": 3,
+        "family": "KERNEL_ONLY",
+        "ip": null,
+        "phase": "account-binding-config-history",
+        "port": null,
+        "role": "gateway",
+        "syscall": "io_uring_setup"
+      },
+      {
+        "allowed": true,
+        "count": 1,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "mqtt-udp-turn",
+        "port": 8000,
+        "role": "gateway",
+        "syscall": "connect"
+      },
+      {
+        "allowed": true,
+        "count": 6,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "mqtt-udp-turn",
+        "port": 39082,
+        "role": "gateway",
+        "syscall": "sendmsg"
+      },
+      {
+        "allowed": true,
+        "count": 1,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "removed-features",
+        "port": 8002,
+        "role": "removed-features",
+        "syscall": "connect"
+      },
+      {
+        "allowed": true,
+        "count": 1,
+        "family": "AF_INET",
+        "ip": "127.0.0.1",
+        "phase": "removed-features",
+        "port": 8002,
+        "role": "removed-features",
+        "syscall": "sendto"
+      }
+    ],
+    "payload_bytes_recorded": 0,
+    "phase_names": [
+      "startup",
+      "account-binding-config-history",
+      "websocket-turn",
+      "mqtt-udp-turn",
+      "summary-history",
+      "removed-features",
+      "shutdown",
+      "finish"
+    ],
+    "policy": {
+      "af_netlink_kernel_unicast_allowed": true,
+      "af_unix_allowed": true,
+      "af_unspec_connect_disconnect_allowed": true,
+      "endpoints": [
+        {
+          "ip": "127.0.0.1",
+          "port": 53
+        },
+        {
+          "ip": "127.0.0.1",
+          "port": 8000
+        },
+        {
+          "ip": "127.0.0.1",
+          "port": 8002
+        },
+        {
+          "ip": "127.0.0.1",
+          "port": 8003
+        },
+        {
+          "ip": "127.0.0.1",
+          "port": 8005
+        },
+        {
+          "ip": "127.0.0.1",
+          "port": 8007
+        },
+        {
+          "ip": "127.0.0.1",
+          "port": 18883
+        },
+        {
+          "ip": "127.0.0.1",
+          "port": 18884
+        },
+        {
+          "ip": "127.0.0.1",
+          "port": 19200
+        },
+        {
+          "ip": "127.0.0.1",
+          "port": 39082
+        },
+        {
+          "ip": "172.20.0.2",
+          "port": 3306
+        },
+        {
+          "ip": "172.20.0.3",
+          "port": 6379
+        },
+        {
+          "ip": "::1",
+          "port": 53
+        },
+        {
+          "ip": "::1",
+          "port": 8000
+        },
+        {
+          "ip": "::1",
+          "port": 8002
+        },
+        {
+          "ip": "::1",
+          "port": 8003
+        },
+        {
+          "ip": "::1",
+          "port": 8005
+        },
+        {
+          "ip": "::1",
+          "port": 8007
+        },
+        {
+          "ip": "::1",
+          "port": 18883
+        },
+        {
+          "ip": "::1",
+          "port": 18884
+        },
+        {
+          "ip": "::1",
+          "port": 19200
+        }
+      ],
+      "local_reply_endpoints": [
+        {
+          "ip": "127.0.0.1",
+          "port": 53
+        },
+        {
+          "ip": "127.0.0.1",
+          "port": 8000
+        },
+        {
+          "ip": "127.0.0.1",
+          "port": 8002
+        },
+        {
+          "ip": "127.0.0.1",
+          "port": 8003
+        },
+        {
+          "ip": "127.0.0.1",
+          "port": 8005
+        },
+        {
+          "ip": "127.0.0.1",
+          "port": 8007
+        },
+        {
+          "ip": "127.0.0.1",
+          "port": 18883
+        },
+        {
+          "ip": "127.0.0.1",
+          "port": 18884
+        },
+        {
+          "ip": "127.0.0.1",
+          "port": 19200
+        },
+        {
+          "ip": "::1",
+          "port": 53
+        },
+        {
+          "ip": "::1",
+          "port": 8000
+        },
+        {
+          "ip": "::1",
+          "port": 8002
+        },
+        {
+          "ip": "::1",
+          "port": 8003
+        },
+        {
+          "ip": "::1",
+          "port": 8005
+        },
+        {
+          "ip": "::1",
+          "port": 8007
+        },
+        {
+          "ip": "::1",
+          "port": 18883
+        },
+        {
+          "ip": "::1",
+          "port": 18884
+        },
+        {
+          "ip": "::1",
+          "port": 19200
+        }
+      ],
+      "mode": "exact_candidate_endpoints",
+      "port_coverage": "exact listed destination ports; TCP replies from exact local listener and peer-IP pairs",
+      "reply_peer_ips": [
+        "127.0.0.1",
+        "::1"
+      ]
+    },
+    "result": "fail",
+    "roles": {
+      "gateway": {
+        "attempt_count": 10,
+        "denied_count": 0,
+        "inet_attempt_count": 7,
+        "parse_errors": {}
+      },
+      "manager": {
+        "attempt_count": 165,
+        "denied_count": 0,
+        "inet_attempt_count": 149,
+        "parse_errors": {}
+      },
+      "removed-features": {
+        "attempt_count": 2,
+        "denied_count": 0,
+        "inet_attempt_count": 2,
+        "parse_errors": {}
+      },
+      "voice": {
+        "attempt_count": 149,
+        "denied_count": 2,
+        "inet_attempt_count": 79,
+        "parse_errors": {}
+      }
+    },
+    "scenarios": {
+      "api": {
+        "failed": 0,
+        "http_requests": 94,
+        "passed": 22,
+        "result": "pass"
+      },
+      "mqtt_udp": {
+        "incoming_opus_packets": 20,
+        "outgoing_opus_packets": 6,
+        "outgoing_pcm_samples": 5760,
+        "result": "pass"
+      },
+      "removed_features": {
+        "location_lookup_unavailable": 1,
+        "removed_provider_rejected": 1,
+        "result": "pass",
+        "stale_tool_rejected": 5,
+        "unapproved_endpoint_rejected": 8
+      },
+      "summary_history": {
+        "failed": 0,
+        "http_requests": 15,
+        "passed": 2,
+        "result": "pass"
+      },
+      "websocket": {
+        "incoming_opus_packets": 20,
+        "outgoing_opus_packets": 6,
+        "outgoing_pcm_samples": 5760,
+        "result": "pass"
+      }
+    },
+    "date": "2026-10-21",
+    "runtimeImages": {
+      "manager": "sha256:4d878489095ceebb9ba02add0f423b1c5e97ba6f39c15a511d0349df6569235c",
+      "voice": "sha256:ab62f1d79f99a77cb4ec46f340e98fe802e7192a7a22b67806a4f2752052f205",
+      "gateway": "sha256:239eecfb752004c8a23590f8120174461b46eba98c9e8b9e12b5bb22117b1e25",
+      "networkFixture": "sha256:20bc045da714dfbb033dbd0933f8127667df7d3d0624e605f0714884d23356be"
+    },
+    "findings": [
+      {
+        "id": "preexisting-local-ip-route-probe",
+        "source": "main/xiaozhi-server/core/utils/util.py:get_local_ip",
+        "baselineBusinessAstUnchanged": true,
+        "baselineCommit": "eb9dc8ca0fc8a30bc8afb0f302dcfc1578f76a7b",
+        "numericTarget": "8.8.8.8:80",
+        "transport": "UDP",
+        "connectAttempts": 2,
+        "errno": "ENETUNREACH",
+        "classification": "Unreviewed routing probe, not evidence of a DNS lookup or data exfiltration.",
+        "remediation": "Replace external-address probing with local interface discovery; explicit user approval requested, product code not changed."
+      }
+    ],
+    "fakeCounts": {
+      "asr_received_pcm_samples": 38400,
+      "asr_requests": 2,
+      "asr_pcm_samples": 38400,
+      "llm_requests": 2,
+      "llm_sse_events": 10,
+      "tts_requests": 2,
+      "tts_wave_bytes": 34648,
+      "llm_title_requests": 3,
+      "llm_summary_requests": 1
+    },
+    "validationTests": {
+      "linuxParserIncludingLiveStrace": 75,
+      "dnsFixture": 7,
+      "reportAggregation": 6,
+      "apiClientOffline": 6
+    },
+    "cleanup": {
+      "candidateContainersRemaining": 0,
+      "candidateVolumesRemaining": 0,
+      "candidateNetworksRemaining": 0,
+      "rawTracesRemoved": true,
+      "originalServicesHealthy": 5,
+      "originalContainerImageAndStartIdentitiesUnchanged": true,
+      "liveCutoverPerformed": false
+    }
+  }
+}

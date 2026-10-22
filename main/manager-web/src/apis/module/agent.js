@@ -38,7 +38,7 @@ function terminateCallbackRequest(onTerminalFailure, error) {
 
 
 export default {
-    // 获取智能体列表
+    // Get the agent list
     getAgentList(callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/list`)
@@ -53,7 +53,7 @@ export default {
                 });
             }).send();
     },
-    // 添加智能体
+    // Add an agent
     addAgent(agentName, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent`)
@@ -69,7 +69,7 @@ export default {
                 });
             }).send();
     },
-    // 删除智能体
+    // Delete an agent
     deleteAgent(agentId, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/${agentId}`)
@@ -84,7 +84,7 @@ export default {
                 });
             }).send();
     },
-    // 获取智能体配置
+    // Get the agent configuration
     getDeviceConfig(agentId, callback, onTerminalFailure, retryCount = 0, retryStartedAt = 0) {
         const retryWindowStartedAt = retryStartedAt || Date.now()
         const request = RequestService.sendRequest()
@@ -95,7 +95,7 @@ export default {
                 callback(res);
             })
             .networkFail((err) => {
-                console.error('获取配置失败:', err);
+                console.error('Failed to get the configuration:', err);
                 retryCallbackRequest(
                     (nextRetryCount, nextRetryStartedAt) => this.getDeviceConfig(
                         agentId,
@@ -112,7 +112,7 @@ export default {
             })
         attachTerminalFailure(request, onTerminalFailure).send();
     },
-    // 配置智能体
+    // Configure the agent
     updateAgentConfig(agentId, configData, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/${agentId}`)
@@ -128,7 +128,7 @@ export default {
                 });
             }).send();
     },
-    // 获取智能体配置快照列表
+    // Get agent configuration snapshots
     getAgentSnapshots(agentId, params, callback, onTerminalFailure, retryCount = 0, retryStartedAt = 0) {
         const retryWindowStartedAt = retryStartedAt || Date.now()
         const request = RequestService.sendRequest()
@@ -157,7 +157,7 @@ export default {
             })
         attachTerminalFailure(request, onTerminalFailure).send();
     },
-    // 获取智能体配置快照详情
+    // Get agent configuration snapshot details
     getAgentSnapshot(agentId, snapshotId, callback, onTerminalFailure, retryCount = 0, retryStartedAt = 0) {
         const retryWindowStartedAt = retryStartedAt || Date.now()
         const request = RequestService.sendRequest()
@@ -185,7 +185,7 @@ export default {
             })
         attachTerminalFailure(request, onTerminalFailure).send();
     },
-    // 恢复智能体配置快照
+    // Restore an agent configuration snapshot
     restoreAgentSnapshot(agentId, snapshotId, currentStateToken, callback, onTerminalFailure) {
         const request = RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/${agentId}/snapshots/${snapshotId}/restore`)
@@ -200,7 +200,7 @@ export default {
             })
         attachTerminalFailure(request, onTerminalFailure).send();
     },
-    // 删除智能体配置快照
+    // Delete an agent configuration snapshot
     deleteAgentSnapshot(agentId, snapshotId, callback, onTerminalFailure) {
         const request = RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/${agentId}/snapshots/${snapshotId}`)
@@ -214,8 +214,8 @@ export default {
             })
         attachTerminalFailure(request, onTerminalFailure).send();
     },
-    // 新增方法：获取智能体模板
-    getAgentTemplate(callback) {  // 移除templateName参数
+    // Get the agent template
+    getAgentTemplate(callback) {  // No templateName parameter
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/template`)
             .method('GET')
@@ -224,14 +224,14 @@ export default {
                 callback(res);
             })
             .networkFail((err) => {
-                console.error('获取模板失败:', err);
+                console.error('Failed to get the template:', err);
                 RequestService.reAjaxFun(() => {
                     this.getAgentTemplate(callback);
                 });
             }).send();
     },
 
-    // 新增：获取智能体模板分页列表
+    // Get paginated agent templates
     getAgentTemplatesPage(params, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/template/page`)
@@ -242,13 +242,13 @@ export default {
                 callback(res);
             })
             .networkFail((err) => {
-                console.error('获取模板分页列表失败:', err);
+                console.error('Failed to get paginated templates:', err);
                 RequestService.reAjaxFun(() => {
                     this.getAgentTemplatesPage(params, callback);
                 });
             }).send();
     },
-    // 获取智能体会话列表
+    // Get the agent session list
     getAgentSessions(agentId, params, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/${agentId}/sessions`)
@@ -264,7 +264,7 @@ export default {
                 });
             }).send();
     },
-    // 获取智能体聊天记录
+    // Get the agent chat history
     getAgentChatHistory(agentId, sessionId, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/${agentId}/chat-history/${sessionId}`)
@@ -279,7 +279,7 @@ export default {
                 });
             }).send();
     },
-    // 获取音频下载ID
+    // Get the audio download ID
     getAudioId(audioId, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/audio/${audioId}`)
@@ -294,7 +294,7 @@ export default {
                 });
             }).send();
     },
-    // 获取智能体的MCP接入点地址
+    // Get the agent MCP endpoint address
     getAgentMcpAccessAddress(agentId, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/mcp/address/${agentId}`)
@@ -312,7 +312,7 @@ export default {
                 });
             }).send();
     },
-    // 获取智能体的MCP工具列表
+    // Get the agent MCP tool list
     getAgentMcpToolsList(agentId, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/mcp/tools/${agentId}`)
@@ -327,7 +327,7 @@ export default {
                 });
             }).send();
     },
-    // 添加智能体的声纹
+    // Add an agent voiceprint
     addAgentVoicePrint(voicePrintData, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/voice-print`)
@@ -343,7 +343,7 @@ export default {
                 });
             }).send();
     },
-    // 获取指定智能体声纹列表
+    // Get voiceprints for the specified agent
     getAgentVoicePrintList(id, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/voice-print/list/${id}`)
@@ -358,7 +358,7 @@ export default {
                 });
             }).send();
     },
-    // 删除智能体声纹
+    // Delete an agent voiceprint
     deleteAgentVoicePrint(id, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/voice-print/${id}`)
@@ -373,7 +373,7 @@ export default {
                 });
             }).send();
     },
-    // 更新智能体声纹
+    // Update an agent voiceprint
     updateAgentVoicePrint(voicePrintData, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/voice-print`)
@@ -389,7 +389,7 @@ export default {
                 });
             }).send();
     },
-    // 获取指定智能体用户类型聊天记录
+    // Get user-type chat history for the specified agent
     getRecentlyFiftyByAgentId(id, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/${id}/chat-history/user`)
@@ -404,7 +404,7 @@ export default {
                 });
             }).send();
     },
-    // 获取指定智能体用户类型聊天记录
+    // Get user-type chat history for the specified agent
     getContentByAudioId(id, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/${id}/chat-history/audio`)
@@ -419,8 +419,8 @@ export default {
                 });
             }).send();
     },
-    // 在文件末尾（在最后一个方法后，大括号前）添加以下方法：
-    // 新增智能体模板
+    // Add the following methods at the end of the object, after the last method
+    // Add an agent template
     addAgentTemplate(templateData, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/template`)
@@ -437,7 +437,7 @@ export default {
             }).send();
     },
 
-    // 更新智能体模板
+    // Update an agent template
     updateAgentTemplate(templateData, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/template`)
@@ -454,7 +454,7 @@ export default {
             }).send();
     },
 
-    // 删除智能体模板
+    // Delete an agent template
     deleteAgentTemplate(id, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/template/${id}`)
@@ -470,12 +470,12 @@ export default {
             }).send();
     },
 
-    // 批量删除智能体模板
+    // Batch-delete agent templates
     batchDeleteAgentTemplate(ids, callback) {
         RequestService.sendRequest()
-            .url(`${getServiceUrl()}/agent/template/batch-remove`) // 修改为新的URL
+            .url(`${getServiceUrl()}/agent/template/batch-remove`) // Use the new URL
             .method('POST')
-            .data(Array.isArray(ids) ? ids : [ids]) // 确保是数组格式
+            .data(Array.isArray(ids) ? ids : [ids]) // Ensure array format
             .success((res) => {
                 RequestService.clearRequestTime();
                 callback(res);
@@ -486,7 +486,7 @@ export default {
                 });
             }).send();
     },
-    // 在getAgentTemplate方法后添加获取单个模板的方法
+    // Get a single template after getAgentTemplate
     getAgentTemplateById(templateId, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/template/${templateId}`)
@@ -496,14 +496,14 @@ export default {
                 callback(res);
             })
             .networkFail((err) => {
-                console.error('获取单个模板失败:', err);
+                console.error('Failed to get the individual template:', err);
                 RequestService.reAjaxFun(() => {
                     this.getAgentTemplateById(templateId, callback);
                 });
             }).send();
     },
 
-    // 获取聊天记录下载链接UUID
+    // Get the chat-history download-link UUID
     getDownloadUrl(agentId, sessionId, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/chat-history/getDownloadUrl/${agentId}/${sessionId}`)
@@ -519,7 +519,7 @@ export default {
             }).send();
     },
     
-    // 搜索智能体
+    // Search agents
     searchAgent(keyword, searchType, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/list?keyword=${encodeURIComponent(keyword)}&searchType=${searchType}`)
@@ -534,7 +534,7 @@ export default {
                 });
             }).send();
     },
-    // 获取智能体标签
+    // Get agent tags
     getAgentTags(agentId, callback, onTerminalFailure, retryCount = 0, retryStartedAt = 0) {
         const retryWindowStartedAt = retryStartedAt || Date.now()
         const request = RequestService.sendRequest()
@@ -561,7 +561,7 @@ export default {
             })
         attachTerminalFailure(request, onTerminalFailure).send();
     },
-    // 保存智能体标签
+    // Save agent tags
     saveAgentTags(agentId, tags, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/${agentId}/tags`)

@@ -1,0 +1,90 @@
+{
+  "kind": "production-dependency-lock-validation",
+  "date": "2026-10-21",
+  "result": "pass",
+  "target": "Linux ARM64; production Maven clean package -Dmaven.test.skip=true",
+  "locks": [
+    {
+      "path": "tools/dependency-locks/maven-linux-aarch64.lock",
+      "sha256": "c3b6fb865b562ca740bf5ea2f05cc2d7decb14d01c531e082aab93e3e3eef1a4",
+      "bytes": 258610,
+      "kind": "maven",
+      "artifacts": 798,
+      "installedIdentities": 0
+    },
+    {
+      "path": "tools/dependency-locks/voice-deb-arm64.lock",
+      "sha256": "19e4c4a5a30b21847cda9ff9ea73fabca12cb14491a28e2cd1ffbc587ae82965",
+      "bytes": 62261,
+      "kind": "deb",
+      "artifacts": 191,
+      "installedIdentities": 296
+    },
+    {
+      "path": "tools/dependency-locks/manager-apk-aarch64.lock",
+      "sha256": "d9296658bf0d1b73fda589b56c860a881e213165889e0665df0a961569f29e53",
+      "bytes": 7618,
+      "kind": "apk",
+      "artifacts": 27,
+      "installedIdentities": 36
+    }
+  ],
+  "images": {
+    "manager": {
+      "tag": "xiaozhi-policy/manager-locked:20261021",
+      "id": "sha256:74cdf0eebde8b326cacf6233e02efdd7ebaeff4cbc968ff93fb66eb38f325ce7"
+    },
+    "voiceBase": {
+      "tag": "xiaozhi-policy/server-base-locked:20261021",
+      "id": "sha256:2ca9f4579592e08f54d99ecf2d21a1575378aeb255c5b9414cb731c1ea3c6316"
+    },
+    "voice": {
+      "tag": "xiaozhi-policy/server-locked:20261021",
+      "id": "sha256:13513a577aa1c7570023f6dc238161325aaf720bd350f381f069ae29cb02fc13",
+      "previousId": "sha256:e180472b05f631c034b8c17889af976b07e8a9f98b899dba4a1a9fef66bd72ea"
+    }
+  },
+  "enforcement": {
+    "artifactAcquisition": "Empty destination; exact size/SHA256; reviewed HTTPS origins; no proxy/redirect fallback.",
+    "maven": "All inputs verified before Maven; offline local repository and Docker RUN --network=none.",
+    "debian": "All local archives verified before dpkg; install/configure with Docker RUN --network=none; installed identities compared.",
+    "apk": "All local archives verified before apk; no repositories/network/scripts; installed identities compared.",
+    "npm": "Existing official-registry integrity locks; install lifecycle scripts disabled; only reviewed Vue local initializers and compilation execute offline.",
+    "python": "Existing exact wheel/hash lock; binary wheels only; no dependency resolver or model downloader added."
+  },
+  "preservation": {
+    "managerJavaLibraries": 120,
+    "operatorProfileEntries": 0,
+    "managerOsPackages": 36,
+    "voiceOsPackages": 296,
+    "voicePythonVersions": 70
+  },
+  "checks": {
+    "pythonLockTests": 17,
+    "javaPositiveAndNegativeCases": 6,
+    "apkNegativeCases": 5,
+    "existingBuildPolicyTests": 14,
+    "npmLockTests": 7
+  },
+  "sourceManifest": "service-build-inputs.json",
+  "componentInventories": [
+    "service-build-components.json",
+    "service-python-sbom.json"
+  ],
+  "limits": [
+    "Not a formal supply-chain attestation, vulnerability scan or license audit.",
+    "Reviewed production goal/platform only; POM/base/architecture changes require explicit lock regeneration and review.",
+    "Archives removed by upstream cause a closed build failure, not substitution.",
+    "Test-observer images are recorded separately; they are not deployed backend base images.",
+    "Final locked-image synthetic DNS/egress gate passes after the approved local-IP fix; final owner acceptance and live cutover are not implied."
+  ],
+  "originalDeploymentUnchanged": true,
+  "sourceOnlyRebuild": {
+    "reason": "Approved local-IP probe removal and regression tests",
+    "networkDisabled": true,
+    "source": "main/xiaozhi-server/core/utils/util.py",
+    "sourceSha256": "89654c34468c808e07f4d2fb7872efa00445bbdf4d3374578fce6af91c119a7c",
+    "pythonVersionsPreserved": 70,
+    "voiceOsPackagesPreserved": 296
+  }
+}

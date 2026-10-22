@@ -1,0 +1,20 @@
+# Test-only layer. Build only after the main task approves the build.
+# Send only the three observer files as context (see the Python tool --help).
+# Required: --build-arg OWNED_BASE=xiaozhi-policy/server-base:20261021
+# No additional Python dependencies, SDKs, production image changes or tcpdump.
+ARG OWNED_BASE
+FROM ${OWNED_BASE}
+ARG OWNED_BASE
+RUN test "$OWNED_BASE" = "xiaozhi-policy/server-base:20261021"
+
+# Keep the owned base's official Debian repositories and normal signature/TLS
+# checks. Do not add mirrors, disable verification, or pull an operator image.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends strace && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+COPY tools/service-egress-check.py tools/service-egress-check.test.py /opt/egress-observer/
+ENV PYTHONDONTWRITEBYTECODE=1 EGRESS_REQUIRE_STRACE=1
+WORKDIR /work
+ENTRYPOINT []
+CMD ["python", "-B", "/opt/egress-observer/service-egress-check.py", "--help"]

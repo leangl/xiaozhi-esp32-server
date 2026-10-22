@@ -97,10 +97,10 @@ export default {
     visible(val) {
       this.dialogVisible = val;
       if (val) {
-        // 对话框显示时加载RAG模型列表
+        // Load RAG models when the dialog opens
         this.loadRAGModels();
 
-        // 如果是新增知识库且没有设置ragModelId，则默认选择第一个RAG模型
+        // Default to the first RAG model when creating without ragModelId
         if (!this.form.id && !this.form.ragModelId && this.ragModels.length > 0) {
           this.$set(this.form, 'ragModelId', this.ragModels[0].id);
         }
@@ -110,10 +110,10 @@ export default {
         }
       }
     },
-    // 监听RAG模型列表变化，确保新增时能正确设置默认值
+    // Watch RAG model changes to set the default when creating
     ragModels(newModels) {
       if (newModels.length > 0) {
-        // 如果是新增知识库且没有设置ragModelId，则默认选择第一个RAG模型
+        // Default to the first RAG model when creating without ragModelId
         if (!this.form.id && !this.form.ragModelId) {
           this.$set(this.form, 'ragModelId', newModels[0].id);
         }
@@ -122,8 +122,8 @@ export default {
   },
   methods: {
     handleClose() {
-      // 不重置表单字段，以便在编辑时能保留之前的选择
-      // 只在对话框关闭时重置验证状态
+      // Keep form fields to preserve previous edit-mode selections
+      // Reset validation only when closing the dialog
       if (this.$refs.knowledgeBaseForm) {
         this.$refs.knowledgeBaseForm.clearValidate();
       }
@@ -144,23 +144,23 @@ export default {
     },
     loadRAGModels() {
       if (this.ragModels.length > 0) {
-        return; // 已经加载过，避免重复加载
+        return; // Already loaded; avoid a duplicate request
       }
 
-      console.log('开始加载RAG模型列表');
+      console.log('Loading RAG models');
       Api.model.getRAGModels((res) => {
-        console.log('RAG模型列表响应:', res);
+        console.log('RAG model list response:', res);
         if (res.data && res.data.code === 0) {
           this.ragModels = res.data.data || [];
-          console.log('RAG模型列表加载成功，共', this.ragModels.length, '个模型');
+          console.log('RAG model list loaded successfully; count:', this.ragModels.length, 'models');
 
-          // 如果是新增知识库且没有设置ragModelId，则默认选择第一个RAG模型
+          // Default to the first RAG model when creating without ragModelId
           if (!this.form.id && !this.form.ragModelId && this.ragModels.length > 0) {
             this.$set(this.form, 'ragModelId', this.ragModels[0].id);
-            console.log('已设置默认RAG模型:', this.ragModels[0].id);
+            console.log('Default RAG model set:', this.ragModels[0].id);
           }
         } else {
-          console.error('获取RAG模型列表失败:', res.data?.msg);
+          console.error('Failed to get the RAG model list:', res.data?.msg);
           this.$message.error(this.$t('knowledgeBaseDialog.loadRAGModelsFailed'));
         }
       });

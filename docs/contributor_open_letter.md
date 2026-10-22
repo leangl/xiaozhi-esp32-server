@@ -1,50 +1,49 @@
-# 致开发者的公开信
+# An open letter to developers
 
-"春江水暖鸭先知，正是河豚欲上时！"
+“The river warms in spring; ducks sense it first, just as pufferfish begin to swim upstream.”
 
-亲爱的朋友，我是John，是一名普通公司里的Java程序员，今天，我怀着无比真挚的心情，向热爱AI技术与创新的你发出这封公开信。
+Dear friends,
 
-半年前我看到很多优秀的项目，比如`Dify`、`Chat2DB`等人工智能相关的项目，我在想，我要是能参与这些项目多好，可惜“报国无门，空打十年代码”。
+I'm John, a Java programmer at an ordinary company. I'm writing to those of you who enjoy AI technology and creating things.
 
-我是2025年初刷到虾哥团队的视频，我非常好奇他是怎么实现的，我想复刻他们的后端服务，打造一个低成本民用贾维斯。很可惜现在做的作品依然只是一个人工智障，它并发低、没有灵魂，响应很慢，bug很多。
+Six months ago, I saw projects such as `Dify` and `Chat2DB` and wished I could contribute. After ten years of coding, I still felt I had no way to put that experience to use.
 
-虾哥团队是我们学习的对象，我很想拥有像虾哥团队一样智能的小智后端服务。但是我也能理解虾哥不开源的决定。“一花独放不是春，百花齐放春满园”，人工智能遍地开花的时代，也许就在我们这代实现，我们可以用自己的双手，实现低成本民用贾维斯。我个人认为，他能实现的，我们也能实现，只是时间问题而已，我称之为“我们的取经之路”。
+In early 2025, I came across videos from the Xiaozhi team's work. I wanted to understand how it worked and recreate the backend: a low-cost Jarvis for everyday use. So far, my version is closer to an artificial fool. It supports little concurrency, has no personality, responds slowly, and has plenty of bugs.
 
-那么这条取经之路，我们会遇到什么困难？我想应该不少于八十一难。这一路必然会出现各种妖怪，当然也有神仙暗中帮助我们，也有人加入取经队伍。
+The Xiaozhi team gives us something to learn from. I want a backend as capable as theirs, and I understand their decision not to open-source it. “One flower does not make spring; a hundred flowers in bloom fill the garden.” Perhaps our generation can make AI available everywhere. We can build a low-cost personal Jarvis ourselves. I think we can achieve what they have achieved, given enough time. I call this our journey to the West.
 
-以上内容，如果你觉得好笑。那我也觉得非常的幸运。我能够在你人生3万多天里博你笑五秒，也算是为你做了一次贡献。
+That journey may have as many trials as the eighty-one in the story. We will encounter monsters, receive help from immortals behind the scenes, and welcome new travelers.
 
-民用低成本贾维斯这个想法，会失败吗，我不知道，但是我们普通人的一生，这种失败不是很常见吗？
+If that made you laugh, I'm glad. Giving you five seconds of laughter among the thirty thousand days of a lifetime counts as a contribution too.
 
-未来，有一点是可以确定的，就一定会有人完全复刻虾哥团队的功能，实现民用低成本贾维斯。这个项目会是我们吗？
+Will the low-cost Jarvis idea fail? I don't know. Ordinary lives contain plenty of failures.
 
-期待与你携手前行，共创未来。
+One thing seems certain to me: someone will recreate the Xiaozhi team's capabilities and build a low-cost Jarvis for everyday use. Could it be this project?
 
-John，2025.3.11，广州
+I hope you'll join us.
 
-# 附 开发贡献指南
-## 项目目标
+John, March 11, 2025, Guangzhou
 
-1. **民用低成本贾维斯解决方案**  
+# Appendix: Contribution guide
 
-2. **智能联动周边硬件的解决方案**  
+## Project goals
 
-## 加入我们
+1. A low-cost Jarvis solution for everyday use.
+2. Intelligent coordination with peripheral hardware.
 
-我们热忱欢迎志同道合的朋友加入，共同为项目贡献力量。您可在[这个链接](https://github.com/users/xinnan-tech/projects/3)查看我们近期要实现的功能，功能列表中还没指派相关人员处理的，正是急需您的参与。参与方式如下：
+## Join us
 
-### 1、成为普通贡献者
+Check the [project roadmap](https://github.com/users/xinnan-tech/projects/3). Unassigned features need contributors.
 
-Fork 项目，提交 PR，由开发者审核后合入主分支。
+### 1. Become a contributor
 
-### 2、成为开发者
+Fork the project and submit a pull request. Developers review it before merging into the main branch.
 
-当你累计提交 3 次有效 PR 后，可以联系群主申请成为开发者，群主将邀请你加入独立的开发者群，共同探讨项目未来。
+### 2. Become a developer
 
-## 开发者开发流程
+After three accepted, substantive pull requests, contact the community group owner to apply. The owner can invite you to the separate developer group to discuss the project's direction.
 
-1. **创建新分支**  
-   每个功能点请以新分支方式开发，分支名称应简洁明了，让人一眼看出所实现的功能，避免功能撞车。
+## Development workflow
 
-2. **提交 PR 审核**  
-   功能开发完成后，请在 GitHub 上提交 PR，由其他开发者审核，审核通过后合并入主分支。
+1. Develop each feature on its own branch. Choose a short name that identifies the feature and helps avoid duplicate work.
+2. Submit a pull request on GitHub when the feature is ready. Other developers review it before merging into the main branch.

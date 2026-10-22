@@ -53,7 +53,7 @@ const routes = [
       return import('../views/retrievePassword.vue')
     }
   },
-  // 设备管理页面路由
+  // Device management route
   {
     path: '/device-management',
     name: 'DeviceManagement',
@@ -61,7 +61,7 @@ const routes = [
       return import('../views/DeviceManagement.vue')
     }
   },
-  // 添加用户管理路由
+  // User management route
   {
     path: '/user-management',
     name: 'UserManagement',
@@ -132,7 +132,7 @@ const routes = [
       return import('../views/ProviderManagement.vue')
     }
   },
-  // 添加默认角色管理路由
+  // Default role management route
   {
     path: '/agent-template-management',
     name: 'AgentTemplateManagement',
@@ -140,7 +140,7 @@ const routes = [
       return import('../views/AgentTemplateManagement.vue')
     }
   },
-  // 添加模板快速配置路由
+  // Template quick-configuration route
   {
     path: '/template-quick-config',
     name: 'TemplateQuickConfig',
@@ -148,7 +148,7 @@ const routes = [
       return import('../views/TemplateQuickConfig.vue')
     }
   },
-  // 功能配置页面路由
+  // Feature configuration route
   {
     path: '/feature-management',
     name: 'FeatureManagement',
@@ -156,7 +156,7 @@ const routes = [
       return import('../views/FeatureManagement.vue')
     }
   },
-  // 替换词管理
+  // Replacement-word management
   {
     path: '/replacement-word-management',
     name: 'ReplacementWordManagement',
@@ -164,7 +164,7 @@ const routes = [
       return import('../views/ReplacementWordManagement.vue')
     }
   },
-  // 通讯录管理页面路由
+  // Address-book management route
   {
     path: '/address-book-management',
     name: 'AddressBookManagement',
@@ -178,24 +178,24 @@ const router = new VueRouter({
   routes
 })
 
-// 全局处理重复导航，改为刷新页面
+// Handle duplicate navigation globally by refreshing the page
 const originalPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err => {
     if (err.name === 'NavigationDuplicated') {
-      // 如果是重复导航，刷新页面
+      // Refresh the page on duplicate navigation
       window.location.reload()
     } else {
-      // 其他错误正常抛出
+      // Rethrow other errors
       throw err
     }
   })
 }
 
-// 匿名可访问的路由白名单
+// Routes accessible without authentication
 const anonRouteNames = new Set(['login', 'Register', 'RetrievePassword', 'welcome'])
 
-// 路由守卫
+// Route guard
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token');
   const isAnonRoute = anonRouteNames.has(to.name);

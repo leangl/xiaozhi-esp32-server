@@ -9,18 +9,18 @@ import lombok.NoArgsConstructor;
 import xiaozhi.modules.sys.enums.ServerActionEnum;
 
 /**
- * 发送python服务端操作DTO
+ * Python server operation DTO
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmitSeverActionDTO
 {
-    @Schema(description = "目标ws地址")
-    @NotEmpty(message = "目标ws地址不能为空")
+    @Schema(description = "Target WebSocket URL")
+    @NotEmpty(message = "Target WebSocket URL must not be empty")
     private String targetWs;
 
-    @Schema(description = "指定操作")
-    @NotNull(message = "操作不能为空")
+    @Schema(description = "Requested operation")
+    @NotNull(message = "Operation must not be empty")
     private ServerActionEnum action;
 }

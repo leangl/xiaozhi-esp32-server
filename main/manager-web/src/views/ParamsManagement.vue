@@ -25,7 +25,7 @@
               </div>
             </div>
 
-            <!-- 一级分类 -->
+            <!-- Primary categories -->
             <div class="group-tabs" v-loading="loading && !allParams.length">
               <button
                 v-for="tab in categoryTabs"
@@ -40,7 +40,7 @@
               </button>
             </div>
 
-            <!-- 二级子分类 -->
+            <!-- Secondary subcategories -->
             <div class="sub-tabs" v-if="subCategoryTabs.length > 1">
               <button
                 v-for="tab in subCategoryTabs"
@@ -338,7 +338,7 @@ export default {
       const items = this.filteredParams;
       if (!items.length) return [];
 
-      // 选中一级且选中二级（非 all）时，单段展示
+      // Show one section when both primary and non-all secondary categories are selected
       if (this.activeCategory !== 'all' && this.activeSubCategory !== 'all') {
         return [{
           key: `${this.activeCategory}.${this.activeSubCategory}`,
@@ -348,12 +348,12 @@ export default {
         }];
       }
 
-      // 选中某一一级分类：按二级聚合
+      // Group by secondary category when a primary category is selected
       if (this.activeCategory !== 'all') {
         return this.buildSections(items, true);
       }
 
-      // 全部：按一级 → 二级聚合为扁平段落（一级·二级）
+      // For all categories, flatten primary and secondary groups into primary-secondary sections
       return this.buildSections(items, false);
     }
   },
@@ -367,7 +367,7 @@ export default {
           this.isAllSelected = false;
           return;
         }
-        // 分组不多时全部展开；较多时默认展开前几组
+        // Expand all groups when there are few; otherwise expand the first few
         const preferOpen = keys.length <= 5 ? keys.slice() : keys.slice(0, 3);
         const stillValid = (this.activeCollapse || []).filter(k => keys.includes(k));
         this.activeCollapse = stillValid.length ? stillValid : preferOpen;
@@ -529,7 +529,7 @@ export default {
         const collected = [];
         let page = 1;
         let total = Infinity;
-        // 按 total 循环拉全部分页，避免超过 FETCH_LIMIT 时聚合视图缺数据
+        // Fetch all pages using total so grouped views remain complete beyond FETCH_LIMIT
         while (collected.length < total) {
           const pageData = await this.fetchParamsPage(page);
           const list = pageData.list || [];
@@ -537,7 +537,7 @@ export default {
           collected.push(...list);
           if (!list.length) break;
           page += 1;
-          // 防御：异常 total / 接口异常时避免死循环
+          // Guard against infinite loops from invalid totals or API errors
           if (page > 200) break;
         }
 
@@ -549,7 +549,7 @@ export default {
         }));
         this.isAllSelected = false;
 
-        // 若当前分类已无数据，回退到全部
+        // Fall back to all categories when the current category is empty
         const exists = this.categoryTabs.some(t => t.key === this.activeCategory);
         if (!exists) {
           this.activeCategory = 'all';

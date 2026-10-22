@@ -1,38 +1,23 @@
-# 声纹识别启用指南
+# Enable voiceprint recognition
 
-本教程包含3个部分
-- 1、如何部署声纹识别这个服务
-- 2、全模块部署时，怎么配置声纹识别接口
-- 3、最简化部署时，怎么配置声纹识别
+This guide covers deploying the voiceprint service and configuring full-module or server-only installations.
 
-# 1、如何部署声纹识别这个服务
+# 1. Deploy the voiceprint service
 
-## 第一步，下载声纹识别项目源码
+## Step 1: Download the source
 
-浏览器打开[声纹识别项目地址](https://github.com/xinnan-tech/voiceprint-api)
+Open [voiceprint-api](https://github.com/xinnan-tech/voiceprint-api), select **Code > Download ZIP**, extract it, and rename `voiceprint-api-main` to `voiceprint-api`.
 
-打开完，找到页面中一个绿色的按钮，写着`Code`的按钮，点开它，然后你就看到`Download ZIP`的按钮。
+## Step 2: Check database reachability
 
-点击它，下载本项目源码压缩包。下载到你电脑后，解压它，此时它的名字可能叫`voiceprint-api-main`
-你需要把它重命名成`voiceprint-api`。
+The service needs MySQL. You can share the MySQL instance from an existing management-console installation. Test port `3306` from the host:
 
-## 第二步， 创建数据库和表
-
-声纹识别需要依赖`mysql`数据库。如果你之前已经部署`智控台`，说明你已经安装了`mysql`。你可以共用它。
-
-你可以试一下在宿主机使用`telnet`命令，看看能不能正常访问`mysql`的`3306`端口。
 ```
 telnet 127.0.0.1 3306
 ```
-如果能访问到3306端口，请忽略以下的内容，直接进入第三步。
 
-如果不能访问，你需要回忆一下，你的`mysql`是怎么安装的。
+If it responds, continue to step 3. Otherwise check how MySQL was installed and fix network isolation first. For a database installed with this project's `docker-compose_all.yml`, the original guide changes this fragment:
 
-如果你的mysql是通过自己使用安装包安装的，说明你的`mysql`做了网络隔离。你可能先解决访问`mysql`的`3306`端口这个问题。
-
-如果你`mysql`是通过本项目的`docker-compose_all.yml`安装的。你需要找一下你当时创建数据库的`docker-compose_all.yml`文件，修改以下的内容
-
-修改前
 ```
   xiaozhi-esp32-server-db:
     ...
@@ -42,7 +27,8 @@ telnet 127.0.0.1 3306
       - "3306:3306"
 ```
 
-修改后
+to:
+
 ```
   xiaozhi-esp32-server-db:
     ...
@@ -52,23 +38,26 @@ telnet 127.0.0.1 3306
       - "3306:3306"
 ```
 
-注意是将`xiaozhi-esp32-server-db`下面的`expose`改成`ports`。改完后，需要重新启动。以下是重启mysql的命令：
+That is, change `expose` to `ports` under `xiaozhi-esp32-server-db`, then restart. Original commands:
 
 ```
-# 进入你docker-compose_all.yml所在的文件夹，例如我的是xiaozhi-server
+# Enter the directory containing docker-compose_all.yml, e.g. xiaozhi-server
 cd xiaozhi-server
 docker compose -f docker-compose_all.yml down
 docker compose -f docker-compose.yml up -d
 ```
 
-启动完后，在宿主机再使用`telnet`命令，看看能不能正常访问`mysql`的`3306`端口。
+The original restart excerpt uses `docker-compose_all.yml` for shutdown but `docker-compose.yml` for startup. Verify the appropriate Compose file for your deployment; this translation leaves the command semantics unchanged.
+
+Retest:
+
 ```
 telnet 127.0.0.1 3306
 ```
-正常来说这样就可以访问的了。
 
-## 第三步， 创建数据库和表
-如果你的宿主机，能正常访问mysql数据库，那就在mysql上创建一个名字为`voiceprint_db`的数据库和`voiceprints`表。
+## Step 3: Create the database and table
+
+Once the host can reach MySQL, create `voiceprint_db` and `voiceprints`:
 
 ```
 CREATE DATABASE voiceprint_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -85,13 +74,9 @@ CREATE TABLE voiceprints (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ```
 
-## 第四步， 配置数据库连接
+## Step 4: Configure the database connection
 
-进入`voiceprint-api`文件夹，创建名字为`data`的文件夹。
-
-把`voiceprint-api`根目录里的`voiceprint.yaml`，复制到`data`的文件夹，将它重命名为`.voiceprint.yaml`
-
-接下来，你需要重点配置一下`.voiceprint.yaml`里的数据库连接。
+In `voiceprint-api`, create `data`. Copy the root `voiceprint.yaml` into it and rename it to `.voiceprint.yaml`. Configure MySQL there:
 
 ```
 mysql:
@@ -102,32 +87,30 @@ mysql:
   database: "voiceprint_db"
 ```
 
-注意！由于你的声纹识别服务是使用docker部署，`host`需要填写成你`mysql所在机器的局域网ip`。
+For a Docker voiceprint deployment, use the LAN IP of the MySQL machine as `host`, rather than the container's loopback address.
 
-注意！由于你的声纹识别服务是使用docker部署，`host`需要填写成你`mysql所在机器的局域网ip`。
+## Step 5: Start the service
 
-注意！由于你的声纹识别服务是使用docker部署，`host`需要填写成你`mysql所在机器的局域网ip`。
-
-## 第五步，启动程序
-这个项目是一个很简单的项目，建议使用docker运行。不过如果你不想使用docker运行，你可以参考[这个页面](https://github.com/xinnan-tech/voiceprint-api/blob/main/README.md)使用源码运行。以下是docker运行的方法
+Use Docker as below, or follow the project's [source deployment instructions](https://github.com/xinnan-tech/voiceprint-api/blob/main/README.md).
 
 ```
-# 进入本项目源码根目录
+# Enter the project root
 cd voiceprint-api
 
-# 清除缓存
+# Remove old containers and image
 docker compose -f docker-compose.yml down
 docker stop voiceprint-api
 docker rm voiceprint-api
 docker rmi ghcr.nju.edu.cn/xinnan-tech/voiceprint-api:latest
 
-# 启动docker容器
+# Start the Docker container
 docker compose -f docker-compose.yml up -d
-# 查看日志
+# Read logs
 docker logs -f voiceprint-api
 ```
 
-此时，日志里会输出类似以下的日志
+The original historical log reports Uvicorn startup on `0.0.0.0:8005` and prints the voiceprint health URL:
+
 ```
 250711 INFO-🚀 开始: 生产环境服务启动（Uvicorn），监听地址: 0.0.0.0:8005
 250711 INFO-============================================================
@@ -135,90 +118,80 @@ docker logs -f voiceprint-api
 250711 INFO-============================================================
 ```
 
-请你把声纹接口地址复制出来：
+Copy the URL, but replace Docker/loopback addresses with your host's reachable LAN IP. Change:
 
-由于你是docker部署，切不可直接使用上面的地址！
-
-由于你是docker部署，切不可直接使用上面的地址！
-
-由于你是docker部署，切不可直接使用上面的地址！
-
-你先把地址复制出来，放在一个草稿里，你要知道你的电脑的局域网ip是什么，例如我的电脑局域网ip是`192.168.1.25`，那么
-原来我的接口地址
 ```
 http://127.0.0.1:8005/voiceprint/health?key=abcd
 
 ```
-就要改成
+
+to:
+
 ```
 http://192.168.1.25:8005/voiceprint/health?key=abcd
 ```
 
-改好后，请使用浏览器直接访问`声纹接口地址`。当浏览器出现类似这样的代码，说明是成功了。
+Open that URL in a browser. A successful response looks like:
+
 ```
 {"total_voiceprints":0,"status":"healthy"}
 ```
 
-请你保留好修改后的`声纹接口地址`，下一步要用到。
+Keep the corrected secret-bearing URL for configuration.
 
-# 2、全模块部署时，怎么配置声纹识别
+# 2. Full-module configuration
 
-## 第一步 配置接口
-首先，你要开启声纹识别功能。在智控台，点击顶部`参数字典`，在下拉菜单中，点击`系统功能配置`页面。在页面上勾选`声纹识别`，点击`保存配置`。即可在新建智能体的卡片上看到`声纹识别`按钮。
+## Step 1: Configure the endpoint
 
-如果你是全模块部署，使用管理员账号，登录智控台，点击顶部`参数字典`，选择`参数管理`功能。
+Open **Parameters and Dictionaries > System Feature Configuration**, enable **Voiceprint Recognition**, and save. New agent cards should show a voiceprint button.
 
-然后搜索参数`server.voice_print`，此时，它的值应该是`null`值。
-点击修改按钮，把上一步得来的`声纹接口地址`粘贴到`参数值`里。然后保存。
+As administrator, open **Parameters and Dictionaries > Parameter Management**, find `server.voice_print` (initially `null`), click **Edit**, paste the health URL into **Parameter Value**, and save. A save failure often means the console cannot reach the service; check the firewall and LAN IP.
 
-如果能保存成功，说明一切顺利，你可以去智能体查看效果了。如果不成功，说明智控台无法访问声纹识别，很大概率是网络防火墙，或者没有填写正确的局域网ip。
+## Step 2: Set agent memory and reporting
 
-## 第二步 设置智能体记忆模式
+In the agent's role configuration, select **Local Short-Term Memory** and enable **Report Text + Audio**.
 
-进入你的智能体的角色配置里，将记忆设置成`本地短期记忆`，一定要开启`上报文字+语音`。
+## Step 3: Talk to the agent
 
-## 第三步 和你的智能体聊天
+Power on the device and speak at a normal speed and pitch.
 
-将你的设备通电，然后和他用正常的语速和音调聊天。
+## Step 4: Enroll a voiceprint
 
-## 第四步 设置声纹
+In **Agent Management**, click **Voiceprint Recognition** on the agent card, then **Add** at the bottom. Register a speaker from their recorded speech. Fill **Description** with useful information such as occupation, personality, or interests so the agent can understand who is speaking.
 
-在智控台，`智能体管理`页面，在智能体的面板里，有一个`声纹识别`按钮，点击它。在底部有一个`新增按钮`。就可以对某个人说的话进行声纹注册。
-在弹出的框里，`描述`这个属性建议填写上，可以是这个人的职业、性格、爱好。方便智能体对说话人进行分析和了解。
+## Step 5: Test recognition
 
-## 第三步 和你的智能体聊天
+Ask the agent whether it knows who you are. A correct identification indicates that recognition works.
 
-将你的设备通电，问它，你知道我是谁吗？如果他能回答得出，说明声纹识别功能正常。
+# 3. Server-only configuration
 
-# 3、最简化部署时，怎么配置声纹识别
+## Step 1: Configure the endpoint
 
-## 第一步 配置接口
-打开 `xiaozhi-server/data/.config.yaml` 文件（如果没有需要创建），然后添加/修改以下内容：
+Create or edit `xiaozhi-server/data/.config.yaml`:
 
 ```
-# 声纹识别配置
+# Voiceprint recognition configuration
 voiceprint:
-  # 声纹接口地址
+  # Voiceprint endpoint URL
   url: 你的声纹接口地址
-  # 说话人配置：speaker_id,名称,描述
+  # Speaker entries: speaker_id,name,description
   speakers:
     - "test1,张三,张三是一个程序员"
     - "test2,李四,李四是一个产品经理"
     - "test3,王五,王五是一个设计师"
 ```
 
-把上一步得来的 `声纹接口地址` 粘贴到 `url` 里。然后保存。
+Replace `你的声纹接口地址` (“your voiceprint endpoint URL”) with the health URL and save. Add `speakers` as needed; retain each `speaker_id` for enrollment.
 
-`speakers` 参数依据需求添加。这里需要注意这个 `speaker_id` 参数，后面注册声纹会用到。
+The original Chinese speaker entries are multilingual identity fixtures: `test1` is Zhang San, a programmer; `test2` is Li Si, a product manager; `test3` is Wang Wu, a designer. Keep the comma-separated format.
 
-## 第二步 注册声纹
-如果你已经启动了声纹服务，本地浏览器里访问 `http://localhost:8005/voiceprint/docs` 即可查看 API 文档，这里只说明注册声纹的 API 如何使用。
+## Step 2: Enroll a voiceprint
 
-注册声纹的 API 地址为 `http://localhost:8005/voiceprint/register`，请求方式为 POST。
+With the voiceprint service running, open `http://localhost:8005/voiceprint/docs` for API documentation.
 
-请求头需要包含 Bearer Token 认证，token 为 `声纹接口地址` 中 `?key=` 后的部分，比如如果我的声纹注册地址为 `http://127.0.0.1:8005/voiceprint/health?key=abcd`，那么我的 token 就是`abcd`。
+POST to `http://localhost:8005/voiceprint/register`. Send a Bearer token from the health URL's `?key=` value. For `http://127.0.0.1:8005/voiceprint/health?key=abcd`, the token is `abcd`.
 
-请求体包含说话人 ID（speaker_id），和 WAV 音频文件（file），请求示例如下：
+The multipart body contains `speaker_id` and a WAV audio `file`:
 
 ```
 curl -X POST \
@@ -228,8 +201,8 @@ curl -X POST \
   http://localhost:8005/voiceprint/register
 ```
 
- 这里的 `file` 是要注册的说话人说话的音频文件， `speaker_id` 需要和第一步配置接口的 `speaker_id` 保持一致。比如说我需要注册张三的声纹，在 `.config.yaml` 中填的张三的 `speaker_id` 为 `test1`，那么我注册张三声纹的时候，请求体里填的 `speaker_id` 就是 `test1`， `file` 填的就是张三说一段话的音频文件。
+Use the same `speaker_id` as the configuration. For the original Zhang San example, send `test1` with that person's speech sample.
 
- ## 第三步 启动服务
+## Step 3: Start both services
 
-启动小智服务器和声纹服务，即可正常使用。
+Run the Xiaozhi server and voiceprint service to use recognition.

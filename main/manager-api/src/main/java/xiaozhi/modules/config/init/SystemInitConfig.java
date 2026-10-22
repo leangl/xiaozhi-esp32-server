@@ -3,6 +3,8 @@ package xiaozhi.modules.config.init;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import lombok.extern.slf4j.Slf4j;
+import xiaozhi.common.exception.RenException;
 
 import jakarta.annotation.PostConstruct;
 import xiaozhi.common.constant.Constant;
@@ -14,7 +16,11 @@ import xiaozhi.modules.sys.service.SysParamsService;
 
 @Configuration
 @DependsOn("liquibase")
+@Slf4j
 public class SystemInitConfig {
+
+    @Autowired
+    private ServicePolicyUpgrade servicePolicyUpgrade;
 
     @Autowired
     private SysParamsService sysParamsService;
@@ -30,19 +36,26 @@ public class SystemInitConfig {
 
     @PostConstruct
     public void init() {
-        // 检查版本号
+        // Check the version
         String redisVersion = (String) redisUtils.get(RedisKeys.getVersionKey());
         if (!Constant.VERSION.equals(redisVersion)) {
-            // 如果版本不一致，清空Redis
+            // Clear Redis if the version differs
             redisUtils.emptyAll();
-            // 存储新版本号
+            // Store the new version
             redisUtils.set(RedisKeys.getVersionKey(), Constant.VERSION);
         }
 
         sysParamsService.initServerSecret();
-        configService.getConfig(false);
+        servicePolicyUpgrade.apply();
+        try {
+            configService.getConfig(false);
+        } catch (RenException unavailable) {
+            // Administration must remain reachable to configure explicit approved
+            // replacements. Voice activation still enforces the runtime policy.
+            log.warn("Voice configuration is not ready; select approved ASR/LLM/TTS settings in management.");
+        }
 
-        // 初始化设备通讯录缓存
+        // Initialize the device address book cache
         deviceAddressBookService.refreshCache();
     }
 }

@@ -1,32 +1,27 @@
-# 一体机数字人配置指南
+# All-in-one digital-human kiosk setup
 
-本项目用于在 x86 架构设备（如迷你主机、工控机、普通电脑等）上部署一套完整的数字人展示系统，实现以下功能：
-- 开机自动进入 Kiosk 全屏浏览器，展示指定网页
-- 后台运行唤醒词检测服务，支持语音交互
+Deploy a digital-human display on x86 hardware such as a mini PC, industrial PC, or desktop. The system opens a full-screen kiosk browser at boot and runs a background wake-word detector for voice interaction.
 
-> **说明**：本文档以 **Intel N100 迷你主机（天虹 QN10-100B4）** 为例进行部署演示，其他 x86 设备可参考调整（注意网络配置和声卡设备差异）。
+This example uses an Intel N100 mini PC (Tianhong QN10-100B4). Adapt network and audio-device settings for other x86 machines.
 
-## 适用环境
+## Environment
 
-| 项目 | 说明 |
-|------|------|
-| 示例硬件 | 天虹 QN10-100B4（Intel N100） |
-| 操作系统 | Ubuntu 24.04 LTS (Noble Numbat) |
-| 示例用户 | xz（请根据实际情况替换） |
-| 网络 | Wi-Fi 连接，固定 IP（可按需改为有线） |
+| Item | Example |
+| --- | --- |
+| Hardware | Tianhong QN10-100B4, Intel N100 |
+| OS | Ubuntu 24.04 LTS (Noble Numbat) |
+| User | xz; replace with your actual username |
+| Network | Wi-Fi with a fixed IP; wired networking is also possible |
 
-## 部署流程
+## Deployment sequence
 
-1. 系统初始化（换源、连网）
-2. 安装图形组件与 Kiosk 浏览器
-3. 配置自动登录与图形界面
-4. 部署唤醒词服务（Python 环境 + 麦克风）
-5. 优化开机速度与隐藏启动信息
+Initialize package mirrors/networking, install graphics and the browser, configure automatic login/X11, deploy Python wake-word detection and the microphone, then tune boot behavior.
 
----
+These commands change OS configuration, permissions, login behavior, audio volume, and service state. They are retained setup examples and were not run during translation.
 
+### Initialize the system and network
 
-### 系统初始化（换源、连网）
+Back up the package source list and configure the example mirrors/IPv4 preference:
 
 ```
 sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
@@ -51,10 +46,7 @@ EOF
 echo 'Acquire::ForceIPv4 "true";' | sudo tee /etc/apt/apt.conf.d/99force-ipv4
 ```
 
-
-安装网络管理工具（若已存在可忽略）
-
-Bash
+Install NetworkManager if needed:
 
 ```
 sudo apt update
@@ -63,12 +55,7 @@ sudo systemctl start NetworkManager
 sudo systemctl enable NetworkManager
 ```
 
-
-设置wifi密码，固定ip
-
-> **提醒**：以下命令中的 Wi-Fi 名称、密码、IP 地址均为示例，请务必替换为你自己的实际信息。
-
-Bash
+Set Wi-Fi credentials and a fixed IP. Replace the example SSID, password, IP, gateway, and DNS settings with your own:
 
 ```
 sudo nmcli device wifi connect "MERCURY_1812" password "12345678"
@@ -78,12 +65,9 @@ sudo nmcli connection modify "MERCURY_1812" ipv4.addresses "192.168.0.86/24" ipv
 sudo nmcli connection up "MERCURY_1812"
 ```
 
+### Step 1: Install graphics and browser components
 
-### 第一步：安装核心图形组件与浏览器
-
-这里我们坚持“极简主义”，坚决不装多余的桌面环境（如 GNOME/KDE），只装底层驱动、最轻量的窗口管理器（Openbox）、隐藏鼠标工具以及 Chromium 浏览器。
-
-Bash
+Use X11 and Openbox instead of a full GNOME/KDE desktop. Install audio utilities, a pointer-hiding tool, and the browser. The original prose calls it Chromium, but the commands install Google Chrome:
 
 ```
 sudo timedatectl set-timezone Asia/Shanghai
@@ -100,44 +84,32 @@ sudo apt purge snapd -y
 
 ```
 
-### 第二步：配置 TTY1 开机免密自动登录
+### Step 2: Enable automatic login on TTY1
 
-为了避免手动输入账号密码的尴尬，我们通过修改 systemd 服务，让系统一开机就自动以 `xz` 的身份登录。这里使用一键写入命令，彻底避开由于 `nano` 或 `vi` 操作不当导致的保存失败问题。
+Configure systemd to log in as `xz` without entering a password at boot. This is an unattended-kiosk tradeoff, not a security guarantee.
 
-**1. 创建配置目录：**
-
-Bash
+Create the override directory:
 
 ```
 sudo mkdir -p /etc/systemd/system/getty@tty1.service.d/
 ```
 
-**2. 写入自动登录规则：**
-
-Bash
+Write the auto-login rule:
 
 ```
 echo -e "[Service]\nExecStart=\nExecStart=-/sbin/agetty --autologin xz --noclear %I \$TERM" | sudo tee /etc/systemd/system/getty@tty1.service.d/override.conf
 ```
 
-**3. 重载服务并设置默认启动目标：**
-
-Bash
+Reload systemd and set the boot target:
 
 ```
 sudo systemctl daemon-reload
 sudo systemctl set-default multi-user.target
 ```
 
-### 第三步：配置登录后自动启动图形界面
+### Step 3: Start X11 after login
 
-系统自动登录后默认停留在黑底白字的命令行，我们需要配置脚本，让它一旦登录立马启动 X11 图形环境。
-
-**1. 触发 `startx` 的启动逻辑：**
-
-直接将触发代码追加写入你的个人环境配置文件中：
-
-Bash
+Append the following to your user profile so TTY1 login starts X11:
 
 ```
 cat << 'EOF' >> ~/.bash_profile
@@ -147,43 +119,35 @@ fi
 EOF
 ```
 
-**2. 告诉 `startx` 去启动 Openbox：**
-
-Bash
+Tell `startx` to launch Openbox:
 
 ```
 echo "exec openbox-session" > ~/.xinitrc
 ```
 
-### 第四步：配置“铜墙铁壁”的 Openbox 与浏览器
+### Step 4: Configure Openbox and the kiosk browser
 
-这是最核心的一步：关闭屏幕休眠、隐藏鼠标、全屏锁定浏览器，并写一个“死循环”保证浏览器被意外关闭后也能瞬间复活。
+Disable screen blanking, hide the pointer, and relaunch the browser after an exit/crash.
 
-**1. 创建 Openbox 配置目录：**
-
-Bash
+Create the Openbox directory:
 
 ```
 mkdir -p ~/.config/openbox
 ```
 
-**2. 写入自启动脚本 (`autostart`)：**
-
-复制以下整段代码并回车（这会自动把所有保护规则写进文件里）：
-
-Bash
+Write its `autostart` file:
 
 ```
 cat << 'EOF' > ~/.config/openbox/autostart
-# 关闭屏幕保护
+# Disable screen blanking and power management
 xset -dpms
 xset s noblank
 xset s off
 
-# 隐藏鼠标
+# Hide the pointer
 unclutter -idle 0.1 -root &
 
-# 死循环启动 Chromium（崩溃或被关也能秒重启）
+# Restart the browser in a loop after exit or crash
 while true; do
     google-chrome \
         --kiosk \
@@ -201,31 +165,25 @@ done &
 EOF
 ```
 
-**3. 屏蔽 `Alt+F4` 退出快捷键：**
+The original initial URL remains `https://www.douyin.com`; the later wake-word setup below replaces it with the local test page.
 
-为了防止别人插上键盘强行关掉窗口，我们把 Openbox 默认的系统快捷键干掉。
-
-Bash
+Disable the Openbox `Alt+F4` shortcut:
 
 ```
 cp /etc/xdg/openbox/rc.xml ~/.config/openbox/
 sed -i '/<keybind key="A-F4">/,/<\/keybind>/d' ~/.config/openbox/rc.xml
 ```
 
-### 第五步：重启验收成果
+### Step 5: Reboot and verify
 
-如果拔掉网线或不需要等待所有网络上线，可禁用网络等待服务，避免开机卡顿
-
-Bash
+If you do not need to wait for all network interfaces (for example, with an unplugged Ethernet cable), disable the wait-online services to avoid boot delays:
 
 ```
 sudo systemctl mask systemd-networkd-wait-online.service
 sudo systemctl mask NetworkManager-wait-online.service
 ```
 
-隐藏开机信息（GRUB）
-
-Bash
+Hide GRUB/boot status messages:
 
 ```
 sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=3 systemd.show_status=false vt.global_cursor_default=0"/g' /etc/default/grub
@@ -236,20 +194,18 @@ echo 'GRUB_RECORDFAIL_TIMEOUT=0' | sudo tee -a /etc/default/grub
 sudo update-grub
 ```
 
-声音设置成100%，然后 重启：
-
-Bash
+Set master audio to 100%, unmute, and reboot:
 
 ```
 amixer -q sset Master 100% unmute
 sudo reboot
 ```
 
-### 部署唤醒词服务
+### Deploy the wake-word service
 
-在一体机上部署唤醒词检测服务，需要安装 Python 环境、上传项目文件、配置 Camera 麦克风和开机自启。
+Install Python, upload the module, configure the camera microphone, and enable startup.
 
-#### 1. 安装 Miniconda
+#### 1. Install Miniconda
 
 ```bash
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
@@ -259,8 +215,7 @@ source ~/.bashrc
 rm Miniconda3-latest-Linux-x86_64.sh
 ```
 
-
-确保登录时自动进入conda环境
+Ensure login loads `.bashrc` and its Conda initialization:
 
 ```bash
 if ! grep -q '.bashrc' ~/.bash_profile; then
@@ -273,39 +228,38 @@ EOF
 fi
 ```
 
-
-#### 2. 创建 Python 虚拟环境
+#### 2. Create the Python environment
 
 ```bash
 conda create -n test python=3.10 -y
 conda activate test
 ```
 
-若出现 Terms of Service have not been accepted 错误，执行：
+If Conda reports that Terms of Service have not been accepted, review those terms before accepting them with the original commands:
 
 ```bash
 conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
 conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
 ```
 
-#### 3. 上传项目文件
+#### 3. Upload project files
 
-将开发机上的 `main/digital-human/` 整个目录上传到一体机的 `~/digital-human/` 目录：
+From the development machine, copy the entire `main/digital-human/` directory to `~/digital-human/` on the kiosk. Replace `<一体机IP>`, the original “kiosk IP” placeholder, with the actual IP:
 
 ```bash
-# 在开发机上执行（将 <一体机IP> 替换为实际 IP）
+# Run on the development machine; replace the kiosk IP placeholder
 scp -r main/digital-human/ xz@<一体机IP>:~/digital-human/
 ```
 
-#### 4. 安装系统依赖
+#### 4. Install system dependencies
 
-唤醒词服务需要音频采集库和 ALSA PulseAudio 插件：
+The wake-word service requires audio capture libraries and ALSA's PulseAudio plugin:
 
 ```bash
 sudo apt install libportaudio2 portaudio19-dev libasound2-plugins -y
 ```
 
-#### 5. 安装 Python 依赖
+#### 5. Install Python dependencies
 
 ```bash
 cd ~/digital-human/wakeword_runtime
@@ -313,58 +267,58 @@ pip install numpy
 pip install -r requirements.txt
 ```
 
-#### 6. 下载唤醒词模型
+#### 6. Download wake-word models
 
-模型文件不包含在项目中，需要单独下载配置，详见 [docs/digital-human-wakeword.md](digital-human-wakeword.md) 中的“模型下载”章节。
+Model files are not included. Follow the model-download section in the [wake-word guide](digital-human-wakeword.md).
 
-#### 7. 修改 Openbox 自启动脚本
+#### 7. Update Openbox autostart
 
-需要在 autostart 中加上 PulseAudio 和 Camera 麦克风配置，并将 Chrome 地址改为测试页面。
+Add PulseAudio and microphone settings, then point Chrome at the local test page.
 
-先确认 Camera 麦克风在 PulseAudio 中的设备名：
+Find the camera microphone's PulseAudio source name:
 
 ```bash
 pulseaudio --start
 pactl list sources short
 ```
 
-找到包含 `USB_Camera` 的那一行，记下完整名称，例如：
+Locate the line containing `USB_Camera` and copy its full name, such as:
 
 ```
 alsa_input.usb-SN0002_2K_USB_Camera_46435000_P030D00_SN0002-02.mono-fallback
 ```
 
-然后用完整内容覆盖 autostart（将 `TARGET_MIC` 替换为你的实际设备名）：
+Replace the entire `autostart` file below. Set `TARGET_MIC` to your actual device name:
 
 ```bash
 cat << 'EOF' > ~/.config/openbox/autostart
-# 1. 启动声音服务并稍作等待
+# 1. Start the audio service and wait briefly
 pulseaudio --start
 sleep 1
 
-# 2. 锁定 Camera 的麦克风（请替换为你的实际设备名）
+# 2. Select the camera microphone (replace with your device name)
 TARGET_MIC="alsa_input.usb-SN0002_2K_USB_Camera_46435000_P030D00_SN0002-02.mono-fallback"
 
-# 3. 设为系统默认麦克风
+# 3. Set the system default microphone
 pactl set-default-source "$TARGET_MIC"
 
-# 4. 解除静音
+# 4. Unmute
 pactl set-source-mute "$TARGET_MIC" 0
 
-# 5. 音量拉到 100%
+# 5. Set volume to 100%
 pactl set-source-volume "$TARGET_MIC" 100%
 
-# --- 极简桌面与浏览器环境配置 ---
+# --- Minimal desktop and browser configuration ---
 
-# 关闭屏幕保护
+# Disable screen blanking and power management
 xset -dpms
 xset s noblank
 xset s off
 
-# 隐藏鼠标
+# Hide the pointer
 unclutter -idle 0.1 -root &
 
-# 死循环启动浏览器（崩溃或被关也能秒重启）
+# Restart the browser in a loop after exit or crash
 while true; do
     google-chrome \
         --kiosk \
@@ -382,17 +336,15 @@ done &
 EOF
 ```
 
-#### 8. 配置唤醒词服务开机自启
+#### 8. Start the runtime at boot
 
-创建 systemd 服务文件，让唤醒词服务开机自动运行。
-
-先确认当前用户的 UID：
+Check your user's UID:
 
 ```bash
 id -u $(whoami)
 ```
 
-然后用查到的 UID 替换下面 `1000`（通常第一个用户就是 1000）：
+Replace `1000` below with that UID (the first user's UID is often 1000), then create the systemd service:
 
 ```bash
 sudo tee /etc/systemd/system/digital-human.service << 'EOF'
@@ -416,13 +368,9 @@ WantedBy=multi-user.target
 EOF
 ```
 
-> **重要说明**：
-> - `User=xz` — 替换为你的实际用户名
-> - `/run/user/1000` — 替换为你实际的 UID
-> - `WorkingDirectory` 和 `ExecStart` 中的路径 — 替换为你的实际部署路径
-> - `Environment` 中的 PulseAudio 环境变量**必须保留**，否则唤醒词服务和浏览器无法同时使用 Camera 麦克风
+Replace `User=xz`, both `/run/user/1000` values, `WorkingDirectory`, and the `ExecStart` path to match your account and installation. Keep the PulseAudio environment variables: they let the runtime and browser share the camera microphone.
 
-启用并启动服务：
+Enable and start it:
 
 ```bash
 sudo systemctl daemon-reload
@@ -430,13 +378,13 @@ sudo systemctl enable digital-human
 sudo systemctl start digital-human
 ```
 
-#### 9. 常用服务管理命令
+#### 9. Service management commands
 
 ```bash
-sudo systemctl start digital-human     # 立即启动
-sudo systemctl stop digital-human      # 停止
-sudo systemctl restart digital-human   # 重启
-sudo systemctl status digital-human    # 查看状态
-journalctl -u digital-human -f         # 查看实时日志
+sudo systemctl start digital-human     # Start now
+sudo systemctl stop digital-human      # Stop
+sudo systemctl restart digital-human   # Restart
+sudo systemctl status digital-human    # Show status
+journalctl -u digital-human -f         # Follow logs
 ```
 

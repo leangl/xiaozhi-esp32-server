@@ -1,8 +1,9 @@
-"""ManageApiClient 生命周期回归测试：直接以 unittest 运行，不依赖应用/模型与网络。
+"""ManageApiClient lifecycle regression tests: run with unittest, without the app, models or network.
 
-不进 pytest 套件：tests/conftest.py 的 mock 层（import 时全局替换
-asyncio.sleep 与 httpx.AsyncClient）与本文件的时序断言、MockTransport
-注入互相破坏；__test__ = False 使 pytest 跳过收集，请直接用 unittest 运行。
+Excluded from pytest: tests/conftest.py globally mocks asyncio.sleep and
+httpx.AsyncClient at import time, interfering with the timing assertions and
+MockTransport injection here. __test__ = False disables pytest collection;
+run these tests directly with unittest.
 Usage: python -B tests/test_manage_api_client_lifecycle.py -v
 """
 __test__ = False
@@ -28,7 +29,7 @@ class ManageApiClientLifecycleTest(unittest.IsolatedAsyncioTestCase):
         self.api = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(self.api)
         self.cls = self.api.ManageApiClient
-        self.cls({'manager-api': {'url': 'http://offline.invalid/xiaozhi',
+        self.cls({'manager-api': {'url': 'http://127.0.0.1:9100/xiaozhi',
                   'secret': 'synthetic-test', 'max_retries': 1, 'retry_delay': 0}})
         self.clients = []
         self.requests = []
@@ -55,7 +56,7 @@ class ManageApiClientLifecycleTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_success_preserves_url_headers_and_payload(self):
         async def handle(request):
-            self.assertEqual(str(request.url), 'http://offline.invalid/xiaozhi/report')
+            self.assertEqual(str(request.url), 'http://127.0.0.1:9100/xiaozhi/report')
             self.assertEqual(request.headers['authorization'], 'Bearer synthetic-test')
             self.assertEqual(request.content, b'{"value":123}')
             return httpx.Response(200, json={'code': 0, 'data': {'ok': True}})
@@ -64,13 +65,13 @@ class ManageApiClientLifecycleTest(unittest.IsolatedAsyncioTestCase):
                              json={'value': 123}), {'ok': True})
 
     async def test_retry_reuses_client_until_request_ends(self):
-        """重试在同一个 client（池内同一 keep-alive 连接）上进行，
-        整个业务请求结束后才关闭——client 生命周期与业务请求对齐，
-        而不是与单次尝试对齐。"""
+        """Retries reuse one client (and the same pooled keep-alive connection).
+        Close it only when the whole application request ends: client lifetime
+        follows the request, not an individual attempt."""
         async def handle(request):
             if len(self.requests) == 1:
                 return httpx.Response(503)
-            # 第二次尝试时第一个 client 仍在服务（未被提前关闭）
+            # The first client is still active during the second attempt, not closed early.
             self.assertFalse(self.clients[0].is_closed)
             return httpx.Response(200, json={'code': 0, 'data': True})
         with self.transport(handle):
@@ -87,7 +88,7 @@ class ManageApiClientLifecycleTest(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(self.clients[0].is_closed)
 
     async def test_remote_protocol_error_without_response_triggers_retry(self):
-        """stale keep-alive 场景：响应从未开始，重试安全。"""
+        """Stale keep-alive: no response has started, so retrying is safe."""
         async def handle(request):
             if len(self.requests) == 1:
                 raise httpx.RemoteProtocolError(
@@ -99,8 +100,8 @@ class ManageApiClientLifecycleTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(self.requests), 2)
 
     async def test_remote_protocol_error_incomplete_body_not_retried(self):
-        """响应中途截断：服务端很可能已处理完请求，重试非幂等 POST
-        会重复提交，必须直接失败。"""
+        """A truncated response likely follows a processed request. Retrying a
+        non-idempotent POST could duplicate it; fail immediately instead."""
         async def handle(request):
             raise httpx.RemoteProtocolError(
                 'Peer closed connection without sending complete message body '
@@ -157,27 +158,29 @@ class ManageApiClientLifecycleTest(unittest.IsolatedAsyncioTestCase):
         with self.transport(handle):
             self.assertTrue(await self.api.report('device', 'session', 1, 'text', None, 0))
             self.assertIsNone(await self.api.report('device', 'session', 1, 'later', None, 0))
+            # Compatibility fixture: existing consumers match this Chinese error fragment.
             with self.assertRaisesRegex(Exception, '已关闭'):
                 await self.cls._execute_async_request('POST', '/report')
         self.assertEqual(len(self.clients), 1)
 
     async def test_safe_close_interrupts_retry_backoff(self):
-        """safe_close 打断重试等待：已开始的尝试跑完，不发起新尝试，
-        以 ManageApiShutdownError 收尾（与重试耗尽的网络异常可区分）。"""
+        """safe_close interrupts retry waits: let the active attempt finish and
+        start no new attempts. Raise ManageApiShutdownError, distinguishable from
+        a network error after exhausted retries."""
         async def handle(request):
             return httpx.Response(503)
         original_delay = self.cls.retry_delay
-        self.cls.retry_delay = 5.0  # setUp 默认 0，观察不到打断
+        self.cls.retry_delay = 5.0  # setUp uses zero, which cannot expose an interrupted wait.
         try:
             with self.transport(handle):
                 task = asyncio.create_task(
                     self.cls._execute_async_request('POST', '/report'))
-                await asyncio.sleep(0.2)  # 进入重试等待
+                await asyncio.sleep(0.2)  # Allow the request to enter its retry wait.
                 self.cls.safe_close()
                 with self.assertRaises(self.api.ManageApiShutdownError) as ctx:
                     await task
                 self.assertIsInstance(ctx.exception.__cause__, httpx.HTTPStatusError)
-            # 只有第一次尝试：重试等待被打断，未发起新尝试
+            # Only the first attempt ran: the wait was interrupted before another attempt.
             self.assertEqual(len(self.clients), 1)
             self.assertEqual(len(self.requests), 1)
         finally:
@@ -193,8 +196,8 @@ class ManageApiClientLifecycleTest(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(all(results))
         self.assertEqual(len(self.clients), 100)
         self.assertTrue(all(c.is_closed for c in self.clients))
-        # 缓存回归网：释放测试持有的强引用后 client 必须可被 GC 回收，
-        # 任何类级缓存（id(loop) dict / WeakKeyDictionary）重引入都会让存活数 > 0
+        # Cache regression guard: clients must be collectible once test references are released.
+        # Reintroducing class-level caches (id(loop) dict / WeakKeyDictionary) leaves survivors.
         refs = [weakref.ref(c) for c in self.clients]
         self.clients.clear()
         gc.collect()

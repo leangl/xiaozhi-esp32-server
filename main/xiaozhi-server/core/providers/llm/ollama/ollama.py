@@ -1,6 +1,7 @@
 from config.logger import setup_logging
 from openai import OpenAI
-import json
+from config.service_policy import httpx_client, validate_endpoint
+from config.provider_profile import validate_provider_config
 from core.providers.llm.base import LLMProviderBase
 
 TAG = __name__
@@ -9,45 +10,27 @@ logger = setup_logging()
 
 class LLMProvider(LLMProviderBase):
     def __init__(self, config):
+        validate_provider_config("LLM", config, "ollama", require_ready=True)
         self.model_name = config.get("model_name")
-        self.base_url = config.get("base_url", "http://localhost:11434")
+        self.base_url = config["base_url"].rstrip("/")
         # Initialize OpenAI client with Ollama base URL
-        # 如果没有v1，增加v1
+        # Add v1 when it is absent
         if not self.base_url.endswith("/v1"):
             self.base_url = f"{self.base_url}/v1"
+        validate_endpoint(self.base_url, "llm")
 
         self.client = OpenAI(
             base_url=self.base_url,
             api_key="ollama",  # Ollama doesn't need an API key but OpenAI client requires one
+            http_client=httpx_client("llm"),
         )
 
-        # 检查是否是qwen3模型
-        self.is_qwen3 = self.model_name and self.model_name.lower().startswith("qwen3")
-
     def response(self, session_id, dialogue, **kwargs):
-        # 如果是qwen3模型，在用户最后一条消息中添加/no_think指令
-        if self.is_qwen3:
-            # 复制对话列表，避免修改原始对话
-            dialogue_copy = dialogue.copy()
-
-            # 找到最后一条用户消息
-            for i in range(len(dialogue_copy) - 1, -1, -1):
-                if dialogue_copy[i]["role"] == "user":
-                    # 在用户消息前添加/no_think指令
-                    dialogue_copy[i]["content"] = (
-                        "/no_think " + dialogue_copy[i]["content"]
-                    )
-                    logger.bind(tag=TAG).debug(f"为qwen3模型添加/no_think指令")
-                    break
-
-            # 使用修改后的对话
-            dialogue = dialogue_copy
-
         responses = self.client.chat.completions.create(
             model=self.model_name, messages=dialogue, stream=True
         )
         is_active = True
-        # 用于处理跨chunk的标签
+        # Handle tags split across chunks
         buffer = ""
 
         try:
@@ -61,30 +44,30 @@ class LLMProvider(LLMProviderBase):
                     content = delta.content if hasattr(delta, "content") else ""
 
                     if content:
-                        # 将内容添加到缓冲区
+                        # Append content to the buffer
                         buffer += content
 
-                        # 处理缓冲区中的标签
+                        # Process tags in the buffer
                         while "<think>" in buffer and "</think>" in buffer:
-                            # 找到完整的<think></think>标签并移除
+                            # Find and remove complete <think></think> tags
                             pre = buffer.split("<think>", 1)[0]
                             post = buffer.split("</think>", 1)[1]
                             buffer = pre + post
 
-                        # 处理只有开始标签的情况
+                        # Handle an opening tag without a closing tag
                         if "<think>" in buffer:
                             is_active = False
                             buffer = buffer.split("<think>", 1)[0]
 
-                        # 处理只有结束标签的情况
+                        # Handle a closing tag without an opening tag
                         if "</think>" in buffer:
                             is_active = True
                             buffer = buffer.split("</think>", 1)[1]
 
-                        # 如果当前处于活动状态且缓冲区有内容，则输出
+                        # Emit buffered content when the current state is active
                         if is_active and buffer:
                             yield buffer
-                            buffer = ""  # 清空缓冲区
+                            buffer = ""  # Clear the buffer
 
                 except Exception as e:
                     logger.bind(tag=TAG).error(f"Error processing chunk: {e}")
@@ -92,24 +75,6 @@ class LLMProvider(LLMProviderBase):
             responses.close()
 
     def response_with_functions(self, session_id, dialogue, functions=None):
-        # 如果是qwen3模型，在用户最后一条消息中添加/no_think指令
-        if self.is_qwen3:
-            # 复制对话列表，避免修改原始对话
-            dialogue_copy = dialogue.copy()
-
-            # 找到最后一条用户消息
-            for i in range(len(dialogue_copy) - 1, -1, -1):
-                if dialogue_copy[i]["role"] == "user":
-                    # 在用户消息前添加/no_think指令
-                    dialogue_copy[i]["content"] = (
-                        "/no_think " + dialogue_copy[i]["content"]
-                    )
-                    logger.bind(tag=TAG).debug(f"为qwen3模型添加/no_think指令")
-                    break
-
-            # 使用修改后的对话
-            dialogue = dialogue_copy
-
         stream = self.client.chat.completions.create(
             model=self.model_name,
             messages=dialogue,
@@ -133,37 +98,37 @@ class LLMProvider(LLMProviderBase):
                         delta.tool_calls if hasattr(delta, "tool_calls") else None
                     )
 
-                    # 如果是工具调用，直接传递
+                    # Pass tool calls through directly
                     if tool_calls:
                         yield None, tool_calls
                         continue
 
-                    # 处理文本内容
+                    # Process text content
                     if content:
-                        # 将内容添加到缓冲区
+                        # Append content to the buffer
                         buffer += content
 
-                        # 处理缓冲区中的标签
+                        # Process tags in the buffer
                         while "<think>" in buffer and "</think>" in buffer:
-                            # 找到完整的<think></think>标签并移除
+                            # Find and remove complete <think></think> tags
                             pre = buffer.split("<think>", 1)[0]
                             post = buffer.split("</think>", 1)[1]
                             buffer = pre + post
 
-                        # 处理只有开始标签的情况
+                        # Handle an opening tag without a closing tag
                         if "<think>" in buffer:
                             is_active = False
                             buffer = buffer.split("<think>", 1)[0]
 
-                        # 处理只有结束标签的情况
+                        # Handle a closing tag without an opening tag
                         if "</think>" in buffer:
                             is_active = True
                             buffer = buffer.split("</think>", 1)[1]
 
-                        # 如果当前处于活动状态且缓冲区有内容，则输出
+                        # Emit buffered content when the current state is active
                         if is_active and buffer:
                             yield buffer, None
-                            buffer = ""  # 清空缓冲区
+                            buffer = ""  # Clear the buffer
                 except Exception as e:
                     logger.bind(tag=TAG).error(f"Error processing function chunk: {e}")
                     continue

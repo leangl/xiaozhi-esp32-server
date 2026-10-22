@@ -7,10 +7,11 @@ import traceback
 from typing import Optional, Dict
 
 import httpx
+from config.service_policy import validate_endpoint, async_httpx_client
 
 TAG = __name__
 
-# _retry_wait 的分片粒度：safe_close 后 ~100ms 内收尾，轮询开销可忽略
+# _retry_wait polling interval: finish within ~100 ms of safe_close, with negligible overhead.
 _RETRY_WAIT_SLICE = 0.1
 
 
@@ -21,21 +22,21 @@ class DeviceNotFoundException(Exception):
 class DeviceBindException(Exception):
     def __init__(self, bind_code):
         self.bind_code = bind_code
-        super().__init__(f"设备绑定异常，绑定码: {bind_code}")
+        super().__init__(f"Device binding error; binding code: {bind_code}")
 
 
 class ManageApiShutdownError(Exception):
-    """safe_close 打断重试等待后的收尾异常，__cause__ 保留最后一次失败原因。"""
+    """Raised when safe_close interrupts a retry wait; __cause__ retains the last failure."""
 
 
 class ManageApiClient:
     _instance = None
-    _instance_lock = threading.Lock()  # 保护 _instance 与 _closed 的读写
+    _instance_lock = threading.Lock()  # Protect reads and writes of _instance and _closed.
     _secret = None
-    _closed = False  # safe_close() 后置为 True，关闭后不再创建新连接
+    _closed = False  # Set by safe_close(); do not create new connections after shutdown.
 
     def __new__(cls, config):
-        """单例模式确保全局唯一实例，并支持传入配置参数"""
+        """Create a single global instance, accepting configuration parameters."""
         with cls._instance_lock:
             if cls._instance is None:
                 cls._instance = super().__new__(cls)
@@ -44,37 +45,43 @@ class ManageApiClient:
 
     @classmethod
     def _init_client(cls, config):
-        """初始化配置（延迟创建客户端）"""
+        """Initialize configuration, deferring client creation until use."""
         cls.config = config.get("manager-api")
 
         if not cls.config:
-            raise Exception("manager-api配置错误")
+            raise Exception("Invalid manager-api configuration")
 
         if not cls.config.get("url") or not cls.config.get("secret"):
-            raise Exception("manager-api的url或secret配置错误")
+            raise Exception("Invalid manager-api url or secret configuration")
+
+        validate_endpoint(cls.config.get("url"), "tool")
 
         if "你" in cls.config.get("secret"):
-            raise Exception("请先配置manager-api的secret")
+            raise Exception("Configure the manager-api secret first")
 
         cls._secret = cls.config.get("secret")
-        cls.max_retries = cls.config.get("max_retries", 6)  # 最大重试次数
-        cls.retry_delay = cls.config.get("retry_delay", 10)  # 初始重试延迟(秒)
-        # 不在这里创建 AsyncClient，延迟到实际使用时创建
+        cls.max_retries = cls.config.get("max_retries", 6)  # Maximum retry count.
+        cls.retry_delay = cls.config.get("retry_delay", 10)  # Initial retry delay, in seconds.
+        # Defer AsyncClient creation until it is actually needed.
         cls._closed = False
 
     @classmethod
     def _build_client(cls) -> httpx.AsyncClient:
-        """构造单次业务请求（含重试）专用的 AsyncClient。
+        """Build an AsyncClient dedicated to one application request, including retries.
 
-        约束：由调用方 ``async with`` 在同一 loop 内关闭，禁止跨请求缓存；构造在锁外执行，避免并发请求阻塞事件循环。
+        The caller must close it using ``async with`` in the same event loop; never
+        cache it across requests. Construct it outside the lock to avoid blocking
+        the event loop during concurrent requests.
         """
         with cls._instance_lock:
             if cls._closed:
+                # Compatibility: lifecycle consumers match the original closed-client message.
                 raise Exception("ManageApiClient已关闭，不再创建新的HTTP客户端")
             base_url = cls.config.get("url")
             secret = cls._secret
             timeout = cls.config.get("timeout", 30)
-        return httpx.AsyncClient(
+        validate_endpoint(base_url, "tool")
+        return async_httpx_client("tool",
             base_url=base_url,
             headers={
                 "User-Agent": f"PythonClient/2.0 (PID:{os.getpid()})",
@@ -82,15 +89,14 @@ class ManageApiClient:
                 "Authorization": "Bearer " + secret,
             },
             timeout=timeout,
-            # 连接复用仅限本次请求；keepalive_expiry 动态覆盖 retry_delay，
-            # 防止重试等待期间池内连接过期。
+            # Reuse connections only within this request. Adjust keepalive_expiry
+            # to cover retry_delay so pooled connections survive retry waits.
             limits=httpx.Limits(
                 max_keepalive_connections=1,
                 keepalive_expiry=max(30, cls.retry_delay + 5),
             ),
-            trust_env=False,
-            # verify=True 现建 context：httpcore 建连会原地改写传入
-            # context（无锁），共享单例并发握手有竞态。
+            # verify=True creates a fresh context: httpcore mutates the supplied
+            # context without locking, so sharing one would race during handshakes.
             verify=True,
         )
 
@@ -98,7 +104,7 @@ class ManageApiClient:
     async def _async_request(
         cls, client: httpx.AsyncClient, method: str, endpoint: str, **kwargs
     ) -> Dict:
-        """在给定 client 上执行单次请求；响应读取后立即释放回连接池。"""
+        """Make one request on client and release the response immediately after reading."""
         endpoint = endpoint.lstrip("/")
         response = None
         try:
@@ -110,31 +116,32 @@ class ManageApiClient:
             elif result.get("code") == 10042:
                 raise DeviceBindException(result.get("msg"))
             elif result.get("code") != 0:
-                raise Exception(f"API返回错误: {result.get('msg', '未知错误')}")
+                raise Exception(f"API returned an error: {result.get('msg', 'Unknown error')}")
             return result.get("data")
         finally:
             if response is not None:
                 try:
                     await response.aclose()
                 except Exception:
-                    # 约束：必须吞掉释放异常，避免覆盖业务异常、破坏重试判断
+                    # Suppress cleanup errors so they cannot mask application errors or affect retry decisions.
                     pass
 
     @classmethod
     def _should_retry(cls, exception: Exception) -> bool:
-        """判断异常是否应该重试"""
-        # 网络连接相关错误
+        """Decide whether an exception warrants a retry."""
+        # Network connection errors.
         if isinstance(
             exception, (httpx.ConnectError, httpx.TimeoutException, httpx.NetworkError)
         ):
             return True
 
-        # RPE 仅"without sending a response"（响应未开始，安全）变体重试；
-        # 截断变体可能已处理请求会重复提交，文案变更时退化为不重试。
+        # Retry only the "without sending a response" RPE variant (no response started).
+        # Truncated responses may follow processed requests; retrying could duplicate
+        # submissions. If the upstream wording changes, conservatively do not retry.
         if isinstance(exception, httpx.RemoteProtocolError):
             return "without sending a response" in str(exception)
 
-        # HTTP状态码错误
+        # HTTP status errors.
         if isinstance(exception, httpx.HTTPStatusError):
             status_code = exception.response.status_code
             return status_code in [408, 429, 500, 502, 503, 504]
@@ -143,9 +150,9 @@ class ManageApiClient:
 
     @classmethod
     async def _retry_wait(cls):
-        """可被 safe_close() 打断的重试等待（100ms 分片轮询 _closed）。
+        """Wait for a retry, polling _closed every 100 ms so safe_close() can interrupt.
 
-        约束：不得一次睡满 retry_delay，否则关闭后收尾要拖满整个重试周期。
+        Do not sleep for all of retry_delay at once: shutdown must not wait an entire retry cycle.
         """
         remaining = cls.retry_delay
         while remaining > 0 and not cls._closed:
@@ -155,9 +162,11 @@ class ManageApiClient:
 
     @classmethod
     async def _execute_async_request(cls, method: str, endpoint: str, **kwargs) -> Dict:
-        """带重试机制的业务请求执行器。
+        """Execute an application request with retries.
 
-        约束：client 整个重试过程只构造一次，结束后由 ``async with`` 关闭；safe_close 不取消已开始的尝试，只打断重试等待（抛 ManageApiShutdownError）。
+        Construct the client once for the full retry sequence and close it with
+        ``async with``. safe_close does not cancel an active attempt; it interrupts
+        retry waits by raising ManageApiShutdownError.
         """
         client = cls._build_client()
         async with client:
@@ -165,40 +174,42 @@ class ManageApiClient:
 
             while retry_count <= cls.max_retries:
                 try:
-                    # 执行异步请求
+                    # Execute the asynchronous request.
                     return await cls._async_request(client, method, endpoint, **kwargs)
                 except Exception as e:
-                    # 判断是否应该重试
+                    # Decide whether to retry.
                     if retry_count < cls.max_retries and cls._should_retry(e):
                         retry_count += 1
                         print(
-                            f"{method} {endpoint} 异步请求失败，将在 {cls.retry_delay:.1f} 秒后进行第 {retry_count} 次重试"
+                            f"{method} {endpoint} asynchronous request failed; after {cls.retry_delay:.1f} seconds, attempt retry {retry_count}"
                         )
                         await cls._retry_wait()
                         if cls._closed:
-                            # 收尾必须可区分：裸 raise 会把 shutdown 早退伪装
-                            # 成网络抖动，掩盖服务下线信号
+                            # Distinguish shutdown from network failures: a bare raise
+                            # would hide the service shutdown signal as a network error.
                             raise ManageApiShutdownError(
-                                f"safe_close 已打断重试等待: {e}") from e
+                                f"safe_close interrupted the retry wait: {e}") from e
                         continue
                     else:
-                        # 不重试，直接抛出异常
+                        # Propagate the exception without retrying.
                         raise
 
     @classmethod
     def _get_instance(cls) -> Optional["ManageApiClient"]:
-        """线程安全地获取单例实例引用。
+        """Return a thread-safe reference to the singleton.
 
-        约束：调用方必须持有返回的局部引用，禁止判空后重读 _instance（TOCTOU 窗口）。
+        Callers must retain the returned local reference, not re-read _instance
+        after checking it for None (which would introduce a TOCTOU race).
         """
         with cls._instance_lock:
             return cls._instance
 
     @classmethod
     def safe_close(cls):
-        """关闭请求入口；在途请求在各自事件循环中释放客户端。
+        """Stop accepting requests; in-flight requests close clients in their own loops.
 
-        已开始的请求不取消；重试等待被打断、跳过剩余重试（见 _retry_wait）。
+        Do not cancel active requests. Interrupt retry waits and skip remaining
+        retries (see _retry_wait).
         """
         with cls._instance_lock:
             cls._closed = True
@@ -206,14 +217,14 @@ class ManageApiClient:
 
 
 def api_guard(error_msg: str = None, raise_when_closed: bool = False):
-    """装饰器：统一获取单例实例、判空与异常兜底
+    """Decorate API calls with singleton lookup, availability checks and error handling.
 
-    - 通过 _get_instance() 一次性获取实例局部引用，注入为被装饰函数的
-      第一个参数，消除与 safe_close() 之间的 TOCTOU 竞态窗口；
-    - 实例未初始化或已关闭时：raise_when_closed=True 抛出明确异常
-      （用于启动路径函数），否则静默返回 None（用于守护线程路径）；
-    - error_msg 不为 None 时捕获请求异常、打印日志并返回 None；
-      为 None 时异常原样抛出，由调用方处理。
+    - Capture one local reference using _get_instance() and inject it as the first
+      argument, avoiding a TOCTOU race with safe_close().
+    - If uninitialized or closed, raise explicitly when raise_when_closed=True
+      (startup paths); otherwise silently return None (daemon-thread paths).
+    - When error_msg is not None, catch request errors, log and return None.
+      Otherwise propagate the original exception for the caller to handle.
     """
 
     def decorator(func):
@@ -222,15 +233,15 @@ def api_guard(error_msg: str = None, raise_when_closed: bool = False):
             instance = ManageApiClient._get_instance()
             if instance is None:
                 if raise_when_closed:
-                    raise Exception("ManageApiClient未初始化或已关闭")
+                    raise Exception("ManageApiClient is uninitialized or closed")
                 return None
             if error_msg is None:
                 return await func(instance, *args, **kwargs)
             try:
                 return await func(instance, *args, **kwargs)
             except Exception as e:
-                # 约束：httpx / 解析异常打全堆栈；业务语义异常只打
-                # message（消息自带上下文，堆栈是高频噪声）
+                # Include tracebacks for httpx/parsing errors. For application-level
+                # errors, the message supplies context; repeated tracebacks add noise.
                 if isinstance(e, (httpx.HTTPError, ValueError)):
                     print(f"{error_msg}: {e}\n{traceback.format_exc()}")
                 else:
@@ -244,7 +255,7 @@ def api_guard(error_msg: str = None, raise_when_closed: bool = False):
 
 @api_guard(raise_when_closed=True)
 async def get_server_config(instance) -> Optional[Dict]:
-    """获取服务器基础配置"""
+    """Fetch the base server configuration."""
     return await instance._execute_async_request("POST", "/config/server-base")
 
 
@@ -252,7 +263,7 @@ async def get_server_config(instance) -> Optional[Dict]:
 async def get_agent_models(
     instance, mac_address: str, client_id: str, selected_module: Dict
 ) -> Optional[Dict]:
-    """获取代理模型配置"""
+    """Fetch agent model configuration."""
     return await instance._execute_async_request(
         "POST",
         "/config/agent-models",
@@ -264,38 +275,38 @@ async def get_agent_models(
     )
 
 
-@api_guard("获取替换词失败")
+@api_guard("Failed to fetch word replacements")
 async def get_correct_words(instance, mac_address: str) -> Optional[Dict]:
-    """获取智能体替换词"""
+    """Fetch the agent's word replacements."""
     return await instance._execute_async_request(
         "POST", "/config/correct-words",
         json={"macAddress": mac_address}
     )
 
 
-@api_guard("生成并保存聊天记录总结失败")
+@api_guard("Failed to generate and save the chat summary")
 async def generate_and_save_chat_summary(instance, session_id: str) -> Optional[Dict]:
-    """生成并保存聊天记录总结（守护线程中调用，服务已关闭时静默返回 None）"""
+    """Generate/save the chat summary; daemon calls silently return None after shutdown."""
     return await instance._execute_async_request(
         "POST",
         f"/agent/chat-summary/{session_id}/save",
     )
 
 
-@api_guard("生成并保存聊天标题失败")
+@api_guard("Failed to generate and save the chat title")
 async def generate_and_save_chat_title(instance, session_id: str) -> Optional[Dict]:
-    """生成并保存聊天标题（守护线程中调用，服务已关闭时静默返回 None）"""
+    """Generate/save the chat title; daemon calls silently return None after shutdown."""
     return await instance._execute_async_request(
         "POST",
         f"/agent/chat-title/{session_id}/generate",
     )
 
 
-@api_guard("TTS上报失败")
+@api_guard("TTS reporting failed")
 async def report(
     instance, mac_address: str, session_id: str, chat_type: int, content: str, audio, report_time
 ) -> Optional[Dict]:
-    """异步聊天记录上报"""
+    """Report chat history asynchronously."""
     if not content:
         return None
     return await instance._execute_async_request(
@@ -314,9 +325,9 @@ async def report(
     )
 
 
-@api_guard("通讯录查找失败")
+@api_guard("Address book lookup failed")
 async def lookup_address_book(instance, caller_mac: str, nickname: str) -> Optional[Dict]:
-    """根据昵称查找目标设备"""
+    """Look up the target device by nickname."""
     return await instance._execute_async_request(
         "GET",
         f"/device/address-book/lookup?callerMac={caller_mac}&nickname={nickname}",

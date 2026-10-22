@@ -11,8 +11,9 @@ import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerIntercept
 import xiaozhi.common.interceptor.DataFilterInterceptor;
 
 /**
- * mybatis-plus配置
+ * MyBatis-Plus configuration
  * Copyright (c) 人人开源 All rights reserved.
+ * Original copyright holder: Renren Open Source; the legal attribution above is retained.
  * Website: https://www.renren.io
  */
 @Configuration
@@ -21,13 +22,13 @@ public class MybatisPlusConfig {
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
-        // 数据权限
+        // Data access permissions
         mybatisPlusInterceptor.addInnerInterceptor(new DataFilterInterceptor());
-        // 分页插件
+        // Pagination interceptor
         mybatisPlusInterceptor.addInnerInterceptor(new PaginationInnerInterceptor());
-        // 乐观锁
+        // Optimistic locking
         mybatisPlusInterceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
-        // 防止全表更新与删除
+        // Prevent updates and deletes affecting the entire table
         mybatisPlusInterceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
 
         return mybatisPlusInterceptor;

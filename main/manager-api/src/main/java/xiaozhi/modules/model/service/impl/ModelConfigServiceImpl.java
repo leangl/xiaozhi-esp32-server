@@ -2,12 +2,14 @@ package xiaozhi.modules.model.service.impl;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -27,6 +29,7 @@ import xiaozhi.common.redis.RedisKeys;
 import xiaozhi.common.redis.RedisUtils;
 import xiaozhi.common.service.impl.BaseServiceImpl;
 import xiaozhi.common.utils.ConvertUtils;
+import xiaozhi.common.utils.ApprovedProviderCatalog;
 import xiaozhi.common.utils.SensitiveDataUtils;
 import xiaozhi.modules.agent.dao.AgentDao;
 import xiaozhi.modules.agent.entity.AgentEntity;
@@ -40,6 +43,7 @@ import xiaozhi.modules.model.entity.ModelConfigEntity;
 import xiaozhi.modules.model.service.ModelConfigService;
 import xiaozhi.modules.model.service.ModelProviderService;
 import lombok.extern.slf4j.Slf4j;
+import xiaozhi.modules.timbre.dao.TimbreDao;
 
 @Service
 @AllArgsConstructor
@@ -51,6 +55,17 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     private final ModelProviderService modelProviderService;
     private final RedisUtils redisUtils;
     private final AgentDao agentDao;
+    private final TimbreDao timbreDao;
+
+    @Override
+    public void validateVoiceSelection(String ttsModelId, String voiceId) {
+        if (StringUtils.isBlank(voiceId)) return;
+        requireSelectable(ttsModelId, "tts");
+        var voice = timbreDao.selectById(voiceId);
+        if (voice == null || !java.util.Objects.equals(ttsModelId, voice.getTtsModelId())) {
+            throw ApprovedProviderCatalog.unavailable("tts");
+        }
+    }
 
     @Override
     public List<ModelBasicInfoDTO> getModelCodeList(String modelType, String modelName) {
@@ -59,9 +74,8 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
                         .eq("model_type", modelType)
                         .eq("is_enabled", 1)
                         .like(StringUtils.isNotBlank(modelName), "model_name", modelName)
-                        .select("id", "model_name")
                         .orderByAsc("sort"));
-        return ConvertUtils.sourceToTarget(entities, ModelBasicInfoDTO.class);
+        return ConvertUtils.sourceToTarget(entities.stream().filter(ApprovedProviderCatalog::isAvailable).toList(), ModelBasicInfoDTO.class);
     }
 
     @Override
@@ -70,10 +84,9 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
                 new QueryWrapper<ModelConfigEntity>()
                         .eq("model_type", "llm")
                         .eq("is_enabled", 1)
-                        .like(StringUtils.isNotBlank(modelName), "model_name", modelName)
-                        .select("id", "model_name", "config_json"));
+                        .like(StringUtils.isNotBlank(modelName), "model_name", modelName));
 
-        return entities.stream().map(item -> {
+        return entities.stream().filter(ApprovedProviderCatalog::isAvailable).map(item -> {
             LlmModelBasicInfoDTO dto = new LlmModelBasicInfoDTO();
             dto.setId(item.getId());
             dto.setModelName(item.getModelName());
@@ -93,7 +106,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
         long pageSize = Long.parseLong(limit);
         Page<ModelConfigEntity> pageInfo = new Page<>(curPage, pageSize);
 
-        // 添加排序规则：先按is_enabled降序，再按sort升序
+        // Sort by is_enabled descending, then sort ascending
         pageInfo.addOrder(OrderItem.desc("is_enabled"), OrderItem.asc("sort"));
 
         IPage<ModelConfigEntity> modelConfigEntityIPage = modelConfigDao.selectPage(
@@ -107,28 +120,29 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
 
     @Override
     public ModelConfigDTO edit(String modelType, String provideCode, String id, ModelConfigBodyDTO modelConfigBodyDTO) {
-        // 1. 参数验证
+        // 1. Validate parameters
         validateEditParameters(modelType, provideCode, id, modelConfigBodyDTO);
 
-        // 2. 验证模型提供者
+        // 2. Validate the model provider
         validateModelProvider(modelType, provideCode);
 
-        // 3. 获取原始配置（不经过敏感数据处理）
+        // 3. Get original configuration without masking sensitive data
         ModelConfigEntity originalEntity = getOriginalConfigFromDb(id);
 
-        // 4. 验证LLM配置
-        validateLlmConfiguration(modelConfigBodyDTO);
-
-        // 5. 准备更新实体并处理敏感数据
+        // 5. Prepare the update entity and handle sensitive data
         ModelConfigEntity modelConfigEntity = prepareUpdateEntity(modelConfigBodyDTO, originalEntity, modelType, id);
 
-        // 6. 执行数据库更新
+        ApprovedProviderCatalog.validate(modelType, provideCode, modelConfigEntity.getConfigJson());
+        validateCredentialReuse(originalEntity, modelConfigEntity, modelConfigBodyDTO.getConfigJson());
+        validateLlmConfiguration(modelConfigEntity.getConfigJson());
+
+        // 6. Update the database
         modelConfigDao.updateById(modelConfigEntity);
 
-        // 7. 清除缓存
+        // 7. Clear the cache
         clearModelCache(id);
 
-        // 8. 返回处理后的数据（包含敏感数据掩码）
+        // 8. Return processed data with sensitive fields masked
         return buildResponseDTO(modelConfigEntity);
     }
 
@@ -140,7 +154,11 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
 
         ModelConfigEntity modelConfigEntity = prepareAddEntity(modelConfigBodyDTO, modelType);
 
+        ApprovedProviderCatalog.validate(modelType, provideCode, modelConfigEntity.getConfigJson());
+        validateLlmConfiguration(modelConfigEntity.getConfigJson());
+
         modelConfigDao.insert(modelConfigEntity);
+        redisUtils.delete(RedisKeys.getServerConfigKey());
 
         return buildResponseDTO(modelConfigEntity);
     }
@@ -190,9 +208,9 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
 
     @Override
     public ModelConfigEntity selectById(Serializable id) {
-        ModelConfigEntity entity = super.selectById(id);
+        ModelConfigEntity entity = modelConfigDao.selectById(id);
         if (entity != null && entity.getConfigJson() != null) {
-            entity.setConfigJson(maskSensitiveFields(entity.getConfigJson()));
+            entity = redactedForManagement(entity);
         }
         return entity;
     }
@@ -204,9 +222,9 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
             for (Object record : records) {
                 if (record instanceof ModelConfigEntity) {
                     ModelConfigEntity entity = (ModelConfigEntity) record;
-                    if (entity.getConfigJson() != null) {
-                        entity.setConfigJson(maskSensitiveFields(entity.getConfigJson()));
-                    }
+                    ModelConfigEntity safe = redactedForManagement(entity);
+                    entity.setConfigJson(safe.getConfigJson());
+                    entity.setIsEnabled(safe.getIsEnabled());
                 }
             }
         }
@@ -223,14 +241,112 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
         if (entity == null) {
             entity = modelConfigDao.selectById(id);
             if (entity != null) {
+                if (!ApprovedProviderCatalog.isAvailable(entity)) throw ApprovedProviderCatalog.unavailable(entity.getModelType());
                 redisUtils.set(cacheKey, entity);
             }
         }
-        return entity;
+        if (entity != null && !ApprovedProviderCatalog.isAvailable(entity)) throw ApprovedProviderCatalog.unavailable(entity.getModelType());
+        if (entity == null) return null;
+        ModelConfigEntity result = ConvertUtils.sourceToTarget(entity, ModelConfigEntity.class);
+        result.setConfigJson(new JSONObject(entity.getConfigJson().toString()));
+        return result;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean insert(ModelConfigEntity entity) {
+        ApprovedProviderCatalog.validate(entity);
+        validateLlmConfiguration(entity.getConfigJson());
+        boolean inserted = modelConfigDao.insert(entity) > 0;
+        if (inserted) redisUtils.delete(RedisKeys.getServerConfigKey());
+        return inserted;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updateById(ModelConfigEntity entity) {
+        ModelConfigEntity original = getOriginalConfigFromDb(entity.getId());
+        ModelConfigEntity effective = ConvertUtils.sourceToTarget(original, ModelConfigEntity.class);
+        if (entity.getModelType() != null) effective.setModelType(entity.getModelType());
+        if (entity.getConfigJson() != null) effective.setConfigJson(entity.getConfigJson());
+        if (entity.getIsEnabled() != null) effective.setIsEnabled(entity.getIsEnabled());
+        // Disabling a stale row is safe; activating or replacing configuration is not.
+        if (!Integer.valueOf(0).equals(entity.getIsEnabled()) || entity.getConfigJson() != null) {
+            ApprovedProviderCatalog.validate(effective);
+            validateLlmConfiguration(effective.getConfigJson());
+            validateCredentialReuse(original, effective, entity.getConfigJson());
+        }
+        boolean updated = modelConfigDao.updateById(entity) > 0;
+        if (updated) clearModelCache(entity.getId());
+        return updated;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean insertBatch(Collection<ModelConfigEntity> entities, int batchSize) {
+        entities.forEach(entity -> {
+            ApprovedProviderCatalog.validate(entity);
+            validateLlmConfiguration(entity.getConfigJson());
+        });
+        boolean inserted = super.insertBatch(entities, batchSize);
+        if (inserted) redisUtils.delete(RedisKeys.getServerConfigKey());
+        return inserted;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updateBatchById(Collection<ModelConfigEntity> entities, int batchSize) {
+        // Validate the complete batch before any SQL is issued by the batch executor.
+        for (ModelConfigEntity update : entities) {
+            ModelConfigEntity original = getOriginalConfigFromDb(update.getId());
+            ModelConfigEntity prior = ConvertUtils.sourceToTarget(original, ModelConfigEntity.class);
+            if (update.getModelType() != null) prior.setModelType(update.getModelType());
+            if (update.getConfigJson() != null) prior.setConfigJson(update.getConfigJson());
+            if (!Integer.valueOf(0).equals(update.getIsEnabled()) || update.getConfigJson() != null) {
+                ApprovedProviderCatalog.validate(prior);
+                validateLlmConfiguration(prior.getConfigJson());
+                validateCredentialReuse(original, prior, update.getConfigJson());
+            }
+        }
+        boolean updated = super.updateBatchById(entities, batchSize);
+        if (updated) entities.forEach(entity -> clearModelCache(entity.getId()));
+        return updated;
+    }
+
+    private void validateCredentialReuse(ModelConfigEntity prior, ModelConfigEntity next, JSONObject submitted) {
+        JSONObject original = prior.getConfigJson();
+        if (original == null) return;
+        JSONObject effective = next.getConfigJson();
+        boolean recipientChanged = !ApprovedProviderCatalog.normalize(original.getStr("type"))
+                .equals(ApprovedProviderCatalog.normalize(effective.getStr("type")));
+        for (String key : List.of("base_url", "api_url", "url", "endpoint", "host")) {
+            if (!java.util.Objects.equals(original.get(key), effective.get(key))) recipientChanged = true;
+        }
+        if (!recipientChanged) return;
+        for (String key : original.keySet()) {
+            if (SensitiveDataUtils.isSensitiveField(key) && original.get(key) != null) {
+                Object replacement = submitted == null ? null : submitted.get(key);
+                if (!(replacement instanceof String value) || SensitiveDataUtils.isMaskedValue(value)) {
+                    throw new RenException("Provider destination changed; explicitly supply new credentials without reusing masked legacy values");
+                }
+            }
+        }
+    }
+
+    private ModelConfigEntity redactedForManagement(ModelConfigEntity source) {
+        ModelConfigEntity safe = ConvertUtils.sourceToTarget(source, ModelConfigEntity.class);
+        if (!ApprovedProviderCatalog.isSupported(source)) {
+            safe.setIsEnabled(0);
+            safe.setConfigJson(new JSONObject().set("unavailable", true)
+                    .set("reason", "Select a supported provider with a reviewed endpoint"));
+        } else if (source.getConfigJson() != null) {
+            safe.setConfigJson(maskSensitiveFields(source.getConfigJson()));
+        }
+        return safe;
     }
 
     /**
-     * 验证编辑参数
+     * Validate update parameters
      */
     private void validateEditParameters(String modelType, String provideCode, String id,
             ModelConfigBodyDTO modelConfigBodyDTO) {
@@ -246,7 +362,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 验证添加参数
+     * Validate creation parameters
      */
     private void validateAddParameters(String modelType, String provideCode, ModelConfigBodyDTO modelConfigBodyDTO) {
         if (StringUtils.isBlank(modelType) || StringUtils.isBlank(provideCode)) {
@@ -256,19 +372,19 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
             throw new RenException(ErrorCode.PARAMS_GET_ERROR);
         }
         if (StringUtils.isBlank(modelConfigBodyDTO.getId())) {
-            // 参照 MP @TableId AutoUUID 策略使用
+            // Follow the MP @TableId AutoUUID strategy
             // com.baomidou.mybatisplus.core.incrementer.DefaultIdentifierGenerator(UUID.replace("-",""))
-            // 进行分配默认模型ID
+            // Assign the default model ID
             modelConfigBodyDTO.setId(DefaultIdentifierGenerator.getInstance().nextUUID(ModelConfigEntity.class));
         }
     }
 
     /**
-     * 设置默认模型
+     * Set the default model
      */
     @Override
     public void setDefaultModel(String modelType, int isDefault) {
-        // 参数验证
+        // Parameter validation
         if (StringUtils.isBlank(modelType)) {
             throw new RenException(ErrorCode.MODEL_TYPE_PROVIDE_CODE_NOT_NULL);
         }
@@ -278,14 +394,15 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
         modelConfigDao.update(entity, new QueryWrapper<ModelConfigEntity>()
                 .eq("model_type", modelType));
 
-        // 清除相关缓存
+        // Clear related caches
         clearModelCacheByType(modelType);
     }
 
     /**
-     * 验证模型提供者
+     * Validate the model provider
      */
     private void validateModelProvider(String modelType, String provideCode) {
+        if (!ApprovedProviderCatalog.isSupportedType(modelType, provideCode)) throw ApprovedProviderCatalog.unavailable(modelType);
         List<ModelProviderDTO> providerList = modelProviderService.getList(modelType, provideCode);
         if (CollectionUtil.isEmpty(providerList)) {
             throw new RenException(ErrorCode.MODEL_PROVIDER_NOT_EXIST);
@@ -293,7 +410,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 从数据库获取原始配置（不经过敏感数据处理）
+     * Get original configuration from the database without sensitive data masking
      */
     private ModelConfigEntity getOriginalConfigFromDb(String id) {
         ModelConfigEntity originalEntity = modelConfigDao.selectById(id);
@@ -304,11 +421,11 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 验证LLM配置
+     * Validate LLM configuration
      */
-    private void validateLlmConfiguration(ModelConfigBodyDTO modelConfigBodyDTO) {
-        if (modelConfigBodyDTO.getConfigJson() != null && modelConfigBodyDTO.getConfigJson().containsKey("llm")) {
-            String llm = modelConfigBodyDTO.getConfigJson().get("llm").toString();
+    private void validateLlmConfiguration(JSONObject configuration) {
+        if (configuration != null && StringUtils.isNotBlank(configuration.getStr("llm"))) {
+            String llm = configuration.getStr("llm");
             ModelConfigEntity modelConfigEntity = modelConfigDao.selectOne(new LambdaQueryWrapper<ModelConfigEntity>()
                     .eq(ModelConfigEntity::getId, llm));
 
@@ -316,15 +433,17 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
                 throw new RenException(ErrorCode.LLM_NOT_EXIST);
             }
 
+            ApprovedProviderCatalog.validateSelection("llm", modelConfigEntity);
+
             String modelType = modelConfigEntity.getModelType();
             if (modelType == null || !"LLM".equals(modelType.toUpperCase())) {
                 throw new RenException(ErrorCode.LLM_NOT_EXIST);
             }
 
-            // 验证LLM类型
+            // Validate the LLM type
             JSONObject configJson = modelConfigEntity.getConfigJson();
             if (configJson != null && configJson.containsKey("type")) {
-                String type = configJson.get("type").toString();
+                String type = ApprovedProviderCatalog.normalize(configJson.get("type").toString());
                 if (!"openai".equals(type) && !"ollama".equals(type)) {
                     throw new RenException(ErrorCode.INVALID_LLM_TYPE);
                 }
@@ -333,47 +452,47 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 准备更新实体，处理敏感数据
+     * Prepare the update entity and handle sensitive data
      */
     private ModelConfigEntity prepareUpdateEntity(ModelConfigBodyDTO modelConfigBodyDTO,
             ModelConfigEntity originalEntity,
             String modelType,
             String id) {
-        // 1. 复制原始实体，保留所有原始数据（包括敏感信息）
+        // 1. Copy the original entity, preserving all data including sensitive fields
         ModelConfigEntity modelConfigEntity = ConvertUtils.sourceToTarget(originalEntity, ModelConfigEntity.class);
         modelConfigEntity.setId(id);
         modelConfigEntity.setModelType(modelType);
 
-        // 2. 只更新非敏感字段
+        // 2. Update non-sensitive fields only
         modelConfigEntity.setModelName(modelConfigBodyDTO.getModelName());
         modelConfigEntity.setSort(modelConfigBodyDTO.getSort());
         modelConfigEntity.setIsEnabled(modelConfigBodyDTO.getIsEnabled());
         modelConfigEntity.setRemark(modelConfigBodyDTO.getRemark());
-        // 3. 处理配置JSON，仅更新非敏感字段和明确修改的敏感字段
+        // 3. Update configuration JSON only for non-sensitive or explicitly changed sensitive fields
         if (modelConfigBodyDTO.getConfigJson() != null && originalEntity.getConfigJson() != null) {
             JSONObject originalJson = originalEntity.getConfigJson();
-            JSONObject updatedJson = new JSONObject(originalJson); // 基于原始JSON进行修改
+            JSONObject updatedJson = new JSONObject(originalJson); // Modify the original JSON
 
-            // 遍历更新的JSON，只更新非敏感字段或确实被修改的敏感字段
+            // Traverse updated JSON, applying non-sensitive or genuinely changed sensitive fields
             for (String key : modelConfigBodyDTO.getConfigJson().keySet()) {
                 Object value = modelConfigBodyDTO.getConfigJson().get(key);
 
-                // 如果是敏感字段，需要确认是否真的被修改（前端传入的可能是掩码后的值）
+                // For sensitive fields, verify an actual change; the frontend may have sent a masked value
                 if (SensitiveDataUtils.isSensitiveField(key)) {
 
                     if (value instanceof String && !SensitiveDataUtils.isMaskedValue((String) value)) {
                         updatedJson.set(key, value);
                     }
                 } else if (value instanceof JSONObject) {
-                    // 递归处理嵌套JSON
+                    // Recursively process nested JSON
                     mergeJson(updatedJson, key, (JSONObject) value);
                 } else {
-                    // 非敏感字段直接更新
+                    // Update non-sensitive fields directly
                     updatedJson.set(key, value);
                 }
             }
 
-            // 删除在新JSON中不存在的非敏感字段
+            // Remove non-sensitive fields absent from the new JSON
             for (String oldKey : originalJson.keySet().toArray(new String[0])) {
                 if (!modelConfigBodyDTO.getConfigJson().containsKey(oldKey)
                         && !SensitiveDataUtils.isSensitiveField(oldKey)) {
@@ -382,42 +501,44 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
             }
 
             modelConfigEntity.setConfigJson(updatedJson);
+        } else if (modelConfigBodyDTO.getConfigJson() != null) {
+            modelConfigEntity.setConfigJson(new JSONObject(modelConfigBodyDTO.getConfigJson().toString()));
         }
 
         return modelConfigEntity;
     }
 
-    // 辅助方法：判断值是否是掩码格式
+    // Helper: detect masked values
     private boolean isMaskedValue(String value) {
         if (value == null)
             return false;
-        // 简单判断是否包含掩码的特征（***）
+        // Check for the masking marker (***)
         return value.contains("***");
     }
 
-    // 辅助方法：递归合并 JSON，保留原始敏感字段
+    // Helper: recursively merge JSON while preserving original sensitive fields
     private void mergeJson(JSONObject original, String key, JSONObject updated) {
-        // 空值检查
+        // Null check
         if (original == null || updated == null) {
-            log.warn("mergeJson: original 或 updated 为 null");
+            log.warn("mergeJson: original or updated is null");
             return;
         }
 
-        // 如果 original 中不存在 key，创建一个新的 JSON 对象
+        // Create a JSON object if the key is absent from original
         if (!original.containsKey(key)) {
             original.set(key, new JSONObject());
         }
 
-        // 获取 original 中的子对象
+        // Get the child object from original
         Object originalValue = original.get(key);
         JSONObject originalChild;
 
-        // 检查 originalValue 是否是 JSONObject 类型
+        // Check whether originalValue is a JSONObject
         if (originalValue instanceof JSONObject) {
             originalChild = (JSONObject) originalValue;
         } else {
-            // 如果不是 JSONObject 类型，记录警告并创建新的 JSON 对象
-            log.warn("mergeJson: key '{}' 的值不是 JSONObject 类型 (实际类型：{})，将创建新对象",
+            // Otherwise log a warning and create a JSON object
+            log.warn("mergeJson: value for key '{}' is not a JSONObject (actual type: {}); creating a new object",
                     key, originalValue != null ? originalValue.getClass().getSimpleName() : "null");
             originalChild = new JSONObject();
             original.set(key, originalChild);
@@ -435,7 +556,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
             }
         }
 
-        // 删除在新 JSON 中不存在的非敏感子字段
+        // Remove non-sensitive child fields absent from the new JSON
         for (String oldChildKey : originalChild.keySet().toArray(new String[0])) {
             if (!updated.containsKey(oldChildKey) && !SensitiveDataUtils.isSensitiveField(oldChildKey)) {
                 originalChild.remove(oldChildKey);
@@ -444,7 +565,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 准备新增实体
+     * Prepare the new entity
      */
     private ModelConfigEntity prepareAddEntity(ModelConfigBodyDTO modelConfigBodyDTO, String modelType) {
         ModelConfigEntity modelConfigEntity = ConvertUtils.sourceToTarget(modelConfigBodyDTO, ModelConfigEntity.class);
@@ -454,7 +575,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 构建返回的DTO，处理敏感数据
+     * Build the response DTO, handling sensitive data
      */
     private ModelConfigDTO buildResponseDTO(ModelConfigEntity entity) {
         ModelConfigDTO dto = ConvertUtils.sourceToTarget(entity, ModelConfigDTO.class);
@@ -465,22 +586,23 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 处理敏感字段
+     * Handle sensitive fields
      */
     private JSONObject maskSensitiveFields(JSONObject configJson) {
         return SensitiveDataUtils.maskSensitiveFields(configJson);
     }
 
     /**
-     * 清除模型缓存
+     * Clear the model cache
      */
     private void clearModelCache(String id) {
         redisUtils.delete(RedisKeys.getModelConfigById(id));
         redisUtils.delete(RedisKeys.getModelNameById(id));
+        redisUtils.delete(RedisKeys.getServerConfigKey());
     }
 
     /**
-     * 按模型类型清除缓存
+     * Clear caches by model type
      */
     private void clearModelCacheByType(String modelType) {
         List<ModelConfigEntity> entities = modelConfigDao.selectList(
@@ -491,7 +613,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 检查智能体配置是否有引用
+     * Check agent configuration references
      */
     private void checkAgentReference(String modelId) {
         List<AgentEntity> agents = agentDao.selectList(
@@ -518,7 +640,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 检查意图识别配置是否有引用
+     * Check intent recognition configuration references
      */
     private void checkIntentConfigReference(String modelId) {
         ModelConfigEntity modelConfig = modelConfigDao.selectById(modelId);
@@ -535,15 +657,17 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 获取符合条件的TTS平台列表
+     * Get eligible TTS platforms
      */
     @Override
     public List<Map<String, Object>> getTtsPlatformList() {
-        return modelConfigDao.getTtsPlatformList();
+        // This endpoint lists voice-cloning platforms, not ordinary TTS models.
+        // None of the retained implementations supports the removed cloning workflow.
+        return List.of();
     }
 
     /**
-     * 根据模型类型获取所有启用的模型配置
+     * Get all enabled model configurations by model type
      */
     @Override
     public List<ModelConfigEntity> getEnabledModelsByType(String modelType) {
@@ -557,6 +681,6 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
                         .eq("is_enabled", 1)
                         .orderByAsc("sort"));
 
-        return entities;
+        return entities.stream().filter(ApprovedProviderCatalog::isAvailable).toList();
     }
 }

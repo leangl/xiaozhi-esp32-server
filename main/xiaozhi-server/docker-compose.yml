@@ -1,22 +1,24 @@
-# Docker安装Server
+# Install the server with Docker.
 
-version: '3'
 services:
   xiaozhi-esp32-server:
-    image: ghcr.nju.edu.cn/xinnan-tech/xiaozhi-esp32-server:server_latest
-    container_name: xiaozhi-esp32-server
-    restart: always
+    image: ${SERVER_IMAGE:?Set a unique locally source-built server image}
+    pull_policy: never
+    build:
+      context: ../..
+      dockerfile: Dockerfile-server
+      args:
+        SERVER_BASE_IMAGE: ${SERVER_BASE_IMAGE:?Build Dockerfile-server-base from this checkout first}
+    restart: "no"
     security_opt:
       - seccomp:unconfined
     environment:
       - TZ=UTC
     ports:
-      # ws服务端
-      - "8000:8000"
-      # http服务的端口，用于简单OTA接口(单服务部署)，以及视觉分析接口
-      - "8003:8003"
+      # WebSocket server.
+      - "127.0.0.1:${SERVER_WS_PORT:-18000}:8000"
+      # HTTP port for simple OTA (server-only deployments) and vision analysis.
+      - "127.0.0.1:${SERVER_HTTP_PORT:-18003}:8003"
     volumes:
-      # 配置文件目录
-      - ./data:/opt/xiaozhi-esp32-server/data
-      # 模型文件挂接，很重要
-      - ./models/SenseVoiceSmall/model.pt:/opt/xiaozhi-esp32-server/models/SenseVoiceSmall/model.pt
+      # Configuration directory.
+      - ${CANDIDATE_DATA_DIR:?Set a new isolated candidate configuration directory}:/opt/xiaozhi-esp32-server/data

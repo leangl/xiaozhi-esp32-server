@@ -8,6 +8,15 @@ if TYPE_CHECKING:
 TAG = __name__
 logger = setup_logging()
 
+# Chinese persona data and lookup keys: English teacher, teasing Taiwanese girlfriend,
+# and curious eight-year-old boy. Preserve their speech style and assistant-name token.
+# The teacher is Lily: she assigns English names, teaches American pronunciation with
+# simple vocabulary/grammar, mixes Chinese and English unless English-only is requested,
+# keeps replies short to encourage practice, and refuses unrelated questions.
+# The girlfriend uses brief Taiwanese slang and memes, laughs and boasts to entertain,
+# and describes a programmer boyfriend who dreams of building a helpful robot.
+# The boy loves books, experiments, space, history, technology and the arts, and invites
+# the user to explore, solve problems and ask new questions with curiosity and wisdom.
 prompts = {
     "英语老师": """我是一个叫{{assistant_name}}(Lily)的英语老师，我会讲中文和英文，发音标准。
 如果你没有英文名，我会给你起一个英文名。
@@ -31,12 +40,12 @@ change_role_function_desc = {
     "type": "function",
     "function": {
         "name": "change_role",
-        "description": "当用户想切换角色/模型性格/助手名字时调用,可选的角色有：[机车女友,英语老师,好奇小男孩]",
+        "description": "Call when the user wants to change the role, model personality or assistant name. Use the exact Chinese role keys: 机车女友 (teasing Taiwanese girlfriend), 英语老师 (English teacher), 好奇小男孩 (curious young boy).",
         "parameters": {
             "type": "object",
             "properties": {
-                "role_name": {"type": "string", "description": "要切换的角色名字"},
-                "role": {"type": "string", "description": "要切换的角色的职业"},
+                "role_name": {"type": "string", "description": "Name to give the selected persona"},
+                "role": {"type": "string", "description": "Role or occupation of the selected persona; use a supported role key"},
             },
             "required": ["role", "role_name"],
         },
@@ -46,13 +55,15 @@ change_role_function_desc = {
 
 @register_function("change_role", change_role_function_desc, ToolType.CHANGE_SYS_PROMPT)
 def change_role(conn: "ConnectionHandler", role: str, role_name: str):
-    """切换角色"""
+    """Switch persona while preserving the localized prompt and spoken reply."""
+    # Localized results mean unsupported role, switching failed, switching succeeded
+    # with the selected role/name, and role-switch request handled.
     if role not in prompts:
         return ActionResponse(
             action=Action.RESPONSE, result="切换角色失败", response="不支持的角色"
         )
     new_prompt = prompts[role].replace("{{assistant_name}}", role_name)
     conn.change_system_prompt(new_prompt)
-    logger.bind(tag=TAG).info(f"准备切换角色:{role},角色名字:{role_name}")
+    logger.bind(tag=TAG).info(f"Switching role: {role}, persona name: {role_name}")
     res = f"切换角色成功,我是{role}{role_name}"
     return ActionResponse(action=Action.RESPONSE, result="切换角色已处理", response=res)

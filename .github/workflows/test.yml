@@ -10,6 +10,28 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  build-policy:
+    name: Offline build and deployment policy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: python -B tools/build-policy-tests.py
+      - run: node --test tools/build-npm-lock.test.mjs
+      - name: Validate dependency locks and network-observation gates offline
+        run: |
+          python -B tools/service-dependency-lock-tests.py
+          python -B tools/service-network-fixture.test.py
+          python -B tools/service-network-report.test.py
+          python -B tools/service-egress-check.test.py
+      - name: Reject unreviewed service dependencies and endpoints
+        run: python -B tools/service-policy-check.py --self-test && python -B tools/service-policy-check.py
+
   python:
     name: Python (xiaozhi-server)
     runs-on: ubuntu-latest
@@ -19,21 +41,20 @@ jobs:
         with:
           python-version: '3.10'
           cache: 'pip'
-          cache-dependency-path: 'main/xiaozhi-server/requirements.txt'
+          cache-dependency-path: 'main/xiaozhi-server/requirements.lock'
       - name: Install dependencies
         working-directory: main/xiaozhi-server
         run: |
-          pip install -r requirements.txt
-          pip install pytest pytest-asyncio freezegun
-      - name: Run smoke test
+          python -m pip --isolated install --index-url https://pypi.org/simple --only-binary=:all: --require-hashes -r requirements.lock
+          python -m pip --isolated install --index-url https://pypi.org/simple pytest pytest-asyncio freezegun
+      - name: Run focused offline configuration and core tests
         working-directory: main/xiaozhi-server
+        env:
+          RUN_LIVE_API_TESTS: '0'
+          PYTEST_CONFIG_FILE: data/.config.yaml
         run: |
-          if [ -f tests/test_smoke.py ]; then
-            pytest tests/test_smoke.py -x -q
-          else
-            echo "::warning::Slice 2 not done yet — tests/test_smoke.py missing"
-            exit 0
-          fi
+          python -c 'import os; from pathlib import Path; fixture = Path(os.environ["PYTEST_CONFIG_FILE"]); fixture.parent.mkdir(parents=True, exist_ok=True); output = fixture.open("x", encoding="utf-8"); output.write("selected_module: {}\nASR: {}\nLLM: {}\nVLLM: {}\nTTS: {}\nVAD: {}\nMemory: {}\nIntent: {}\nplugins: {}\nmanager-api: {url: null, secret: null}\n"); output.close()'
+          python -B -m pytest tests/config tests/core -x -q
 
   java:
     name: Java (manager-api)
@@ -62,5 +83,9 @@ jobs:
       - name: Run tests
         working-directory: main/manager-web
         run: |
-          npm ci --no-audit --no-fund
+          node ../../tools/build-npm-lock.mjs package-lock.json
+          test "$NPM_REGISTRY" = https://registry.npmjs.org
+          npm ci --registry=https://registry.npmjs.org --strict-ssl=true --no-audit --no-fund
           npm run test:unit
+        env:
+          NPM_REGISTRY: ${{ vars.NPM_REGISTRY }}

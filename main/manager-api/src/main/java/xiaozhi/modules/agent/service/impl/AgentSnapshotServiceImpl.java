@@ -38,6 +38,8 @@ import xiaozhi.common.exception.RenException;
 import xiaozhi.common.page.PageData;
 import xiaozhi.common.service.impl.BaseServiceImpl;
 import xiaozhi.common.utils.JsonUtils;
+import xiaozhi.common.utils.ApprovedProviderCatalog;
+import xiaozhi.common.utils.ApprovedServicePolicy;
 import xiaozhi.modules.agent.dao.AgentDao;
 import xiaozhi.modules.agent.dao.AgentSnapshotDao;
 import xiaozhi.modules.agent.dao.AgentTagDao;
@@ -157,16 +159,27 @@ public class AgentSnapshotServiceImpl extends BaseServiceImpl<AgentSnapshotDao, 
         AgentSnapshotEntity snapshot = getSnapshotEntity(agentId, snapshotId);
         AgentSnapshotDataDTO data = parseSnapshotData(snapshot.getSnapshotData());
         if (data == null) {
-            throw new RenException("快照数据为空，无法恢复");
+            throw new RenException("Snapshot data is empty; cannot restore");
         }
 
         AgentInfoVO currentAgent = getAgentInfo(agentId);
         AgentSnapshotDataDTO currentData = buildSnapshotData(currentAgent);
         if (!Objects.equals(buildCurrentStateToken(currentData), currentStateToken)) {
-            throw new RenException("当前配置已变化，请重新打开恢复预览后再试");
+            throw new RenException("The current configuration has changed; reopen the restore preview and retry");
         }
         AgentSnapshotDataDTO restoreData = preserveCurrentSensitiveValues(data, currentData);
         validateSensitiveRestoreIsReversible(currentData, restoreData);
+        ApprovedProviderCatalog.validateSelections(restoreData, id -> modelConfigService.getModelByIdFromCache(id));
+        if (StringUtils.isNotBlank(restoreData.getTtsVoiceId())) {
+            modelConfigService.validateVoiceSelection(restoreData.getTtsModelId(), restoreData.getTtsVoiceId());
+        }
+        if (restoreData.getFunctions() != null) agentPluginMappingService.validateSelections(restoreData.getFunctions());
+        for (var context : nullToEmpty(restoreData.getContextProviders())) {
+            try { ApprovedServicePolicy.validateEndpoint(context.getUrl(), "context"); }
+            catch (RuntimeException rejected) { throw ApprovedProviderCatalog.unavailable(null); }
+        }
+        applyAgentFields(agent, restoreData);
+        validateRestoreParams(agent);
         List<String> requestedChangedFields = getChangedFields(currentData, restoreData);
         if (requestedChangedFields.isEmpty()) {
             return;
@@ -183,8 +196,6 @@ public class AgentSnapshotServiceImpl extends BaseServiceImpl<AgentSnapshotDao, 
                     backupChangedFields, null, null, false);
         }
 
-        applyAgentFields(agent, restoreData);
-        validateRestoreParams(agent);
         applyMemoryPolicy(agent);
         agent.setUpdater(SecurityUser.getUserId());
         agent.setUpdatedAt(new Date());
@@ -192,7 +203,7 @@ public class AgentSnapshotServiceImpl extends BaseServiceImpl<AgentSnapshotDao, 
         // The row was already locked and verified above. Some MySQL configurations report 0 changed rows
         // when a relation-only restore leaves all scalar columns (including second-precision updated_at) unchanged.
         if (updatedRows < 0 || updatedRows > 1) {
-            throw new RenException("智能体快照恢复失败");
+            throw new RenException("Failed to restore agent snapshot");
         }
 
         restoreFunctions(agentId, restoreData.getFunctions());
@@ -218,7 +229,7 @@ public class AgentSnapshotServiceImpl extends BaseServiceImpl<AgentSnapshotDao, 
         AgentSnapshotEntity entity = getSnapshotEntity(agentId, snapshotId);
         Integer maxVersionNo = agentSnapshotDao.selectMaxVersionNo(agentId);
         if (Objects.equals(entity.getVersionNo(), maxVersionNo)) {
-            throw new RenException("最新历史版本不能删除");
+            throw new RenException("The latest historical version cannot be deleted");
         }
         deleteById(snapshotId);
     }
@@ -248,13 +259,13 @@ public class AgentSnapshotServiceImpl extends BaseServiceImpl<AgentSnapshotDao, 
             for (AgentSnapshotEntity snapshot : batch) {
                 Map<String, Object> rawData = JsonUtils.parseObject(snapshot.getSnapshotData(), OBJECT_MAP_TYPE);
                 if (rawData == null) {
-                    throw new RenException("历史快照数据无法解析，已中止脱敏迁移: " + snapshot.getId());
+                    throw new RenException("Cannot parse historical snapshot data; masking migration aborted: " + snapshot.getId());
                 }
                 snapshot.setSnapshotData(JsonUtils.toJsonString(redactSensitiveMap(rawData)));
             }
             int affected = agentSnapshotDao.updateRedactedSnapshots(batch, CURRENT_REDACTION_VERSION);
             if (affected < 0 || affected > batch.size()) {
-                throw new RenException("历史快照批量脱敏迁移失败");
+                throw new RenException("Historical snapshot batch masking migration failed");
             }
             migrated += affected;
             afterId = batch.get(batch.size() - 1).getId();
@@ -289,7 +300,7 @@ public class AgentSnapshotServiceImpl extends BaseServiceImpl<AgentSnapshotDao, 
         entity.setRedactionVersion(CURRENT_REDACTION_VERSION);
         int inserted = agentSnapshotDao.insertWithNextVersion(entity);
         if (inserted != 1) {
-            throw new RenException("快照版本号生成失败");
+            throw new RenException("Failed to generate snapshot version number");
         }
         if (pruneAfterInsert) {
             pruneSnapshots(agentId);
@@ -309,7 +320,7 @@ public class AgentSnapshotServiceImpl extends BaseServiceImpl<AgentSnapshotDao, 
     private AgentSnapshotEntity getSnapshotEntity(String agentId, String snapshotId) {
         AgentSnapshotEntity entity = selectById(snapshotId);
         if (entity == null || !Objects.equals(agentId, entity.getAgentId())) {
-            throw new RenException("快照不存在");
+            throw new RenException("Snapshot does not exist");
         }
         return entity;
     }
@@ -580,7 +591,7 @@ public class AgentSnapshotServiceImpl extends BaseServiceImpl<AgentSnapshotDao, 
             throw new RenException(ErrorCode.LLM_INTENT_PARAMS_MISMATCH);
         }
         Object typeValue = llmModelData.getConfigJson().get("type");
-        String type = typeValue == null ? "" : typeValue.toString();
+        String type = typeValue == null ? "" : ApprovedProviderCatalog.normalize(typeValue.toString());
         if ("openai".equals(type) || "ollama".equals(type)) {
             return;
         }
@@ -677,7 +688,7 @@ public class AgentSnapshotServiceImpl extends BaseServiceImpl<AgentSnapshotDao, 
                 // Tags are global records shared by every agent that references them. Restoring a
                 // snapshot must not revive a globally deleted tag as a side effect for other agents
                 // (or tenants); require the user to recreate/select an active tag explicitly.
-                throw new RenException("快照引用的标签已被删除，无法恢复，请先重新创建或选择标签");
+                throw new RenException("The snapshot's tag has been deleted; recreate or select a tag before restoring");
             }
             return tag.getId();
         }
@@ -744,7 +755,7 @@ public class AgentSnapshotServiceImpl extends BaseServiceImpl<AgentSnapshotDao, 
         try {
             return SNAPSHOT_OBJECT_MAPPER.readValue(value, AgentSnapshotDataDTO.class);
         } catch (Exception exception) {
-            throw new RenException("快照数据无法解析");
+            throw new RenException("Cannot parse snapshot data");
         }
     }
 
@@ -805,7 +816,7 @@ public class AgentSnapshotServiceImpl extends BaseServiceImpl<AgentSnapshotDao, 
             // preservation fails because snapshots intentionally never store secrets.
             preserveCurrentSensitiveValues(current, restored);
         } catch (RenException exception) {
-            throw new RenException("目标版本会移除无法写入历史的敏感配置，请先手动处理相关密钥后再恢复");
+            throw new RenException("The target version would remove sensitive configuration that cannot be recorded in history; handle the affected secrets manually before restoring");
         }
     }
 
@@ -921,7 +932,7 @@ public class AgentSnapshotServiceImpl extends BaseServiceImpl<AgentSnapshotDao, 
                     .toList();
             Object currentItem = matchingCurrentItems.size() == 1 ? matchingCurrentItems.get(0) : null;
             if (currentItem == null && containsSensitiveMaterial(targetItem)) {
-                throw new RenException("快照中的敏感列表项缺少唯一稳定标识，无法安全恢复");
+                throw new RenException("Sensitive list items in the snapshot lack unique stable identifiers; cannot restore safely");
             }
             result.add(preserveCurrentSensitiveValue(targetItem, currentItem, parentKey));
         }
@@ -970,7 +981,7 @@ public class AgentSnapshotServiceImpl extends BaseServiceImpl<AgentSnapshotDao, 
         if (current != null && !SECRET_PLACEHOLDER.equals(current)) {
             return current;
         }
-        throw new RenException("快照敏感值无法与当前配置可靠匹配");
+        throw new RenException("Cannot reliably match snapshot sensitive values to the current configuration");
     }
 
     private Object getMapValue(Map<?, ?> map, String key) {
@@ -1009,7 +1020,7 @@ public class AgentSnapshotServiceImpl extends BaseServiceImpl<AgentSnapshotDao, 
                 currentProvider = currentByIdentity.get(identity).get(0);
             } else if (hasSensitiveUrlParts(targetProvider.getUrl())
                     || containsSensitiveMaterial(targetProvider.getHeaders())) {
-                throw new RenException("上下文源敏感配置缺少唯一 URL 标识，无法安全恢复");
+                throw new RenException("Sensitive context source configuration lacks a unique URL identifier; cannot restore safely");
             }
 
             if (targetProvider.getUrl() != null) {
@@ -1054,7 +1065,7 @@ public class AgentSnapshotServiceImpl extends BaseServiceImpl<AgentSnapshotDao, 
         List<String> currentIdentities = structuredSensitiveDiscriminatorIdentities(current);
         if (targetIdentities.size() != 1 || currentIdentities.size() != 1
                 || !Objects.equals(targetIdentities.get(0), currentIdentities.get(0))) {
-            throw new RenException("快照结构化敏感值的类型标识无法与当前配置唯一匹配");
+            throw new RenException("Cannot uniquely match the type identifier of a structured sensitive snapshot value to the current configuration");
         }
     }
 
@@ -1207,14 +1218,14 @@ public class AgentSnapshotServiceImpl extends BaseServiceImpl<AgentSnapshotDao, 
                         && (!isStructuredUrlComponent(targetParts.fragment())
                                 || containsSensitiveUrlParameter(targetParts.fragment())));
         if (copiesSensitiveComponent && !Objects.equals(targetPath.redactedBase(), currentPath.redactedBase())) {
-            throw new RenException("快照 URL 敏感信息无法与当前配置的公开地址标识匹配");
+            throw new RenException("Cannot match sensitive snapshot URL information to the current configuration's public address identifier");
         }
         String result = buildSensitiveUrl(preserveSensitiveUrlPath(targetParts.base(), currentParts.base(), semanticKey),
                 preserveUrlComponent(targetParts.userInfo(), currentParts.userInfo()),
                 preserveSensitiveUrlParameters(targetParts.query(), currentParts.query()),
                 preserveSensitiveUrlFragment(targetParts.fragment(), currentParts.fragment()));
         if (result.contains(SECRET_PLACEHOLDER)) {
-            throw new RenException("快照 URL 中仍包含脱敏占位符，无法安全恢复");
+            throw new RenException("Snapshot URL still contains masking placeholders; cannot restore safely");
         }
         return result;
     }
@@ -1224,7 +1235,7 @@ public class AgentSnapshotServiceImpl extends BaseServiceImpl<AgentSnapshotDao, 
             return null;
         }
         if (current == null || current.contains(SECRET_PLACEHOLDER)) {
-            throw new RenException("快照 URL 中的敏感信息无法与当前配置可靠匹配");
+            throw new RenException("Cannot reliably match sensitive snapshot URL information to the current configuration");
         }
         return current;
     }
@@ -1270,11 +1281,11 @@ public class AgentSnapshotServiceImpl extends BaseServiceImpl<AgentSnapshotDao, 
             List<UrlParameter> matchingCurrent = currentSensitiveParameters.getOrDefault(identity,
                     Collections.emptyList());
             if (matchingTargets.size() != 1 || matchingCurrent.size() != 1) {
-                throw new RenException("快照 URL 中的敏感参数无法与当前配置唯一匹配");
+                throw new RenException("Cannot uniquely match sensitive snapshot URL parameters to the current configuration");
             }
             UrlParameter currentParameter = matchingCurrent.get(0);
             if (currentParameter.rawValue().contains(SECRET_PLACEHOLDER)) {
-                throw new RenException("快照 URL 中的敏感信息无法与当前配置可靠匹配");
+                throw new RenException("Cannot reliably match sensitive snapshot URL information to the current configuration");
             }
             result.add(new UrlParameter(targetParameter.rawKey(), currentParameter.rawValue(),
                     currentParameter.hasEquals()));
@@ -1393,7 +1404,7 @@ public class AgentSnapshotServiceImpl extends BaseServiceImpl<AgentSnapshotDao, 
         SensitivePathAnalysis current = analyzeSensitiveUrlPath(currentBase, semanticKey, forceCurrentGenericMarker);
         if (!Objects.equals(target.redactedBase(), current.redactedBase())
                 || target.slots().size() != current.slots().size()) {
-            throw new RenException("快照 URL 路径敏感信息无法与当前配置的公开标识唯一匹配");
+            throw new RenException("Cannot uniquely match sensitive snapshot URL path information to the current configuration's public identifier");
         }
 
         Map<String, List<SensitivePathSlot>> currentSlots = current.slots().stream()
@@ -1404,10 +1415,10 @@ public class AgentSnapshotServiceImpl extends BaseServiceImpl<AgentSnapshotDao, 
             if (matches.size() != 1 || matches.get(0).secretSegments().isEmpty()
                     || matches.get(0).secretSegments().stream()
                             .anyMatch(secret -> StringUtils.isBlank(secret) || secret.contains(SECRET_PLACEHOLDER))) {
-                throw new RenException("快照 URL 路径敏感信息无法与当前配置可靠匹配");
+                throw new RenException("Cannot reliably match sensitive snapshot URL path information to the current configuration");
             }
             if (replacements.put(targetSlot.identity(), matches.get(0)) != null) {
-                throw new RenException("快照 URL 路径敏感信息存在歧义，无法安全恢复");
+                throw new RenException("Sensitive snapshot URL path information is ambiguous; cannot restore safely");
             }
         }
         return rebuildSensitivePath(target, replacements);
@@ -1704,7 +1715,7 @@ public class AgentSnapshotServiceImpl extends BaseServiceImpl<AgentSnapshotDao, 
                     ? schemeIndex + 3
                     : result.startsWith("//") ? 2 : -1;
             if (authorityStart < 0) {
-                throw new RenException("带用户凭据的 URL 格式无效，无法安全恢复");
+                throw new RenException("Invalid URL containing user credentials; cannot restore safely");
             }
             result = result.substring(0, authorityStart) + userInfo + "@" + result.substring(authorityStart);
         }

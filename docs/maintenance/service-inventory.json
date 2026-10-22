@@ -1,0 +1,4077 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-20",
+  "scope": "source-only-backend-candidates",
+  "baselineCommit": "eb9dc8ca0fc8a30bc8afb0f302dcfc1578f76a7b",
+  "warning": "Review inventory, not an allowlist or externally observed traffic report",
+  "files": [
+    {
+      "path": ".github/workflows/docker-image.yml",
+      "sha256": "1548a7a0b330e571760474594dc9bdacf4e6dff31de387bf2f2b4226014d1c63",
+      "imports": [],
+      "literalHosts": [
+        {
+          "host": "registry.npmjs.org",
+          "line": 35
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": ".github/workflows/test.yml",
+      "sha256": "2dc3bedef85a0c9084a5e5bb66cdf09d28c74bc66bf73db5bd44c683991fa4c8",
+      "imports": [],
+      "literalHosts": [
+        {
+          "host": "pypi.org",
+          "line": 42
+        },
+        {
+          "host": "pypi.org",
+          "line": 43
+        },
+        {
+          "host": "registry.npmjs.org",
+          "line": 81
+        },
+        {
+          "host": "registry.npmjs.org",
+          "line": 82
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        42,
+        43,
+        50
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "Dockerfile-server",
+      "sha256": "97709b90f06371eb0cb6d92d427f09307b3cc13f31dc211f0fc58b754c9c3cea",
+      "imports": [],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "Dockerfile-server-base",
+      "sha256": "6408680e745a3f120dc7ac1d2649118ae608779ca3629ce76755c735ad05f697",
+      "imports": [],
+      "literalHosts": [
+        {
+          "host": "pypi.org",
+          "line": 35
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        35
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "Dockerfile-web",
+      "sha256": "1b992fc022c5f482b3c0032cbc9097e129b6f2196fc831d6e3d17f801e5c6801",
+      "imports": [],
+      "literalHosts": [
+        {
+          "host": "registry.npmjs.org",
+          "line": 14
+        },
+        {
+          "host": "registry.npmjs.org",
+          "line": 18
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "docker-setup.sh",
+      "sha256": "238fce01731fe8b4a6c81cf57ed5d92eda50df6a4dbba7f7e1641f05bf8bfc28",
+      "imports": [],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/.mvn/settings.xml",
+      "sha256": "6336a56c21981db27acaba22334f64767c6abc13435dee8f1a1eed2408a56b90",
+      "imports": [],
+      "literalHosts": [
+        {
+          "host": "maven.apache.org",
+          "line": 2
+        },
+        {
+          "host": "www.w3.org",
+          "line": 3
+        },
+        {
+          "host": "maven.apache.org",
+          "line": 4
+        },
+        {
+          "host": "maven.apache.org",
+          "line": 4
+        },
+        {
+          "host": "repo.maven.apache.org",
+          "line": 10
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        10
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/pom.xml",
+      "sha256": "4759e8973935b36950f47cff9324d9953cbb8b6d1747a507fc5687e6a5714ede",
+      "imports": [],
+      "literalHosts": [
+        {
+          "host": "maven.apache.org",
+          "line": 1
+        },
+        {
+          "host": "www.w3.org",
+          "line": 1
+        },
+        {
+          "host": "maven.apache.org",
+          "line": 2
+        },
+        {
+          "host": "maven.apache.org",
+          "line": 2
+        },
+        {
+          "host": "repo.maven.apache.org",
+          "line": 236
+        },
+        {
+          "host": "repo.maven.apache.org",
+          "line": 246
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        236,
+        246
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/AdminApplication.java",
+      "sha256": "0adecd8220eb4251b593fe89a97d654493b945f5154b48b39cab91a6a89aa6f6",
+      "imports": [
+        "org.springframework.boot.SpringApplication",
+        "org.springframework.boot.autoconfigure.SpringBootApplication"
+      ],
+      "literalHosts": [
+        {
+          "host": "localhost",
+          "line": 11
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/annotation/DataFilter.java",
+      "sha256": "ddc413715ccc4e93907d80659c5cb2cbc66b61f44f9959d5512130304aa4fb5f",
+      "imports": [
+        "java.lang.annotation.Documented",
+        "java.lang.annotation.ElementType",
+        "java.lang.annotation.Retention",
+        "java.lang.annotation.RetentionPolicy",
+        "java.lang.annotation.Target"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 13
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/annotation/LogOperation.java",
+      "sha256": "257f2127b2ba28f5c8d225993635c99327f62f4ab485be66e30b2b53f0866193",
+      "imports": [
+        "java.lang.annotation.Documented",
+        "java.lang.annotation.ElementType",
+        "java.lang.annotation.Retention",
+        "java.lang.annotation.RetentionPolicy",
+        "java.lang.annotation.Target"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 13
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/aspect/RedisAspect.java",
+      "sha256": "0f16cc5dce747e37a7a5220462ed4497b12c1112b9a8c5c428bab0f20ae24668",
+      "imports": [
+        "lombok.extern.slf4j.Slf4j",
+        "org.aspectj.lang.ProceedingJoinPoint",
+        "org.aspectj.lang.annotation.Around",
+        "org.aspectj.lang.annotation.Aspect",
+        "org.springframework.beans.factory.annotation.Value",
+        "org.springframework.stereotype.Component",
+        "xiaozhi.common.exception.ErrorCode",
+        "xiaozhi.common.exception.RenException"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 17
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/config/MybatisPlusConfig.java",
+      "sha256": "f7761694bbede11ff6273319b165f1647e817134579b455ca311d6a057beec01",
+      "imports": [
+        "com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor",
+        "com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor",
+        "com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor",
+        "com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor",
+        "org.springframework.context.annotation.Bean",
+        "org.springframework.context.annotation.Configuration",
+        "xiaozhi.common.interceptor.DataFilterInterceptor"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 17
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/config/RestTemplateConfig.java",
+      "sha256": "85b1a767155fa14c25ab836b4dd21264b03c38a81f9a21a3ecd12d074e4d92a0",
+      "imports": [
+        "java.io.IOException",
+        "java.net.Proxy",
+        "java.net.ProxySelector",
+        "java.net.SocketAddress",
+        "java.net.URI",
+        "java.net.http.HttpClient",
+        "java.time.Duration",
+        "java.util.List",
+        "org.springframework.context.annotation.Bean",
+        "org.springframework.context.annotation.Configuration",
+        "org.springframework.web.client.RestTemplate",
+        "xiaozhi.common.utils.ApprovedServicePolicy"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        28,
+        32
+      ],
+      "networkOrDownloadLines": [
+        5,
+        12,
+        17,
+        20,
+        23,
+        29,
+        30,
+        31
+      ],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/config/SwaggerConfig.java",
+      "sha256": "d5f678cfa2d61f38f55175d88c5737d3b193c7dc2b1736e927b6b0793554cf6b",
+      "imports": [
+        "io.swagger.v3.oas.models.OpenAPI",
+        "io.swagger.v3.oas.models.info.Info",
+        "org.springdoc.core.models.GroupedOpenApi",
+        "org.springframework.context.annotation.Bean",
+        "org.springframework.context.annotation.Configuration"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 14
+        },
+        {
+          "host": "127.0.0.1",
+          "line": 113
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/constant/Constant.java",
+      "sha256": "cd761fd0b07ccd9614d0c1834cf4ee803c6e59b1008923f68e51de1e2c10b694",
+      "imports": [
+        "lombok.Getter"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 9
+        },
+        {
+          "host": "xiaozhi.server.com",
+          "line": 318
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        133
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/convert/DateConverter.java",
+      "sha256": "6345a9cfabbcda28462bfe0148a43584e493a37bcbbca13e8089068ef02a8944",
+      "imports": [
+        "java.text.DateFormat",
+        "java.text.SimpleDateFormat",
+        "java.util.ArrayList",
+        "java.util.Date",
+        "java.util.List",
+        "org.apache.commons.lang3.StringUtils",
+        "org.slf4j.Logger",
+        "org.slf4j.LoggerFactory",
+        "org.springframework.core.convert.converter.Converter",
+        "org.springframework.stereotype.Component"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 19
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/dao/BaseDao.java",
+      "sha256": "9419e79e35ba9d97b8b493315bc997ed91645e3b0fefcaa8c72e9f8c9bfc8c39",
+      "imports": [
+        "com.baomidou.mybatisplus.core.mapper.BaseMapper"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 9
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/entity/BaseEntity.java",
+      "sha256": "1c9590967a63d4b146111f088b5141359f1af3daa5ca8d8e3a3911091343a878",
+      "imports": [
+        "com.baomidou.mybatisplus.annotation.FieldFill",
+        "com.baomidou.mybatisplus.annotation.TableField",
+        "com.baomidou.mybatisplus.annotation.TableId",
+        "java.io.Serializable",
+        "java.util.Date",
+        "lombok.Data"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 16
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/exception/ErrorCode.java",
+      "sha256": "5efee8b04ef7422a66cbf42ccae72f47922c938a219caa8b33439ece5ca58bc0",
+      "imports": [],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 10
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        213,
+        216
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/exception/RenException.java",
+      "sha256": "0c1130f360e16b1e56aae2c2b20ac247ef2522b8cbd41e937491deb335b39c90",
+      "imports": [
+        "xiaozhi.common.utils.MessageUtils"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 9
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/exception/RenExceptionHandler.java",
+      "sha256": "5e1524e48153d275d8ffec8a81464e4affd2d857cb18eee49d1ad9f144bd0279",
+      "imports": [
+        "java.util.List",
+        "java.util.Objects",
+        "lombok.AllArgsConstructor",
+        "lombok.extern.slf4j.Slf4j",
+        "org.apache.shiro.authz.UnauthorizedException",
+        "org.springframework.dao.DuplicateKeyException",
+        "org.springframework.validation.ObjectError",
+        "org.springframework.web.bind.MethodArgumentNotValidException",
+        "org.springframework.web.bind.annotation.ExceptionHandler",
+        "org.springframework.web.bind.annotation.RestControllerAdvice",
+        "org.springframework.web.servlet.resource.NoResourceFoundException",
+        "xiaozhi.common.utils.MessageUtils",
+        "xiaozhi.common.utils.Result"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 23
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/handler/FieldMetaObjectHandler.java",
+      "sha256": "36437e5e7398b5b5476bf882e72d7f7ff9d4de66cc8f440450bc3ff00ebcaddb",
+      "imports": [
+        "com.baomidou.mybatisplus.core.handlers.MetaObjectHandler",
+        "java.util.Date",
+        "org.apache.ibatis.reflection.MetaObject",
+        "org.springframework.stereotype.Component",
+        "xiaozhi.common.constant.Constant",
+        "xiaozhi.common.user.UserDetail",
+        "xiaozhi.modules.security.user.SecurityUser"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 18
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/interceptor/DataFilterInterceptor.java",
+      "sha256": "deb26995e8e7a6568d63827038c50e3dde2a562d976170a324aa4486a5bad419",
+      "imports": [
+        "cn.hutool.core.util.StrUtil",
+        "com.baomidou.mybatisplus.core.toolkit.PluginUtils",
+        "com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor",
+        "java.util.Map",
+        "net.sf.jsqlparser.JSQLParserException",
+        "net.sf.jsqlparser.expression.Expression",
+        "net.sf.jsqlparser.expression.StringValue",
+        "net.sf.jsqlparser.expression.operators.conditional.AndExpression",
+        "net.sf.jsqlparser.parser.CCJSqlParserUtil",
+        "net.sf.jsqlparser.statement.select.PlainSelect",
+        "net.sf.jsqlparser.statement.select.Select",
+        "org.apache.ibatis.executor.Executor",
+        "org.apache.ibatis.mapping.BoundSql",
+        "org.apache.ibatis.mapping.MappedStatement",
+        "org.apache.ibatis.session.ResultHandler",
+        "org.apache.ibatis.session.RowBounds"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 27
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/interceptor/DataScope.java",
+      "sha256": "da4fc0e27aca91086321bd86fc59bb416ccbd9724a478224fb321d4ca3d55040",
+      "imports": [],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 7
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/page/PageData.java",
+      "sha256": "ef43383be422823c57e09e7aea62e4faa1698910ce044ac82df643c4df654a95",
+      "imports": [
+        "io.swagger.v3.oas.annotations.media.Schema",
+        "java.io.Serializable",
+        "java.util.List",
+        "lombok.Data"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 13
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/redis/RedisConfig.java",
+      "sha256": "f8547431418708234058994843ce14abc0f4f9a94398da3145c12529313e9e4f",
+      "imports": [
+        "jakarta.annotation.Resource",
+        "org.springframework.context.annotation.Bean",
+        "org.springframework.context.annotation.Configuration",
+        "org.springframework.data.redis.connection.RedisConnectionFactory",
+        "org.springframework.data.redis.core.RedisTemplate",
+        "org.springframework.data.redis.serializer.RedisSerializer",
+        "org.springframework.data.redis.serializer.StringRedisSerializer"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 16
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/redis/RedisKeys.java",
+      "sha256": "978ce1ed221b70d128dc4b168f35fa13d36605005e7216c2aa7ffb729c2c093b",
+      "imports": [],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 7
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/redis/RedisUtils.java",
+      "sha256": "0a0ea8feac5a030777881534830cbba20fa7bc3b181d043157d636f1b2e1aba2",
+      "imports": [
+        "jakarta.annotation.Resource",
+        "java.util.Collection",
+        "java.util.Collections",
+        "java.util.List",
+        "java.util.Map",
+        "java.util.concurrent.TimeUnit",
+        "org.springframework.beans.factory.annotation.Autowired",
+        "org.springframework.data.redis.core.HashOperations",
+        "org.springframework.data.redis.core.RedisTemplate",
+        "org.springframework.data.redis.core.script.DefaultRedisScript",
+        "org.springframework.stereotype.Component",
+        "xiaozhi.common.utils.ResourcesUtils"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 22
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/service/BaseService.java",
+      "sha256": "a4aa6415be23f13adb2d27408f317642fc0257975f8c4500c32955e629b0e98d",
+      "imports": [
+        "com.baomidou.mybatisplus.core.conditions.Wrapper",
+        "java.io.Serializable",
+        "java.util.Collection"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 12
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/service/CrudService.java",
+      "sha256": "e7f1b0ace6b616c5d02ba9a610694bb6dfb05bbd95f0dcbeed24191d0149261b",
+      "imports": [
+        "java.io.Serializable",
+        "java.util.List",
+        "java.util.Map",
+        "xiaozhi.common.page.PageData"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 13
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/service/impl/BaseServiceImpl.java",
+      "sha256": "c6fd9fa8fc13835e2a75626861124c4915fb11d1ec26936e24681a04c7e369a6",
+      "imports": [
+        "com.baomidou.mybatisplus.core.conditions.Wrapper",
+        "com.baomidou.mybatisplus.core.enums.SqlMethod",
+        "com.baomidou.mybatisplus.core.mapper.BaseMapper",
+        "com.baomidou.mybatisplus.core.metadata.IPage",
+        "com.baomidou.mybatisplus.core.metadata.OrderItem",
+        "com.baomidou.mybatisplus.core.toolkit.CollectionUtils",
+        "com.baomidou.mybatisplus.core.toolkit.Constants",
+        "com.baomidou.mybatisplus.core.toolkit.ReflectionKit",
+        "com.baomidou.mybatisplus.core.toolkit.StringUtils",
+        "com.baomidou.mybatisplus.extension.plugins.pagination.Page",
+        "com.baomidou.mybatisplus.extension.toolkit.SqlHelper",
+        "java.io.Serializable",
+        "java.util.ArrayList",
+        "java.util.Collection",
+        "java.util.List",
+        "java.util.Map",
+        "java.util.function.BiFunction",
+        "org.apache.ibatis.binding.MapperMethod",
+        "org.apache.ibatis.logging.Log",
+        "org.apache.ibatis.logging.LogFactory",
+        "org.apache.ibatis.session.SqlSession",
+        "org.springframework.beans.factory.annotation.Autowired",
+        "org.springframework.transaction.annotation.Transactional",
+        "xiaozhi.common.constant.Constant",
+        "xiaozhi.common.page.PageData",
+        "xiaozhi.common.service.BaseService",
+        "xiaozhi.common.utils.ConvertUtils"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 38
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/service/impl/CrudServiceImpl.java",
+      "sha256": "b6300f6183c0b038530c9c9410ce48af8610fde4d66a7cec17d2bf3634e75032",
+      "imports": [
+        "com.baomidou.mybatisplus.core.conditions.query.QueryWrapper",
+        "com.baomidou.mybatisplus.core.mapper.BaseMapper",
+        "com.baomidou.mybatisplus.core.metadata.IPage",
+        "com.baomidou.mybatisplus.core.toolkit.ReflectionKit",
+        "java.io.Serializable",
+        "java.util.Arrays",
+        "java.util.List",
+        "java.util.Map",
+        "org.springframework.beans.BeanUtils",
+        "xiaozhi.common.page.PageData",
+        "xiaozhi.common.service.CrudService",
+        "xiaozhi.common.utils.ConvertUtils"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 23
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/user/UserDetail.java",
+      "sha256": "6d745ec621644f2e02a4d10d91623a33538e12e049e220982cb96b68af842377",
+      "imports": [
+        "java.io.Serializable",
+        "lombok.Data"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 11
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/utils/ApprovedProviderCatalog.java",
+      "sha256": "c7c099f1640c40ea6956b24e81781923a79288ab7c371c0bff1e8fd35f7ce2a8",
+      "imports": [
+        "java.util.List",
+        "java.util.Locale",
+        "java.util.Map",
+        "java.util.Set",
+        "java.util.function.Function",
+        "org.springframework.beans.BeanWrapperImpl",
+        "xiaozhi.common.exception.RenException",
+        "xiaozhi.modules.model.entity.ModelConfigEntity"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        27,
+        28,
+        48,
+        72,
+        73,
+        168,
+        169,
+        172,
+        173,
+        174,
+        184,
+        185,
+        186,
+        190,
+        197,
+        198
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/utils/ApprovedServicePolicy.java",
+      "sha256": "d268ad7950d85c65f7ee3301f3d65ada042ad2fa2d97905561a1bb3b396dc3e1",
+      "imports": [
+        "java.io.IOException",
+        "java.net.IDN",
+        "java.net.Proxy",
+        "java.net.ProxySelector",
+        "java.net.SocketAddress",
+        "java.net.URI",
+        "java.net.URLDecoder",
+        "java.net.http.HttpClient",
+        "java.nio.charset.StandardCharsets",
+        "java.time.Duration",
+        "java.util.List",
+        "java.util.Locale",
+        "java.util.Map",
+        "java.util.Set",
+        "org.springframework.http.client.JdkClientHttpRequestFactory",
+        "org.springframework.web.client.RestTemplate"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        32,
+        35,
+        36,
+        37,
+        39,
+        77,
+        86
+      ],
+      "networkOrDownloadLines": [
+        10,
+        17,
+        18,
+        70,
+        76,
+        77,
+        78,
+        80
+      ],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/utils/ConvertUtils.java",
+      "sha256": "1ab955eec5bc3b786f6ff80e3d61722c6595b74c178e7409ad6c60c9c18d2e41",
+      "imports": [
+        "java.util.ArrayList",
+        "java.util.Collection",
+        "java.util.List",
+        "lombok.extern.slf4j.Slf4j",
+        "org.springframework.beans.BeanUtils"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 15
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/utils/DateUtils.java",
+      "sha256": "87e8caf74ea2c00d7dead9585ebb110cb36111af43a27f605991cd8f82e622d5",
+      "imports": [
+        "java.text.ParseException",
+        "java.text.SimpleDateFormat",
+        "java.time.LocalDateTime",
+        "java.time.ZoneId",
+        "java.time.temporal.ChronoUnit",
+        "java.util.Date"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 14
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/utils/HttpContextUtils.java",
+      "sha256": "3cf570f814b366feb72ff292cb2f425a6c6fc1157899540e3afc9146936da903",
+      "imports": [
+        "jakarta.servlet.http.HttpServletRequest",
+        "java.util.Date",
+        "java.util.Enumeration",
+        "java.util.HashMap",
+        "java.util.Map",
+        "org.apache.commons.lang3.StringUtils",
+        "org.springframework.http.HttpHeaders",
+        "org.springframework.util.DigestUtils",
+        "org.springframework.web.context.request.RequestAttributes",
+        "org.springframework.web.context.request.RequestContextHolder",
+        "org.springframework.web.context.request.ServletRequestAttributes",
+        "xiaozhi.common.exception.ErrorCode",
+        "xiaozhi.common.exception.RenException"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 23
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        65,
+        66,
+        108,
+        109
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/utils/IpUtils.java",
+      "sha256": "fe5a9f3f6eb8921af34f71329a79a0718f3f92cc8055056d6c3a0209b33ffb2e",
+      "imports": [
+        "jakarta.servlet.http.HttpServletRequest",
+        "lombok.extern.slf4j.Slf4j",
+        "org.apache.commons.lang3.StringUtils"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 12
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        19,
+        20
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/utils/JsonUtils.java",
+      "sha256": "11f6bc736b852f53551afc3e86e590703b13e604b44e06365e1c1a3b260796b5",
+      "imports": [
+        "cn.hutool.core.util.ArrayUtil",
+        "cn.hutool.core.util.StrUtil",
+        "com.fasterxml.jackson.core.type.TypeReference",
+        "com.fasterxml.jackson.databind.ObjectMapper",
+        "java.util.ArrayList",
+        "java.util.LinkedHashMap",
+        "java.util.List",
+        "java.util.Map"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 18
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/utils/MessageUtils.java",
+      "sha256": "0b8642a2d4e0b4b54bd6f9ac1f087b4787a41177722e1e0906ad5b50b6a13ba6",
+      "imports": [
+        "org.springframework.context.MessageSource",
+        "org.springframework.context.i18n.LocaleContextHolder"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 10
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/utils/Result.java",
+      "sha256": "a113784a1d4f341d64afc7490063e0fafd264773d37e985d0adc8e20083b4e72",
+      "imports": [
+        "io.swagger.v3.oas.annotations.media.Schema",
+        "java.io.Serializable",
+        "lombok.Data",
+        "xiaozhi.common.exception.ErrorCode"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 13
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/utils/TreeNode.java",
+      "sha256": "52ddc932788ca698004f8c425cd893fea2a58a543afc534fe2ad5a74b6297e86",
+      "imports": [
+        "java.io.Serializable",
+        "java.util.ArrayList",
+        "java.util.List",
+        "lombok.Data"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 13
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/utils/TreeUtils.java",
+      "sha256": "825dc4ad9e4fdcae633777ba942589016ea99803333fdf069d6a23d2d079b7af",
+      "imports": [
+        "java.util.ArrayList",
+        "java.util.LinkedHashMap",
+        "java.util.List",
+        "java.util.Map",
+        "xiaozhi.common.validator.AssertUtils"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 14
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/validator/AssertUtils.java",
+      "sha256": "7b080b00d4354c3ef36f51d77e3b356f893676da1d1f2aeac65f66d010cfb34d",
+      "imports": [
+        "cn.hutool.core.collection.CollUtil",
+        "cn.hutool.core.map.MapUtil",
+        "cn.hutool.core.util.ArrayUtil",
+        "java.util.List",
+        "java.util.Map",
+        "org.apache.commons.lang3.StringUtils",
+        "xiaozhi.common.exception.ErrorCode",
+        "xiaozhi.common.exception.RenException"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 18
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/validator/ValidatorUtils.java",
+      "sha256": "99a41d4c865d6d4a11e17976fb5f518a59d2100d888e525c9f465fbb8c636741",
+      "imports": [
+        "jakarta.validation.ConstraintViolation",
+        "jakarta.validation.Validation",
+        "jakarta.validation.Validator",
+        "java.util.Locale",
+        "java.util.Set",
+        "java.util.regex.Pattern",
+        "org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator",
+        "org.springframework.context.i18n.LocaleContextHolder",
+        "org.springframework.context.support.ResourceBundleMessageSource",
+        "org.springframework.validation.beanvalidation.MessageSourceResourceBundleLocator",
+        "xiaozhi.common.exception.RenException"
+      ],
+      "literalHosts": [
+        {
+          "host": "docs.jboss.org",
+          "line": 19
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/xss/SqlFilter.java",
+      "sha256": "299e6a5978448e5cb14047587783e0396d857b3bc48529352d9869ff72bfba17",
+      "imports": [
+        "org.apache.commons.lang3.StringUtils",
+        "xiaozhi.common.exception.ErrorCode",
+        "xiaozhi.common.exception.RenException"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 12
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/xss/XssConfig.java",
+      "sha256": "19cc636b6dfca07034013983d14f8470838facfabcc38b54da58f6f489a15179",
+      "imports": [
+        "jakarta.servlet.DispatcherType",
+        "org.springframework.boot.autoconfigure.condition.ConditionalOnProperty",
+        "org.springframework.boot.context.properties.EnableConfigurationProperties",
+        "org.springframework.boot.web.servlet.FilterRegistrationBean",
+        "org.springframework.context.annotation.Bean",
+        "org.springframework.context.annotation.Configuration",
+        "org.springframework.util.PathMatcher"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 16
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/xss/XssFilter.java",
+      "sha256": "606ef89b89c028e095b1aa789225ef147781d88e6f6f3fadd98ea71923a11a2a",
+      "imports": [
+        "jakarta.servlet.Filter",
+        "jakarta.servlet.FilterChain",
+        "jakarta.servlet.FilterConfig",
+        "jakarta.servlet.ServletException",
+        "jakarta.servlet.ServletRequest",
+        "jakarta.servlet.ServletResponse",
+        "jakarta.servlet.http.HttpServletRequest",
+        "java.io.IOException",
+        "lombok.AllArgsConstructor",
+        "org.springframework.util.PathMatcher"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 20
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/xss/XssHttpServletRequestWrapper.java",
+      "sha256": "3c93c92ad9cbbee94347ef367e2e106a13c8927254682a91aed799381a5c4fe1",
+      "imports": [
+        "cn.hutool.core.io.IoUtil",
+        "jakarta.servlet.ReadListener",
+        "jakarta.servlet.ServletInputStream",
+        "jakarta.servlet.http.HttpServletRequest",
+        "jakarta.servlet.http.HttpServletRequestWrapper",
+        "java.io.ByteArrayInputStream",
+        "java.io.IOException",
+        "java.nio.charset.StandardCharsets",
+        "java.util.LinkedHashMap",
+        "java.util.Map",
+        "org.apache.commons.lang3.StringUtils",
+        "org.springframework.http.HttpHeaders",
+        "org.springframework.http.MediaType"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 23
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/xss/XssProperties.java",
+      "sha256": "c6524d46bfbeea4bb61a175fb3284edf3a5f718e2b39b1a81bc655e2076e1e7f",
+      "imports": [
+        "java.util.Collections",
+        "java.util.List",
+        "lombok.Data",
+        "org.springframework.boot.context.properties.ConfigurationProperties"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 14
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/common/xss/XssUtils.java",
+      "sha256": "78c93e02bd3fc5606682aba24db71c2adf2a71438102bf4b778f1635e50f99ad",
+      "imports": [
+        "org.jsoup.Jsoup",
+        "org.jsoup.safety.Safelist"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 10
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/agent/dto/ContextProviderDTO.java",
+      "sha256": "832452c0aacf133e22a65d06629834008e23596320a4bb7c6c636502ea551db9",
+      "imports": [
+        "io.swagger.v3.oas.annotations.media.Schema",
+        "java.io.Serializable",
+        "java.util.Map",
+        "lombok.Data"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        15
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/agent/service/impl/AgentMcpAccessPointServiceImpl.java",
+      "sha256": "0904782108001d55606f8014d2518936b8b424c19dced631ec29cb2c0442cd67",
+      "imports": [
+        "cn.hutool.crypto.digest.DigestUtil",
+        "java.net.URI",
+        "java.net.URISyntaxException",
+        "java.net.URLDecoder",
+        "java.net.URLEncoder",
+        "java.net.http.HttpClient",
+        "java.net.http.WebSocket",
+        "java.nio.charset.StandardCharsets",
+        "java.time.Duration",
+        "java.util.ArrayList",
+        "java.util.Arrays",
+        "java.util.List",
+        "java.util.Map",
+        "java.util.concurrent.ArrayBlockingQueue",
+        "java.util.concurrent.CompletableFuture",
+        "java.util.concurrent.CompletionStage",
+        "java.util.concurrent.TimeUnit",
+        "java.util.function.Predicate",
+        "java.util.stream.Collectors",
+        "lombok.AllArgsConstructor",
+        "lombok.extern.slf4j.Slf4j",
+        "org.apache.commons.lang3.StringUtils",
+        "org.springframework.stereotype.Service",
+        "xiaozhi.common.config.RestTemplateConfig",
+        "xiaozhi.common.constant.Constant",
+        "xiaozhi.common.utils.AESUtils",
+        "xiaozhi.common.utils.ApprovedServicePolicy",
+        "xiaozhi.common.utils.JsonUtils",
+        "xiaozhi.modules.agent.Enums.XiaoZhiMcpJsonRpcJson",
+        "xiaozhi.modules.agent.service.AgentMcpAccessPointService",
+        "xiaozhi.modules.sys.service.SysParamsService"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        46,
+        47,
+        51,
+        60,
+        187,
+        190,
+        191
+      ],
+      "networkOrDownloadLines": [
+        7,
+        29,
+        226,
+        250
+      ],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/agent/service/impl/AgentPluginMappingServiceImpl.java",
+      "sha256": "a1c34ffba6c610950df5431536721253585c16da37a16527432ea7db4d9708de",
+      "imports": [
+        "com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper",
+        "com.baomidou.mybatisplus.spring.repository.CrudRepository",
+        "java.util.ArrayList",
+        "java.util.HashMap",
+        "java.util.List",
+        "java.util.Map",
+        "lombok.RequiredArgsConstructor",
+        "lombok.extern.slf4j.Slf4j",
+        "org.apache.commons.lang3.StringUtils",
+        "org.springframework.stereotype.Service",
+        "xiaozhi.common.utils.ApprovedProviderCatalog",
+        "xiaozhi.common.utils.JsonUtils",
+        "xiaozhi.modules.agent.dao.AgentPluginMappingMapper",
+        "xiaozhi.modules.agent.entity.AgentPluginMapping",
+        "xiaozhi.modules.agent.service.AgentPluginMappingService",
+        "xiaozhi.modules.knowledge.entity.KnowledgeBaseEntity",
+        "xiaozhi.modules.knowledge.service.KnowledgeBaseService",
+        "xiaozhi.modules.model.entity.ModelConfigEntity",
+        "xiaozhi.modules.model.service.ModelConfigService",
+        "xiaozhi.modules.model.service.ModelProviderService"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        111
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/agent/service/impl/AgentSnapshotServiceImpl.java",
+      "sha256": "26927195f918b199cf49c9afbab0cea73318d3598a5e20bdc221f869892be2bc",
+      "imports": [
+        "com.baomidou.mybatisplus.core.conditions.query.QueryWrapper",
+        "com.baomidou.mybatisplus.core.metadata.IPage",
+        "com.baomidou.mybatisplus.core.metadata.OrderItem",
+        "com.baomidou.mybatisplus.extension.plugins.pagination.Page",
+        "com.baomidou.mybatisplus.extension.repository.IRepository",
+        "com.fasterxml.jackson.core.type.TypeReference",
+        "com.fasterxml.jackson.databind.DeserializationFeature",
+        "com.fasterxml.jackson.databind.ObjectMapper",
+        "java.net.URLDecoder",
+        "java.nio.charset.StandardCharsets",
+        "java.security.MessageDigest",
+        "java.security.NoSuchAlgorithmException",
+        "java.util.ArrayList",
+        "java.util.Collections",
+        "java.util.Date",
+        "java.util.HashMap",
+        "java.util.HexFormat",
+        "java.util.List",
+        "java.util.Locale",
+        "java.util.Map",
+        "java.util.Objects",
+        "java.util.TreeMap",
+        "java.util.UUID",
+        "java.util.function.Function",
+        "java.util.stream.Collectors",
+        "lombok.AllArgsConstructor",
+        "org.apache.commons.lang3.StringUtils",
+        "org.springframework.stereotype.Service",
+        "org.springframework.transaction.annotation.Transactional",
+        "xiaozhi.common.constant.Constant",
+        "xiaozhi.common.exception.ErrorCode",
+        "xiaozhi.common.exception.RenException",
+        "xiaozhi.common.page.PageData",
+        "xiaozhi.common.service.impl.BaseServiceImpl",
+        "xiaozhi.common.utils.ApprovedProviderCatalog",
+        "xiaozhi.common.utils.ApprovedServicePolicy",
+        "xiaozhi.common.utils.JsonUtils",
+        "xiaozhi.modules.agent.Enums.AgentSnapshotField",
+        "xiaozhi.modules.agent.dao.AgentDao",
+        "xiaozhi.modules.agent.dao.AgentSnapshotDao",
+        "xiaozhi.modules.agent.dao.AgentTagDao",
+        "xiaozhi.modules.agent.dao.AgentTagRelationDao",
+        "xiaozhi.modules.agent.dto.AgentSnapshotDataDTO",
+        "xiaozhi.modules.agent.dto.AgentSnapshotPageDTO",
+        "xiaozhi.modules.agent.dto.AgentSnapshotTagDTO",
+        "xiaozhi.modules.agent.dto.AgentUpdateDTO",
+        "xiaozhi.modules.agent.dto.ContextProviderDTO",
+        "xiaozhi.modules.agent.entity.AgentContextProviderEntity",
+        "xiaozhi.modules.agent.entity.AgentEntity",
+        "xiaozhi.modules.agent.entity.AgentPluginMapping",
+        "xiaozhi.modules.agent.entity.AgentSnapshotEntity",
+        "xiaozhi.modules.agent.entity.AgentTagEntity",
+        "xiaozhi.modules.agent.entity.AgentTagRelationEntity",
+        "xiaozhi.modules.agent.service.AgentChatHistoryService",
+        "xiaozhi.modules.agent.service.AgentContextProviderService",
+        "xiaozhi.modules.agent.service.AgentPluginMappingService",
+        "xiaozhi.modules.agent.service.AgentSnapshotService",
+        "xiaozhi.modules.agent.service.AgentTagService",
+        "xiaozhi.modules.agent.vo.AgentInfoVO",
+        "xiaozhi.modules.agent.vo.AgentSnapshotVO",
+        "xiaozhi.modules.correctword.service.CorrectWordFileService",
+        "xiaozhi.modules.model.entity.ModelConfigEntity",
+        "xiaozhi.modules.model.service.ModelConfigService",
+        "xiaozhi.modules.security.user.SecurityUser"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        777,
+        955,
+        961,
+        967,
+        1028,
+        1129,
+        1131
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/agent/service/impl/AgentVoicePrintServiceImpl.java",
+      "sha256": "477fcb214420fe567a3ecb44ec21244d66f22659279f248c5907cc5c6830ea47",
+      "imports": [
+        "com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper",
+        "com.baomidou.mybatisplus.spring.repository.CrudRepository",
+        "java.net.URI",
+        "java.net.URLDecoder",
+        "java.nio.charset.StandardCharsets",
+        "java.util.Arrays",
+        "java.util.List",
+        "java.util.concurrent.Executor",
+        "java.util.stream.Collectors",
+        "lombok.extern.slf4j.Slf4j",
+        "org.apache.commons.lang3.StringUtils",
+        "org.springframework.beans.factory.annotation.Qualifier",
+        "org.springframework.core.io.ByteArrayResource",
+        "org.springframework.http.HttpEntity",
+        "org.springframework.http.HttpHeaders",
+        "org.springframework.http.HttpMethod",
+        "org.springframework.http.HttpStatus",
+        "org.springframework.http.MediaType",
+        "org.springframework.http.ResponseEntity",
+        "org.springframework.stereotype.Service",
+        "org.springframework.transaction.support.TransactionTemplate",
+        "org.springframework.util.LinkedMultiValueMap",
+        "org.springframework.util.MultiValueMap",
+        "org.springframework.web.client.RestTemplate",
+        "xiaozhi.common.constant.Constant",
+        "xiaozhi.common.exception.ErrorCode",
+        "xiaozhi.common.exception.RenException",
+        "xiaozhi.common.utils.ApprovedServicePolicy",
+        "xiaozhi.common.utils.ConvertUtils",
+        "xiaozhi.common.utils.JsonUtils",
+        "xiaozhi.modules.agent.dao.AgentVoicePrintDao",
+        "xiaozhi.modules.agent.dto.AgentVoicePrintSaveDTO",
+        "xiaozhi.modules.agent.dto.AgentVoicePrintUpdateDTO",
+        "xiaozhi.modules.agent.dto.IdentifyVoicePrintResponse",
+        "xiaozhi.modules.agent.entity.AgentVoicePrintEntity",
+        "xiaozhi.modules.agent.service.AgentChatAudioService",
+        "xiaozhi.modules.agent.service.AgentChatHistoryService",
+        "xiaozhi.modules.agent.service.AgentVoicePrintService",
+        "xiaozhi.modules.agent.vo.AgentVoicePrintVO",
+        "xiaozhi.modules.sys.service.SysParamsService"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        423,
+        425,
+        426
+      ],
+      "networkOrDownloadLines": [
+        24,
+        55,
+        64
+      ],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/config/service/impl/ConfigServiceImpl.java",
+      "sha256": "384313419b71ae8566fcdcf9ff44b0b6ddb2c24dceb5ff008a36d547f6bf53a4",
+      "imports": [
+        "com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper",
+        "java.util.ArrayList",
+        "java.util.Collections",
+        "java.util.HashMap",
+        "java.util.List",
+        "java.util.Map",
+        "java.util.Objects",
+        "java.util.stream.Collectors",
+        "lombok.AllArgsConstructor",
+        "org.apache.commons.lang3.StringUtils",
+        "org.springframework.stereotype.Service",
+        "xiaozhi.common.constant.Constant",
+        "xiaozhi.common.exception.ErrorCode",
+        "xiaozhi.common.exception.RenException",
+        "xiaozhi.common.redis.RedisKeys",
+        "xiaozhi.common.redis.RedisUtils",
+        "xiaozhi.common.utils.ApprovedProviderCatalog",
+        "xiaozhi.common.utils.ConvertUtils",
+        "xiaozhi.common.utils.JsonUtils",
+        "xiaozhi.modules.agent.dao.AgentVoicePrintDao",
+        "xiaozhi.modules.agent.entity.AgentContextProviderEntity",
+        "xiaozhi.modules.agent.entity.AgentEntity",
+        "xiaozhi.modules.agent.entity.AgentPluginMapping",
+        "xiaozhi.modules.agent.entity.AgentTemplateEntity",
+        "xiaozhi.modules.agent.entity.AgentVoicePrintEntity",
+        "xiaozhi.modules.agent.service.AgentContextProviderService",
+        "xiaozhi.modules.agent.service.AgentMcpAccessPointService",
+        "xiaozhi.modules.agent.service.AgentPluginMappingService",
+        "xiaozhi.modules.agent.service.AgentService",
+        "xiaozhi.modules.agent.service.AgentTemplateService",
+        "xiaozhi.modules.agent.vo.AgentVoicePrintVO",
+        "xiaozhi.modules.config.service.ConfigService",
+        "xiaozhi.modules.correctword.service.CorrectWordFileService",
+        "xiaozhi.modules.correctword.vo.CorrectWordSimpleVO",
+        "xiaozhi.modules.device.entity.DeviceEntity",
+        "xiaozhi.modules.device.service.DeviceService",
+        "xiaozhi.modules.model.entity.ModelConfigEntity",
+        "xiaozhi.modules.model.service.ModelConfigService",
+        "xiaozhi.modules.sys.dto.SysParamsDTO",
+        "xiaozhi.modules.sys.service.SysParamsService",
+        "xiaozhi.modules.timbre.service.TimbreService",
+        "xiaozhi.modules.timbre.vo.TimbreDetailsVO",
+        "xiaozhi.modules.voiceclone.service.VoiceCloneService"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        215,
+        294,
+        430,
+        450
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/device/dto/DeviceReportRespDTO.java",
+      "sha256": "9c7ae7dae7b79243e0b48212ec695316204cb5bcd05cbbfd554ce59db6a97698",
+      "imports": [
+        "io.swagger.v3.oas.annotations.media.Schema",
+        "lombok.Data",
+        "lombok.Getter",
+        "lombok.Setter"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        35,
+        74,
+        83
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/device/service/impl/DeviceAddressBookServiceImpl.java",
+      "sha256": "0189b45811808c244eb980b24118612f9638cca18e1ea7cdc6578190e0c70507",
+      "imports": [
+        "cn.hutool.json.JSONUtil",
+        "com.baomidou.mybatisplus.core.conditions.query.QueryWrapper",
+        "java.time.Instant",
+        "java.util.HashMap",
+        "java.util.List",
+        "java.util.Map",
+        "java.util.stream.Collectors",
+        "org.apache.commons.lang3.StringUtils",
+        "org.springframework.context.annotation.Lazy",
+        "org.springframework.stereotype.Service",
+        "xiaozhi.common.constant.Constant",
+        "xiaozhi.common.redis.RedisKeys",
+        "xiaozhi.common.redis.RedisUtils",
+        "xiaozhi.modules.device.dao.DeviceAddressBookDao",
+        "xiaozhi.modules.device.entity.DeviceAddressBookEntity",
+        "xiaozhi.modules.device.service.DeviceAddressBookService",
+        "xiaozhi.modules.device.service.DeviceService",
+        "xiaozhi.modules.sys.service.SysParamsService"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        216,
+        218
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/device/service/impl/DeviceServiceImpl.java",
+      "sha256": "5f4acede0b23457a311478b0a5339ed29f85f0b37f66c3118b3a455b3c97d9a5",
+      "imports": [
+        "cn.hutool.core.collection.CollUtil",
+        "cn.hutool.core.map.MapUtil",
+        "cn.hutool.core.util.RandomUtil",
+        "cn.hutool.core.util.StrUtil",
+        "cn.hutool.json.JSONArray",
+        "cn.hutool.json.JSONObject",
+        "cn.hutool.json.JSONUtil",
+        "com.baomidou.mybatisplus.core.conditions.query.QueryWrapper",
+        "com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper",
+        "com.baomidou.mybatisplus.core.metadata.IPage",
+        "jakarta.servlet.http.HttpServletRequest",
+        "java.nio.charset.StandardCharsets",
+        "java.security.InvalidKeyException",
+        "java.security.NoSuchAlgorithmException",
+        "java.time.Instant",
+        "java.util.ArrayList",
+        "java.util.Base64",
+        "java.util.Collections",
+        "java.util.Date",
+        "java.util.HashMap",
+        "java.util.List",
+        "java.util.Map",
+        "java.util.Optional",
+        "java.util.Set",
+        "java.util.TimeZone",
+        "java.util.UUID",
+        "java.util.stream.Collectors",
+        "javax.crypto.Mac",
+        "javax.crypto.spec.SecretKeySpec",
+        "lombok.AllArgsConstructor",
+        "lombok.extern.slf4j.Slf4j",
+        "org.apache.commons.lang3.StringUtils",
+        "org.springframework.aop.framework.AopContext",
+        "org.springframework.scheduling.annotation.Async",
+        "org.springframework.stereotype.Service",
+        "org.springframework.web.context.request.RequestContextHolder",
+        "org.springframework.web.context.request.ServletRequestAttributes",
+        "xiaozhi.common.constant.Constant",
+        "xiaozhi.common.exception.ErrorCode",
+        "xiaozhi.common.exception.RenException",
+        "xiaozhi.common.page.PageData",
+        "xiaozhi.common.redis.RedisKeys",
+        "xiaozhi.common.redis.RedisUtils",
+        "xiaozhi.common.service.impl.BaseServiceImpl",
+        "xiaozhi.common.user.UserDetail",
+        "xiaozhi.common.utils.ConvertUtils",
+        "xiaozhi.common.utils.DateUtils",
+        "xiaozhi.common.utils.JsonUtils",
+        "xiaozhi.modules.device.dao.DeviceDao",
+        "xiaozhi.modules.device.dto.DeviceManualAddDTO",
+        "xiaozhi.modules.device.dto.DevicePageUserDTO",
+        "xiaozhi.modules.device.dto.DeviceReportReqDTO",
+        "xiaozhi.modules.device.dto.DeviceReportRespDTO",
+        "xiaozhi.modules.device.entity.DeviceEntity",
+        "xiaozhi.modules.device.entity.OtaEntity",
+        "xiaozhi.modules.device.service.DeviceAddressBookService",
+        "xiaozhi.modules.device.service.DeviceService",
+        "xiaozhi.modules.device.service.OtaService",
+        "xiaozhi.modules.device.vo.UserShowDeviceListVO",
+        "xiaozhi.modules.security.user.SecurityUser",
+        "xiaozhi.modules.sys.service.SysParamsService",
+        "xiaozhi.modules.sys.service.SysUserUtilService"
+      ],
+      "literalHosts": [
+        {
+          "host": "xiaozhi.server.com",
+          "line": 236
+        },
+        {
+          "host": "xiaozhi.server.com",
+          "line": 245
+        }
+      ],
+      "dynamicUrlLines": [
+        166,
+        725,
+        825
+      ],
+      "endpointSettingLines": [
+        166,
+        185,
+        272,
+        690,
+        693,
+        725,
+        757,
+        825,
+        848
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/device/service/impl/MqttGatewayAuthorization.java",
+      "sha256": "2fa3cdade165299ee3f68a8b086d58d43e972e195541219735e2efe7662cbf6f",
+      "imports": [
+        "cn.hutool.crypto.digest.DigestUtil",
+        "java.net.URI",
+        "java.net.http.HttpClient",
+        "java.net.http.HttpRequest",
+        "java.net.http.HttpResponse",
+        "java.nio.charset.StandardCharsets",
+        "java.time.Duration",
+        "java.time.Instant",
+        "java.time.LocalDate",
+        "java.time.ZoneOffset",
+        "java.util.List",
+        "java.util.function.Function",
+        "org.apache.commons.lang3.StringUtils",
+        "xiaozhi.common.config.RestTemplateConfig",
+        "xiaozhi.common.utils.ApprovedServicePolicy"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        30,
+        31,
+        34,
+        35,
+        98,
+        100,
+        102
+      ],
+      "networkOrDownloadLines": [
+        8,
+        9,
+        18,
+        39,
+        106,
+        110,
+        114
+      ],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/device/vo/DeviceOtaVO.java",
+      "sha256": "95a9160d22ab716bb616be6c2098459ede9795d208b86f343583219d8c6dd01c",
+      "imports": [
+        "lombok.Data"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        49,
+        54,
+        56
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/knowledge/dto/KnowledgeFilesDTO.java",
+      "sha256": "832cea4637f4fb323ddd05ef6b02ff02cd2e9627a50a96aa30c80e08d95a6145",
+      "imports": [
+        "com.fasterxml.jackson.annotation.JsonIgnoreProperties",
+        "io.swagger.v3.oas.annotations.media.Schema",
+        "java.io.Serial",
+        "java.io.Serializable",
+        "java.util.Date",
+        "java.util.Map",
+        "lombok.Data"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        49
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/knowledge/dto/dataset/DatasetDTO.java",
+      "sha256": "e7612538aaca01216e4d91f5dd051adb74ee3f0cf8cce0847e8279b77d8bf1e6",
+      "imports": [
+        "com.fasterxml.jackson.annotation.JsonIgnoreProperties",
+        "com.fasterxml.jackson.annotation.JsonInclude",
+        "com.fasterxml.jackson.annotation.JsonProperty",
+        "io.swagger.v3.oas.annotations.media.Schema",
+        "jakarta.validation.constraints.",
+        "java.io.Serializable",
+        "java.util.List",
+        "java.util.Map",
+        "lombok."
+      ],
+      "literalHosts": [
+        {
+          "host": "example.com",
+          "line": 378
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/knowledge/dto/document/DocumentDTO.java",
+      "sha256": "769ffbd975ae10d69ba5636923321d69c05d8b36a13083d8ffa4c6977ffff102",
+      "imports": [
+        "com.fasterxml.jackson.annotation.JsonAlias",
+        "com.fasterxml.jackson.annotation.JsonIgnoreProperties",
+        "com.fasterxml.jackson.annotation.JsonProperty",
+        "io.swagger.v3.oas.annotations.media.Schema",
+        "jakarta.validation.constraints.",
+        "java.io.Serializable",
+        "java.util.List",
+        "java.util.Map",
+        "lombok."
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        190
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/knowledge/entity/DocumentEntity.java",
+      "sha256": "fbd31ffc8247e13852fded3fa78a12f038b5c7f4ca661aaaaa57a73d995fce1d",
+      "imports": [
+        "com.baomidou.mybatisplus.annotation.FieldFill",
+        "com.baomidou.mybatisplus.annotation.IdType",
+        "com.baomidou.mybatisplus.annotation.TableField",
+        "com.baomidou.mybatisplus.annotation.TableId",
+        "com.baomidou.mybatisplus.annotation.TableName",
+        "io.swagger.v3.oas.annotations.media.Schema",
+        "java.io.Serializable",
+        "java.util.Date",
+        "lombok.Data"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        68
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/knowledge/rag/KnowledgeBaseAdapter.java",
+      "sha256": "983470c0324cd7860dc7b139540dd784f1523d420dd8144ff708623251f062ba",
+      "imports": [
+        "java.util.List",
+        "java.util.Map",
+        "java.util.function.Consumer",
+        "xiaozhi.common.page.PageData",
+        "xiaozhi.modules.knowledge.dto.KnowledgeFilesDTO",
+        "xiaozhi.modules.knowledge.dto.dataset.DatasetDTO",
+        "xiaozhi.modules.knowledge.dto.document.ChunkDTO",
+        "xiaozhi.modules.knowledge.dto.document.DocumentDTO",
+        "xiaozhi.modules.knowledge.dto.document.RetrievalDTO"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        197,
+        201
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/knowledge/rag/RAGFlowClient.java",
+      "sha256": "3800a8f2ab43863670a39048572186f69cf87244de0634d6423ae48e18dde4c7",
+      "imports": [
+        "com.fasterxml.jackson.databind.ObjectMapper",
+        "java.io.BufferedReader",
+        "java.io.InputStreamReader",
+        "java.net.URI",
+        "java.net.URLEncoder",
+        "java.nio.charset.StandardCharsets",
+        "java.text.SimpleDateFormat",
+        "java.util.Collections",
+        "java.util.Locale",
+        "java.util.Map",
+        "java.util.TimeZone",
+        "java.util.function.Consumer",
+        "lombok.extern.slf4j.Slf4j",
+        "org.springframework.http.HttpEntity",
+        "org.springframework.http.HttpHeaders",
+        "org.springframework.http.HttpMethod",
+        "org.springframework.http.MediaType",
+        "org.springframework.http.ResponseEntity",
+        "org.springframework.util.MultiValueMap",
+        "org.springframework.web.client.RestTemplate",
+        "xiaozhi.common.exception.ErrorCode",
+        "xiaozhi.common.exception.RenException",
+        "xiaozhi.common.utils.ApprovedServicePolicy"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        74,
+        75,
+        76,
+        82,
+        83,
+        84,
+        90,
+        91,
+        92,
+        98,
+        99,
+        100,
+        106,
+        107,
+        116,
+        119,
+        127,
+        130,
+        132,
+        133,
+        170,
+        171,
+        175,
+        177,
+        184,
+        187,
+        198,
+        199,
+        200,
+        203,
+        205,
+        207,
+        215,
+        219,
+        221,
+        222
+      ],
+      "networkOrDownloadLines": [
+        13,
+        40,
+        65,
+        66,
+        213
+      ],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/knowledge/rag/impl/RAGFlowAdapter.java",
+      "sha256": "4535bc3a232d629a707b4d5d0acae3abb3fbc28618c6508c8a3adcd30769704e",
+      "imports": [
+        "com.fasterxml.jackson.core.type.TypeReference",
+        "com.fasterxml.jackson.databind.ObjectMapper",
+        "java.io.IOException",
+        "java.io.InputStream",
+        "java.text.SimpleDateFormat",
+        "java.util.ArrayList",
+        "java.util.Date",
+        "java.util.HashMap",
+        "java.util.List",
+        "java.util.Map",
+        "java.util.function.Consumer",
+        "lombok.extern.slf4j.Slf4j",
+        "org.apache.commons.lang3.StringUtils",
+        "org.springframework.core.io.AbstractResource",
+        "org.springframework.util.LinkedMultiValueMap",
+        "org.springframework.util.MultiValueMap",
+        "org.springframework.web.multipart.MultipartFile",
+        "xiaozhi.common.exception.ErrorCode",
+        "xiaozhi.common.exception.RenException",
+        "xiaozhi.common.page.PageData",
+        "xiaozhi.modules.knowledge.dto.KnowledgeFilesDTO",
+        "xiaozhi.modules.knowledge.dto.dataset.DatasetDTO",
+        "xiaozhi.modules.knowledge.dto.document.ChunkDTO",
+        "xiaozhi.modules.knowledge.dto.document.DocumentDTO",
+        "xiaozhi.modules.knowledge.dto.document.RetrievalDTO",
+        "xiaozhi.modules.knowledge.rag.KnowledgeBaseAdapter",
+        "xiaozhi.modules.knowledge.rag.RAGFlowClient"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        66,
+        89,
+        396,
+        521,
+        523,
+        534,
+        540
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/knowledge/service/impl/KnowledgeFilesServiceImpl.java",
+      "sha256": "98b724acb832634619faac4f393c98a7697f7ded30ec7c8b927fe98813f8c756",
+      "imports": [
+        "com.baomidou.mybatisplus.core.conditions.query.QueryWrapper",
+        "com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper",
+        "com.baomidou.mybatisplus.extension.plugins.pagination.Page",
+        "com.fasterxml.jackson.core.type.TypeReference",
+        "com.fasterxml.jackson.databind.ObjectMapper",
+        "java.util.ArrayList",
+        "java.util.Date",
+        "java.util.List",
+        "java.util.Map",
+        "java.util.Set",
+        "java.util.stream.Collectors",
+        "lombok.extern.slf4j.Slf4j",
+        "org.apache.commons.lang3.StringUtils",
+        "org.springframework.beans.BeanUtils",
+        "org.springframework.beans.factory.annotation.Autowired",
+        "org.springframework.context.annotation.Lazy",
+        "org.springframework.stereotype.Service",
+        "org.springframework.transaction.annotation.Propagation",
+        "org.springframework.transaction.annotation.Transactional",
+        "org.springframework.util.CollectionUtils",
+        "org.springframework.web.multipart.MultipartFile",
+        "xiaozhi.common.exception.ErrorCode",
+        "xiaozhi.common.exception.RenException",
+        "xiaozhi.common.page.PageData",
+        "xiaozhi.common.redis.RedisKeys",
+        "xiaozhi.common.redis.RedisUtils",
+        "xiaozhi.common.service.impl.BaseServiceImpl",
+        "xiaozhi.modules.knowledge.dao.DocumentDao",
+        "xiaozhi.modules.knowledge.dto.KnowledgeFilesDTO",
+        "xiaozhi.modules.knowledge.dto.document.ChunkDTO",
+        "xiaozhi.modules.knowledge.dto.document.DocumentDTO",
+        "xiaozhi.modules.knowledge.dto.document.RetrievalDTO",
+        "xiaozhi.modules.knowledge.entity.DocumentEntity",
+        "xiaozhi.modules.knowledge.rag.KnowledgeBaseAdapter",
+        "xiaozhi.modules.knowledge.rag.KnowledgeBaseAdapterFactory",
+        "xiaozhi.modules.knowledge.service.KnowledgeBaseService",
+        "xiaozhi.modules.knowledge.service.KnowledgeFilesService"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        411
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/llm/service/impl/OpenAIStyleLLMServiceImpl.java",
+      "sha256": "6486b1118628ce215920ab7aaf7815f46be2ac5466f0dd805f772986b0e5a77a",
+      "imports": [
+        "cn.hutool.json.JSONArray",
+        "cn.hutool.json.JSONObject",
+        "cn.hutool.json.JSONUtil",
+        "java.util.HashMap",
+        "java.util.List",
+        "java.util.Map",
+        "lombok.extern.slf4j.Slf4j",
+        "org.apache.commons.lang3.StringUtils",
+        "org.springframework.beans.factory.annotation.Autowired",
+        "org.springframework.http.HttpEntity",
+        "org.springframework.http.HttpHeaders",
+        "org.springframework.http.HttpMethod",
+        "org.springframework.http.MediaType",
+        "org.springframework.http.ResponseEntity",
+        "org.springframework.stereotype.Service",
+        "org.springframework.web.client.RestTemplate",
+        "xiaozhi.common.utils.ApprovedProviderCatalog",
+        "xiaozhi.modules.llm.service.LLMService",
+        "xiaozhi.modules.model.entity.ModelConfigEntity",
+        "xiaozhi.modules.model.service.ModelConfigService"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        28,
+        78,
+        171,
+        244,
+        250,
+        271,
+        277,
+        329
+      ],
+      "networkOrDownloadLines": [
+        15,
+        37
+      ],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/model/service/impl/ModelConfigServiceImpl.java",
+      "sha256": "a89f24439fb4aa486591d2c83f70850b261a6536ea2c6d103c88c5bd1db0fbd0",
+      "imports": [
+        "cn.hutool.core.collection.CollectionUtil",
+        "cn.hutool.json.JSONObject",
+        "com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper",
+        "com.baomidou.mybatisplus.core.conditions.query.QueryWrapper",
+        "com.baomidou.mybatisplus.core.incrementer.DefaultIdentifierGenerator",
+        "com.baomidou.mybatisplus.core.metadata.IPage",
+        "com.baomidou.mybatisplus.core.metadata.OrderItem",
+        "com.baomidou.mybatisplus.extension.plugins.pagination.Page",
+        "java.io.Serializable",
+        "java.util.Collection",
+        "java.util.HashMap",
+        "java.util.List",
+        "java.util.Map",
+        "java.util.stream.Collectors",
+        "lombok.AllArgsConstructor",
+        "lombok.extern.slf4j.Slf4j",
+        "org.apache.commons.lang3.StringUtils",
+        "org.springframework.stereotype.Service",
+        "org.springframework.transaction.annotation.Transactional",
+        "xiaozhi.common.constant.Constant",
+        "xiaozhi.common.exception.ErrorCode",
+        "xiaozhi.common.exception.RenException",
+        "xiaozhi.common.page.PageData",
+        "xiaozhi.common.redis.RedisKeys",
+        "xiaozhi.common.redis.RedisUtils",
+        "xiaozhi.common.service.impl.BaseServiceImpl",
+        "xiaozhi.common.utils.ApprovedProviderCatalog",
+        "xiaozhi.common.utils.ConvertUtils",
+        "xiaozhi.common.utils.SensitiveDataUtils",
+        "xiaozhi.modules.agent.dao.AgentDao",
+        "xiaozhi.modules.agent.entity.AgentEntity",
+        "xiaozhi.modules.model.dao.ModelConfigDao",
+        "xiaozhi.modules.model.dto.LlmModelBasicInfoDTO",
+        "xiaozhi.modules.model.dto.ModelBasicInfoDTO",
+        "xiaozhi.modules.model.dto.ModelConfigBodyDTO",
+        "xiaozhi.modules.model.dto.ModelConfigDTO",
+        "xiaozhi.modules.model.dto.ModelProviderDTO",
+        "xiaozhi.modules.model.entity.ModelConfigEntity",
+        "xiaozhi.modules.model.service.ModelConfigService",
+        "xiaozhi.modules.model.service.ModelProviderService",
+        "xiaozhi.modules.timbre.dao.TimbreDao"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        322,
+        341,
+        664
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/security/config/FilterConfig.java",
+      "sha256": "332849d54f8660b0ee70a3ba3185e0b587f274a417ea2671ca8ac79ddbc7ee80",
+      "imports": [
+        "org.springframework.boot.web.servlet.FilterRegistrationBean",
+        "org.springframework.context.annotation.Bean",
+        "org.springframework.context.annotation.Configuration",
+        "org.springframework.web.filter.DelegatingFilterProxy"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 12
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/security/config/ShiroConfig.java",
+      "sha256": "c06b1b6763edd2965d25af0624e6a60359edeb3fc727db1169f0aa74d012ea22",
+      "imports": [
+        "jakarta.servlet.Filter",
+        "java.util.HashMap",
+        "java.util.LinkedHashMap",
+        "java.util.Map",
+        "org.apache.shiro.session.mgt.SessionManager",
+        "org.apache.shiro.spring.LifecycleBeanPostProcessor",
+        "org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor",
+        "org.apache.shiro.spring.web.ShiroFilterFactoryBean",
+        "org.apache.shiro.web.config.ShiroFilterConfiguration",
+        "org.apache.shiro.web.mgt.DefaultWebSecurityManager",
+        "org.apache.shiro.web.mgt.WebSecurityManager",
+        "org.apache.shiro.web.session.mgt.DefaultWebSessionManager",
+        "org.springframework.beans.factory.config.BeanDefinition",
+        "org.springframework.context.annotation.Bean",
+        "org.springframework.context.annotation.Configuration",
+        "org.springframework.context.annotation.Lazy",
+        "org.springframework.context.annotation.Role",
+        "xiaozhi.modules.security.oauth2.Oauth2Filter",
+        "xiaozhi.modules.security.oauth2.Oauth2Realm",
+        "xiaozhi.modules.security.secret.ServerSecretFilter",
+        "xiaozhi.modules.sys.service.SysParamsService"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 31
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/security/dao/SysUserTokenDao.java",
+      "sha256": "e22d817590d0c7930b7bfd74162a538dad7135afa89723b7a0e47811aee4ee4d",
+      "imports": [
+        "java.util.Date",
+        "org.apache.ibatis.annotations.Mapper",
+        "org.apache.ibatis.annotations.Param",
+        "xiaozhi.common.dao.BaseDao",
+        "xiaozhi.modules.security.entity.SysUserTokenEntity"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 15
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/security/oauth2/Oauth2Filter.java",
+      "sha256": "cd18ac03cef2d264ca986ef545581aab97c832caa42ea2ccc42169a61050bcc9",
+      "imports": [
+        "jakarta.servlet.ServletRequest",
+        "jakarta.servlet.ServletResponse",
+        "jakarta.servlet.http.HttpServletRequest",
+        "jakarta.servlet.http.HttpServletResponse",
+        "java.io.IOException",
+        "org.apache.commons.lang3.StringUtils",
+        "org.apache.shiro.authc.AuthenticationException",
+        "org.apache.shiro.authc.AuthenticationToken",
+        "org.apache.shiro.web.filter.authc.AuthenticatingFilter",
+        "org.slf4j.Logger",
+        "org.slf4j.LoggerFactory",
+        "org.springframework.web.bind.annotation.RequestMethod",
+        "xiaozhi.common.constant.Constant",
+        "xiaozhi.common.exception.ErrorCode",
+        "xiaozhi.common.utils.HttpContextUtils",
+        "xiaozhi.common.utils.JsonUtils",
+        "xiaozhi.common.utils.MessageUtils",
+        "xiaozhi.common.utils.Result"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 28
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/security/oauth2/Oauth2Realm.java",
+      "sha256": "4313f994e6973535d99bb4f9744289212dfca2f30db6c709c0e670b1c85d7ad3",
+      "imports": [
+        "jakarta.annotation.Resource",
+        "java.util.HashSet",
+        "java.util.Set",
+        "org.apache.shiro.authc.AuthenticationException",
+        "org.apache.shiro.authc.AuthenticationInfo",
+        "org.apache.shiro.authc.AuthenticationToken",
+        "org.apache.shiro.authc.DisabledAccountException",
+        "org.apache.shiro.authc.IncorrectCredentialsException",
+        "org.apache.shiro.authc.LockedAccountException",
+        "org.apache.shiro.authc.SimpleAuthenticationInfo",
+        "org.apache.shiro.authz.AuthorizationInfo",
+        "org.apache.shiro.authz.SimpleAuthorizationInfo",
+        "org.apache.shiro.realm.AuthorizingRealm",
+        "org.apache.shiro.subject.PrincipalCollection",
+        "org.slf4j.Logger",
+        "org.slf4j.LoggerFactory",
+        "org.springframework.context.annotation.Lazy",
+        "org.springframework.stereotype.Component",
+        "xiaozhi.common.exception.ErrorCode",
+        "xiaozhi.common.user.UserDetail",
+        "xiaozhi.common.utils.ConvertUtils",
+        "xiaozhi.common.utils.MessageUtils",
+        "xiaozhi.modules.security.entity.SysUserTokenEntity",
+        "xiaozhi.modules.security.service.ShiroService",
+        "xiaozhi.modules.sys.entity.SysUserEntity",
+        "xiaozhi.modules.sys.enums.SuperAdminEnum"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 36
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/security/oauth2/Oauth2Token.java",
+      "sha256": "ab8ad944d7156ce1dcff2f44dfea1a11664d41e824a42b8b6f242d1724f76097",
+      "imports": [
+        "org.apache.shiro.authc.AuthenticationToken"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 9
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/security/oauth2/TokenGenerator.java",
+      "sha256": "6f7e4c9d710fa98bcf9173cab7333f8069852966206ac3155f94f2d1422227d2",
+      "imports": [
+        "java.security.MessageDigest",
+        "java.util.UUID",
+        "xiaozhi.common.exception.ErrorCode",
+        "xiaozhi.common.exception.RenException"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 13
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/security/password/BCrypt.java",
+      "sha256": "1192177716424178ca26b5d91e58614b394ee59e88a341c96d2a97d565a6cf0b",
+      "imports": [
+        "java.io.ByteArrayOutputStream",
+        "java.io.UnsupportedEncodingException",
+        "java.security.SecureRandom"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.openbsd.org",
+          "line": 458
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/security/password/PasswordUtils.java",
+      "sha256": "0670bcba611d6daa886fa9f450b541608ec8f26c815e35a4b6977325098620c9",
+      "imports": [],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 7
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/security/service/CaptchaService.java",
+      "sha256": "e9bb984dd6280bb6840ec34c49e8026e7d0d050e97e720cc88ca57c0dcce50b7",
+      "imports": [
+        "jakarta.servlet.http.HttpServletResponse",
+        "java.io.IOException"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 11
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/security/service/ShiroService.java",
+      "sha256": "cac0ff85de623fad629cc4939d3a3e634edee757fdd4649f5136e92c79d0f685",
+      "imports": [
+        "xiaozhi.modules.security.entity.SysUserTokenEntity",
+        "xiaozhi.modules.sys.entity.SysUserEntity"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 10
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/security/service/SysUserTokenService.java",
+      "sha256": "b43ec590217a240347d33ae5f74096563a7fc2861ba8cf291274885927b49db2",
+      "imports": [
+        "xiaozhi.common.page.TokenDTO",
+        "xiaozhi.common.service.BaseService",
+        "xiaozhi.common.utils.Result",
+        "xiaozhi.modules.security.entity.SysUserTokenEntity",
+        "xiaozhi.modules.sys.dto.PasswordDTO",
+        "xiaozhi.modules.sys.dto.SysUserDTO"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 14
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/security/user/SecurityUser.java",
+      "sha256": "7df8caaae04c661a4db64b5b167dc9d829e156f86d99393f22141dedd1d6e662",
+      "imports": [
+        "org.apache.shiro.SecurityUtils",
+        "org.apache.shiro.subject.Subject",
+        "xiaozhi.common.user.UserDetail"
+      ],
+      "literalHosts": [
+        {
+          "host": "www.renren.io",
+          "line": 12
+        }
+      ],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/sys/controller/SysParamsController.java",
+      "sha256": "7bdb3c2253a115c0a62db7985a0aa860e900e4c7da315e05140d7127091f53a3",
+      "imports": [
+        "io.swagger.v3.oas.annotations.Operation",
+        "io.swagger.v3.oas.annotations.Parameter",
+        "io.swagger.v3.oas.annotations.Parameters",
+        "io.swagger.v3.oas.annotations.enums.ParameterIn",
+        "io.swagger.v3.oas.annotations.tags.Tag",
+        "java.net.URI",
+        "java.net.http.WebSocket",
+        "java.time.Duration",
+        "java.util.Map",
+        "java.util.concurrent.TimeUnit",
+        "lombok.AllArgsConstructor",
+        "org.apache.commons.lang3.StringUtils",
+        "org.apache.shiro.authz.annotation.RequiresPermissions",
+        "org.springframework.http.HttpStatus",
+        "org.springframework.http.ResponseEntity",
+        "org.springframework.web.bind.annotation.GetMapping",
+        "org.springframework.web.bind.annotation.PathVariable",
+        "org.springframework.web.bind.annotation.PostMapping",
+        "org.springframework.web.bind.annotation.PutMapping",
+        "org.springframework.web.bind.annotation.RequestBody",
+        "org.springframework.web.bind.annotation.RequestMapping",
+        "org.springframework.web.bind.annotation.RequestParam",
+        "org.springframework.web.bind.annotation.RestController",
+        "org.springframework.web.client.RestTemplate",
+        "xiaozhi.common.annotation.LogOperation",
+        "xiaozhi.common.config.RestTemplateConfig",
+        "xiaozhi.common.constant.Constant",
+        "xiaozhi.common.exception.ErrorCode",
+        "xiaozhi.common.exception.RenException",
+        "xiaozhi.common.page.PageData",
+        "xiaozhi.common.utils.ApprovedServicePolicy",
+        "xiaozhi.common.utils.Result",
+        "xiaozhi.common.validator.AssertUtils",
+        "xiaozhi.common.validator.ValidatorUtils",
+        "xiaozhi.common.validator.group.AddGroup",
+        "xiaozhi.common.validator.group.DefaultGroup",
+        "xiaozhi.common.validator.group.UpdateGroup",
+        "xiaozhi.modules.config.service.ConfigService",
+        "xiaozhi.modules.sys.dto.SysParamsDTO",
+        "xiaozhi.modules.sys.service.SysParamsService",
+        "xiaozhi.modules.sys.utils.WebSocketValidator"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        151,
+        152,
+        154,
+        160,
+        193,
+        197,
+        202,
+        205,
+        210,
+        212,
+        226,
+        230,
+        233,
+        238,
+        240,
+        255,
+        259,
+        262,
+        266,
+        270,
+        272,
+        286,
+        288
+      ],
+      "networkOrDownloadLines": [
+        21,
+        31,
+        60,
+        161
+      ],
+      "review": "pending"
+    },
+    {
+      "path": "main/manager-api/src/main/java/xiaozhi/modules/sys/utils/WebSocketValidator.java",
+      "sha256": "625ebc08958366a3364e911e98cc7ecc5de43aadcd7043bdfc41a7a63eca50bb",
+      "imports": [
+        "java.net.URI",
+        "java.net.http.WebSocket",
+        "java.time.Duration",
+        "java.util.concurrent.TimeUnit",
+        "java.util.regex.Pattern",
+        "org.apache.commons.lang3.StringUtils",
+        "org.slf4j.Logger",
+        "org.slf4j.LoggerFactory",
+        "xiaozhi.common.config.RestTemplateConfig",
+        "xiaozhi.common.utils.ApprovedServicePolicy"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        25,
+        28,
+        29,
+        32,
+        38,
+        41,
+        42,
+        47
+      ],
+      "networkOrDownloadLines": [
+        12,
+        48
+      ],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/config.yaml",
+      "sha256": "2f6bd37c382aa61f9e3de0d7c0372047eb4642304b1a8eb0c0e19fdcec151d77",
+      "imports": [],
+      "literalHosts": [
+        {
+          "host": "github.com",
+          "line": 123
+        },
+        {
+          "host": "api.openai.com",
+          "line": 198
+        },
+        {
+          "host": "api.openai.com",
+          "line": 216
+        },
+        {
+          "host": "127.0.0.1",
+          "line": 222
+        },
+        {
+          "host": "api.openai.com",
+          "line": 228
+        },
+        {
+          "host": "api.openai.com",
+          "line": 235
+        }
+      ],
+      "dynamicUrlLines": [
+        23,
+        30
+      ],
+      "endpointSettingLines": [
+        17,
+        19,
+        24,
+        123,
+        124,
+        198,
+        216,
+        222,
+        228,
+        235,
+        244
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/config/config_loader.py",
+      "sha256": "9527746bf532f974a98f492c81b3e1364254f0800e065c95505f4fcbcea454ce",
+      "imports": [
+        "asyncio",
+        "collections.abc",
+        "config.manage_api_client",
+        "config.provider_profile",
+        "core.utils.cache.manager",
+        "os",
+        "yaml"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        50,
+        80
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/config/manage_api_client.py",
+      "sha256": "f718619713d2078396e00defa8778ff89e9682da11f27ee64675bca5a84f9a77",
+      "imports": [
+        "asyncio",
+        "base64",
+        "config.service_policy",
+        "functools",
+        "httpx",
+        "os",
+        "threading",
+        "traceback",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        54,
+        55,
+        57,
+        80,
+        83,
+        85,
+        105,
+        108,
+        111,
+        164,
+        178,
+        184
+      ],
+      "networkOrDownloadLines": [
+        69,
+        73,
+        74,
+        94,
+        105,
+        134,
+        141,
+        145,
+        211,
+        245
+      ],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/config/provider_profile.py",
+      "sha256": "fe909b16618ac9c8eab907cb8141a808c7248486459729760eaf4268cd6fe8e8",
+      "imports": [
+        "collections.abc",
+        "config.service_policy",
+        "ipaddress",
+        "pathlib",
+        "urllib.parse"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        78,
+        80,
+        81,
+        82,
+        84,
+        85,
+        87,
+        90,
+        93,
+        94,
+        96,
+        102
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/config/service_policy.py",
+      "sha256": "96a5db48b10240747a1ebbb79a9c1d0f082ddc7118f4aea96251aee8ef54ea35",
+      "imports": [
+        "httpx",
+        "ipaddress",
+        "requests",
+        "urllib.parse",
+        "websockets.asyncio.client"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        24,
+        28,
+        29,
+        31,
+        52,
+        56,
+        58,
+        59,
+        63,
+        66,
+        70,
+        80,
+        84,
+        89,
+        100,
+        104,
+        108,
+        110,
+        113,
+        117,
+        118,
+        125,
+        127
+      ],
+      "networkOrDownloadLines": [
+        72,
+        77,
+        91,
+        120,
+        123,
+        124
+      ],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/config_from_api.yaml",
+      "sha256": "4b073d4712da445368dd6d40b316aab063003177fe34b2b73df461efa9054dd6",
+      "imports": [],
+      "literalHosts": [
+        {
+          "host": "127.0.0.1",
+          "line": 28
+        }
+      ],
+      "dynamicUrlLines": [
+        22
+      ],
+      "endpointSettingLines": [
+        13,
+        15,
+        28
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/api/ota_handler.py",
+      "sha256": "7709275efda02afae722bf6c84a504b8fd577089d497b1b1dd120918fa2f43fe",
+      "imports": [
+        "aiohttp",
+        "base64",
+        "core.api.base_handler",
+        "core.auth",
+        "core.utils.util",
+        "glob",
+        "hashlib",
+        "hmac",
+        "json",
+        "os",
+        "re",
+        "time",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [
+        141
+      ],
+      "endpointSettingLines": [
+        150,
+        230,
+        273,
+        293,
+        316,
+        328,
+        364,
+        368,
+        375
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/api/vision_handler.py",
+      "sha256": "80c07ca58fd55cae628391691cab7adb0f3eba891cac06bfe90fd22be3305638",
+      "imports": [
+        "aiohttp",
+        "base64",
+        "config.config_loader",
+        "config.logger",
+        "copy",
+        "core.api.base_handler",
+        "core.utils.auth",
+        "core.utils.util",
+        "core.utils.vllm",
+        "json",
+        "plugins_func.register",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        169,
+        172
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/connection.py",
+      "sha256": "d9b67efa76df8bf30b187ba3d2aefadf680f66c7622a4bf047525596f6237dff",
+      "imports": [
+        "asyncio",
+        "collections",
+        "concurrent.futures",
+        "config.config_loader",
+        "config.logger",
+        "config.manage_api_client",
+        "copy",
+        "core.auth",
+        "core.handle.receiveAudioHandle",
+        "core.handle.reportHandle",
+        "core.handle.textHandle",
+        "core.providers.asr.dto.dto",
+        "core.providers.tools.unified_tool_handler",
+        "core.providers.tts.default",
+        "core.providers.tts.dto.dto",
+        "core.utils",
+        "core.utils.dialogue",
+        "core.utils.modules_initialize",
+        "core.utils.prompt_manager",
+        "core.utils.util",
+        "core.utils.voiceprint_provider",
+        "json",
+        "numpy",
+        "opuslib_next",
+        "os",
+        "plugins_func.loadplugins",
+        "plugins_func.register",
+        "queue",
+        "re",
+        "subprocess",
+        "sys",
+        "threading",
+        "time",
+        "traceback",
+        "typing",
+        "uuid",
+        "websockets"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        918,
+        919
+      ],
+      "networkOrDownloadLines": [
+        583
+      ],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/http_server.py",
+      "sha256": "e64c92d4ef2b20d03b09c2989cecedda34ab8b1bb5c3f25bf99655daa5102635",
+      "imports": [
+        "aiohttp",
+        "asyncio",
+        "config.logger",
+        "core.api.ota_handler",
+        "core.api.vision_handler",
+        "traceback"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [
+        33
+      ],
+      "endpointSettingLines": [
+        47,
+        55
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/asr/base.py",
+      "sha256": "f768731b6a254d6d7f928178756b47628d734ad48a1ced8482296fe7079577cb",
+      "imports": [
+        "abc",
+        "asyncio",
+        "config.logger",
+        "core.connection",
+        "core.handle.receiveAudioHandle",
+        "core.handle.reportHandle",
+        "core.providers.asr.dto.dto",
+        "core.utils.util",
+        "io",
+        "json",
+        "os",
+        "queue",
+        "shutil",
+        "tempfile",
+        "threading",
+        "time",
+        "traceback",
+        "typing",
+        "uuid",
+        "wave"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/asr/dto/dto.py",
+      "sha256": "4d0d041c653455d9357711a6410a52d67e34381d44ef4a94fb7a30e16c7bcd0d",
+      "imports": [
+        "enum",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/asr/openai.py",
+      "sha256": "27921a5124750d66cd026a7e4d3306ea66b6d006799ba3a04bbe1ed0520071d1",
+      "imports": [
+        "config.logger",
+        "config.provider_profile",
+        "config.service_policy",
+        "core.providers.asr.base",
+        "core.providers.asr.dto.dto",
+        "os",
+        "time",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        19,
+        20,
+        55
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/asr/utils.py",
+      "sha256": "e1014aabfc4407c84b238b1a7b6730fc1a88700c1284a341c289b8f0c3e84d44",
+      "imports": [
+        "config.logger",
+        "re"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/intent/base.py",
+      "sha256": "f43265b0c350ad8472f692ead8b7b638ab38a37933574d505bd61a7cd3753f0a",
+      "imports": [
+        "abc",
+        "config.logger",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/intent/function_call/function_call.py",
+      "sha256": "5fb8ca0b2f17bb37fce9f3ecc6d5894f426e1a7b2413e14a08589b8218504228",
+      "imports": [
+        "base",
+        "config.logger",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/intent/intent_llm/intent_llm.py",
+      "sha256": "6eefdadee7e1c1991798a6b02127b17c170c5ea9b09b731abe06c0e37cb420ac",
+      "imports": [
+        "asyncio",
+        "base",
+        "config.logger",
+        "core.connection",
+        "core.utils.cache.manager",
+        "core.utils.util",
+        "hashlib",
+        "json",
+        "plugins_func.functions.play_music",
+        "re",
+        "time",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/intent/nointent/nointent.py",
+      "sha256": "223fbafa18fbe16caedaa46f7cd2448e5255f529d039eee23921ac99c0b286dc",
+      "imports": [
+        "base",
+        "config.logger",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/llm/base.py",
+      "sha256": "4eaee772fb3cfb32f19978bf53d30b9a6d22dd81a3000242655d9901dd018e50",
+      "imports": [
+        "abc",
+        "config.logger"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/llm/ollama/ollama.py",
+      "sha256": "7a07359e114fbeed7787b819601272407fbab74426c824b6aca570cdbed1afab",
+      "imports": [
+        "config.logger",
+        "config.provider_profile",
+        "config.service_policy",
+        "core.providers.llm.base",
+        "openai"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        15,
+        18,
+        19,
+        20,
+        23
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/llm/openai/openai.py",
+      "sha256": "5cf69f2127fd67e0a4a18541396e04429a1e06cabb6474ba52ac8922b00f1cab",
+      "imports": [
+        "config.logger",
+        "config.provider_profile",
+        "config.service_policy",
+        "core.providers.llm.base",
+        "httpx",
+        "openai",
+        "openai.types"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        17,
+        18,
+        20,
+        21,
+        61
+      ],
+      "networkOrDownloadLines": [
+        26,
+        34,
+        37
+      ],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/llm/system_prompt.py",
+      "sha256": "e16c3b0afb0f20b202308072786e280771d7b724d5f827574c7e05aed0327024",
+      "imports": [],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/memory/base.py",
+      "sha256": "61cea7b5886a2432d861e55decbfe90593c4732b5f78ef496d8b3a7a3526639b",
+      "imports": [
+        "abc",
+        "config.logger"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/memory/mem_local_short/mem_local_short.py",
+      "sha256": "913cb9cf4fb777a2e43590e1cab569cf5edb215aa60f9352e50f42fac47c80e6",
+      "imports": [
+        "asyncio",
+        "base",
+        "config.config_loader",
+        "config.manage_api_client",
+        "json",
+        "os",
+        "time",
+        "yaml"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/memory/mem_report_only/mem_report_only.py",
+      "sha256": "cc3387f8b7f7e30240e4b29bd77cb4ba3d3fe4d347b102e788324bb7b1713990",
+      "imports": [
+        "base"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/memory/nomem/nomem.py",
+      "sha256": "dc19735dde787f63e3e376d456c4a979cb057d3e24fdd9c6b46f7e4a16332bae",
+      "imports": [
+        "base"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/__init__.py",
+      "sha256": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "imports": [],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/base/__init__.py",
+      "sha256": "4bcd229bdc0e5e2093d03cdc0db4e6fb5cf8139629c5ede74b10ddaae1218b99",
+      "imports": [
+        "tool_executor",
+        "tool_types"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/base/tool_executor.py",
+      "sha256": "830eba9fb6a9d4ed0e2b00a516de41ef024081d01acc474ba42beffcaa1b3ebe",
+      "imports": [
+        "abc",
+        "plugins_func.register",
+        "tool_types",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/base/tool_types.py",
+      "sha256": "808d215a14c62a7260e84fb04c3752e8465e65dc61fed33aae31e498d4c47e5f",
+      "imports": [
+        "dataclasses",
+        "enum",
+        "plugins_func.register",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        17
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/device_iot/__init__.py",
+      "sha256": "b6848e3fa504016de83b87af35076a534086bef1c31dd7895cc5d99f0c03a260",
+      "imports": [
+        "iot_descriptor",
+        "iot_executor",
+        "iot_handler"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/device_iot/iot_descriptor.py",
+      "sha256": "26f3b6d4a4b8a9e574b238bc50dcde504e5c2246aee2e0c5cc1915d6b7a54406",
+      "imports": [
+        "config.logger"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/device_iot/iot_executor.py",
+      "sha256": "b99908ebc5017b2598c51bca0318b1fa04e99a9577aa57ab01a7e0eff9d8f0ea",
+      "imports": [
+        "asyncio",
+        "base",
+        "json",
+        "plugins_func.register",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/device_iot/iot_handler.py",
+      "sha256": "17f6785d61d3b82f019cb7c22bf1227c57f9131b0acf88830a6f5a28fc4aa9dd",
+      "imports": [
+        "asyncio",
+        "config.logger",
+        "core.connection",
+        "iot_descriptor",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/device_mcp/__init__.py",
+      "sha256": "28be4ab9c0837b96c1efbd5bbc782e4b80d12bbc76122d39fa52bf43f2425df7",
+      "imports": [
+        "mcp_client",
+        "mcp_executor",
+        "mcp_handler"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/device_mcp/mcp_client.py",
+      "sha256": "0c5612f7483656283e845145eb3543cd8fb3a32e497b597a6127a09110fb065b",
+      "imports": [
+        "asyncio",
+        "concurrent.futures",
+        "config.logger",
+        "core.utils.util"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/device_mcp/mcp_executor.py",
+      "sha256": "56f8926e26e7d7fb873f395b4443a3784cd56176f893eba1aca7acf5a7f3dff7",
+      "imports": [
+        "base",
+        "core.connection",
+        "json",
+        "mcp_handler",
+        "plugins_func.register",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/device_mcp/mcp_handler.py",
+      "sha256": "d79fa3527d22d3657825cb1de85d591735bc88decdff85f01639edb2a017306c",
+      "imports": [
+        "asyncio",
+        "concurrent.futures",
+        "config.logger",
+        "core.connection",
+        "core.utils.auth",
+        "core.utils.util",
+        "json",
+        "re",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        248
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/mcp_endpoint/__init__.py",
+      "sha256": "8b2ab9950983885502d02df7741bbaa8b4157b86a6dad432763c3f965a1ab45b",
+      "imports": [
+        "mcp_endpoint_client",
+        "mcp_endpoint_executor",
+        "mcp_endpoint_handler"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        1
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/mcp_endpoint/mcp_endpoint_client.py",
+      "sha256": "e25b02202d3caf112e9e9e5087f24f6fe82e2cfe9191c1909dd56bf99ec7b79e",
+      "imports": [
+        "asyncio",
+        "concurrent.futures",
+        "config.logger",
+        "core.utils.util"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        1,
+        13,
+        102
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/mcp_endpoint/mcp_endpoint_executor.py",
+      "sha256": "8ec295e94947003b99a3680d7c63a40638ecebcd1a172f53e3ad592342014898",
+      "imports": [
+        "base",
+        "json",
+        "mcp_endpoint_handler",
+        "plugins_func.register",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        1,
+        10,
+        18,
+        37,
+        68,
+        90
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/mcp_endpoint/mcp_endpoint_handler.py",
+      "sha256": "a016c5e369f513643fcbf86a3791543eb4087642594bee573a8dc0fb6b557a97",
+      "imports": [
+        "asyncio",
+        "config.logger",
+        "config.service_policy",
+        "json",
+        "mcp_endpoint_client",
+        "re",
+        "websockets"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        1,
+        16,
+        38,
+        42,
+        47,
+        52,
+        54,
+        60,
+        65,
+        84,
+        91,
+        95,
+        100,
+        112,
+        145,
+        174,
+        177,
+        188,
+        192,
+        196,
+        199,
+        204,
+        212,
+        216,
+        218,
+        222,
+        240,
+        245,
+        252,
+        257,
+        264,
+        271,
+        279,
+        287,
+        359,
+        367
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/server_mcp/__init__.py",
+      "sha256": "f27a92506f8bf8d5b5fb4d446ea40de8e33865820ae20534910c86e043c27413",
+      "imports": [
+        "mcp_client",
+        "mcp_executor",
+        "mcp_manager"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/server_mcp/mcp_client.py",
+      "sha256": "1c74d296972bf6b78f6cafae24251bc311d490623f9a5a8a490d7368377c627b",
+      "imports": [
+        "__future__",
+        "asyncio",
+        "concurrent.futures",
+        "config.logger",
+        "config.service_policy",
+        "contextlib",
+        "copy",
+        "core.utils.util",
+        "datetime",
+        "mcp",
+        "mcp.client.session",
+        "mcp.client.sse",
+        "mcp.client.streamable_http",
+        "mcp.shared.session",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        36,
+        39,
+        183,
+        184,
+        198,
+        211,
+        221
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/server_mcp/mcp_executor.py",
+      "sha256": "117ab2b98bf67488d38540602cf92106372597d88d5ed349716e9046e8dea00a",
+      "imports": [
+        "base",
+        "mcp_manager",
+        "plugins_func.register",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/server_mcp/mcp_manager.py",
+      "sha256": "75730adc21d1f919e561a8ccbb450e7e36ea486e6002387ee934ad30bdd1eb53",
+      "imports": [
+        "asyncio",
+        "config.config_loader",
+        "config.logger",
+        "json",
+        "mcp.types",
+        "mcp_client",
+        "os",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        73,
+        83,
+        85
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/server_plugins/__init__.py",
+      "sha256": "67a3e02989915ed254152cd4a09bf1482a856d845ae76cd035ef07b94ad57c57",
+      "imports": [
+        "plugin_executor"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/server_plugins/plugin_executor.py",
+      "sha256": "4e8423e1669b294ae4e18ab756dc0f3d55486db1b8b5aab855e4076c36fac91a",
+      "imports": [
+        "asyncio",
+        "base",
+        "core.connection",
+        "plugins_func.register",
+        "plugins_func.unavailable",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/unified_tool_handler.py",
+      "sha256": "1f038d14693501ed9a777c816b3795e81c7592856c06ea67fb74cac14dc0a217",
+      "imports": [
+        "base",
+        "config.logger",
+        "core.handle.sendAudioHandle",
+        "device_iot",
+        "device_mcp",
+        "json",
+        "mcp_endpoint",
+        "plugins_func.functions.hass_init",
+        "plugins_func.loadplugins",
+        "plugins_func.register",
+        "server_mcp",
+        "server_plugins",
+        "typing",
+        "unified_tool_manager"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        15,
+        66,
+        82,
+        84,
+        86,
+        87,
+        94,
+        100,
+        102,
+        104,
+        107,
+        233
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tools/unified_tool_manager.py",
+      "sha256": "82e195820c99fca811b2e0ed4b7263c4e2d47aad8000d64376c65c1f597cf532",
+      "imports": [
+        "base",
+        "config.logger",
+        "plugins_func.register",
+        "plugins_func.unavailable",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tts/base.py",
+      "sha256": "b94c5c884f3004d8c4136b4584cb545b53c965e9828d3d3db48c145a598ada4e",
+      "imports": [
+        "abc",
+        "asyncio",
+        "config.logger",
+        "core.handle.reportHandle",
+        "core.handle.sendAudioHandle",
+        "core.providers.tts.dto.dto",
+        "core.utils",
+        "core.utils.output_counter",
+        "core.utils.tts",
+        "core.utils.util",
+        "datetime",
+        "math",
+        "os",
+        "queue",
+        "re",
+        "threading",
+        "traceback",
+        "typing",
+        "uuid"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tts/default.py",
+      "sha256": "a09b3d4f5fc19c4a2dafc7f913cd51f6571806c945c570417e650d063f1e8fce",
+      "imports": [
+        "config.logger",
+        "core.providers.tts.base",
+        "os",
+        "uuid"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tts/dto/dto.py",
+      "sha256": "02ffd740ed54ff49055abc088f6bcd164d54198e9ac6dab115c065d629a29d38",
+      "imports": [
+        "enum",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/tts/openai.py",
+      "sha256": "4a052b43aa329f76da3b1f07584b169b1f8bcc1603d3c29d3d788b0f71b6d063",
+      "imports": [
+        "config.logger",
+        "config.provider_profile",
+        "config.service_policy",
+        "core.providers.tts.base"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        17,
+        20,
+        50
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/vad/base.py",
+      "sha256": "bbabb292ba6140be2cce500e295a7145cc40ad25fc86318860ddf277482e7fcb",
+      "imports": [
+        "abc",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/vad/silero.py",
+      "sha256": "f6f8581c6556a18419936c1b57659aa8ee3395662d7bde0009024874f26e5d10",
+      "imports": [
+        "config.logger",
+        "config.provider_profile",
+        "core.providers.vad.base",
+        "numpy",
+        "onnxruntime",
+        "time"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/vllm/base.py",
+      "sha256": "5a5d86856d96f402cb414236a874d234d276e0c48025d4715fcae4b66ce9077f",
+      "imports": [
+        "abc",
+        "config.logger"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/providers/vllm/openai.py",
+      "sha256": "8d92e5aae57976598e75cb6a3536aa091ad2c36830381d3b2cb70d9ec2be5286",
+      "imports": [
+        "config.logger",
+        "config.provider_profile",
+        "config.service_policy",
+        "core.providers.vllm.base",
+        "json",
+        "openai"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        17,
+        18,
+        20,
+        21,
+        40,
+        54
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/utils/context_provider.py",
+      "sha256": "9ae06431a8d6a94049c864e44fae6724cfae66f1798a0155c8be3e8c2a7a1074",
+      "imports": [
+        "config.logger",
+        "config.service_policy",
+        "httpx",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        24,
+        27,
+        36,
+        38,
+        61
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/utils/modules_initialize.py",
+      "sha256": "069041174c6a1d3ff12ebe9d326f364005fda9ca8c8f6a43e357f2d1255881b3",
+      "imports": [
+        "config.logger",
+        "config.provider_profile",
+        "core.utils",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        150
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/utils/util.py",
+      "sha256": "0118d2273a8e20d330c3e04401fba3415d33bc03568100e316f29e0b4a6ab0a3",
+      "imports": [
+        "asyncio",
+        "contextlib",
+        "copy",
+        "core.utils",
+        "core.utils.cache.config",
+        "core.utils.cache.manager",
+        "io",
+        "json",
+        "numpy",
+        "opuslib_next",
+        "os",
+        "pydub",
+        "re",
+        "socket",
+        "subprocess",
+        "sys",
+        "threading",
+        "typing",
+        "wave"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [
+        572
+      ],
+      "endpointSettingLines": [
+        612,
+        614,
+        617,
+        620,
+        623,
+        627,
+        631
+      ],
+      "networkOrDownloadLines": [
+        200,
+        202,
+        203,
+        215,
+        218
+      ],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/core/utils/voiceprint_provider.py",
+      "sha256": "2a84862a222b5fb2be611a14f388f3561173c60a18c68784395480a9d18aea5b",
+      "imports": [
+        "asyncio",
+        "config.logger",
+        "config.service_policy",
+        "core.utils.cache.config",
+        "core.utils.cache.manager",
+        "httpx",
+        "time",
+        "typing",
+        "urllib.parse"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        19,
+        26,
+        37,
+        47,
+        48,
+        49,
+        69,
+        72,
+        92,
+        95,
+        108,
+        135,
+        146,
+        162,
+        165,
+        194
+      ],
+      "networkOrDownloadLines": [
+        128,
+        131,
+        188
+      ],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/docker-compose.yml",
+      "sha256": "107b50dfab886f633a69241d17f0285f95ece57912026c2e47e2a4204b51301d",
+      "imports": [],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/docker-compose_all.yml",
+      "sha256": "1775a2c9b40eb52867fa575247fc7571ad0e4b8640cae1f61f30968532a6ef00",
+      "imports": [],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/plugins_func/functions/call_device.py",
+      "sha256": "ebf85e58a412c8acf0cbf0e9d1f70ad408cf37e4474769484cd00ecf3ee045a2",
+      "imports": [
+        "config.logger",
+        "config.service_policy",
+        "core.connection",
+        "httpx",
+        "plugins_func.register",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        40,
+        41,
+        43,
+        63,
+        65,
+        80
+      ],
+      "networkOrDownloadLines": [
+        42,
+        85
+      ],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/plugins_func/functions/hass_init.py",
+      "sha256": "93d026c8c45972b8022d5ac14ac61376398843c19b604ec6f4e91e774a883a52",
+      "imports": [
+        "config.logger",
+        "config.service_policy",
+        "core.utils.util"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        47,
+        48
+      ],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/plugins_func/functions/hass_play_music.py",
+      "sha256": "39ce974361cbe0a2f7583a913657ff58059a04cb8e1669dd058787fa389bf8bb",
+      "imports": [
+        "config.logger",
+        "config.service_policy",
+        "core.connection",
+        "httpx",
+        "plugins_func.functions.hass_init",
+        "plugins_func.register",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        60,
+        61,
+        66
+      ],
+      "networkOrDownloadLines": [
+        65
+      ],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/plugins_func/functions/hass_state.py",
+      "sha256": "ce9fb1d9726ca3dfbb3f1463b6e1f723615a8938ce6749e0fc244bdd083ef5cc",
+      "imports": [
+        "config.logger",
+        "config.service_policy",
+        "core.connection",
+        "httpx",
+        "plugins_func.functions.hass_init",
+        "plugins_func.register",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        109,
+        110,
+        114,
+        168,
+        263,
+        267,
+        270
+      ],
+      "networkOrDownloadLines": [
+        80,
+        97,
+        113,
+        266
+      ],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/plugins_func/functions/search_from_ragflow.py",
+      "sha256": "9c68997712b81639f76afda55e09e609014c9678e079b54cca94ea4837dc0c82",
+      "imports": [
+        "config.logger",
+        "config.service_policy",
+        "core.connection",
+        "httpx",
+        "json",
+        "plugins_func.register",
+        "typing"
+      ],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [
+        41,
+        45,
+        52,
+        55,
+        112
+      ],
+      "networkOrDownloadLines": [
+        54,
+        113,
+        119,
+        133
+      ],
+      "review": "pending"
+    },
+    {
+      "path": "main/xiaozhi-server/requirements.txt",
+      "sha256": "1c98a44177d9d1461c8389b7aa1834ed7d6510e9b070515542160cf6cf4466e2",
+      "imports": [],
+      "literalHosts": [],
+      "dynamicUrlLines": [],
+      "endpointSettingLines": [],
+      "networkOrDownloadLines": [],
+      "review": "pending"
+    }
+  ]
+}

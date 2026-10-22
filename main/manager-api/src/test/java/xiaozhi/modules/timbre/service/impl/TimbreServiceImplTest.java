@@ -19,6 +19,7 @@ import xiaozhi.modules.timbre.vo.TimbreDetailsVO;
 import xiaozhi.modules.voiceclone.dao.VoiceCloneDao;
 import xiaozhi.modules.voiceclone.entity.VoiceCloneEntity;
 
+// Chinese language names and punctuation exercise language selection; the Chinese voice name tests data preservation.
 class TimbreServiceImplTest {
 
     @Test

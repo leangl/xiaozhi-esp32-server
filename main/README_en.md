@@ -7,8 +7,8 @@
 3.  [Component Deep Dive](#3-component-deep-dive)
     *   [3.1. `xiaozhi-server` (Core AI Engine - Python Implementation)](#31-xiaozhi-server-core-ai-engine---python-implementation)
     *   [3.2. `manager-api` (Management Backend - Java Spring Boot Implementation)](#32-manager-api-management-backend---java-spring-boot-implementation)
-    *   [3.3. `manager-web` (Web Management Frontend - Vue.js Implementation)](#33-manager-web-web-management-frontend---vuejs-implementation)
-    *   [3.4. `manager-mobile` (Mobile Management Console - uni-app Implementation)](#34-manager-mobile-mobile-management-console---uniapp-implementation)
+    *   [3.3. `manager-web` (Web Management Frontend - Vue.js Implementation)](#33-manager-web-web-control-panel---vuejs-implementation)
+    *   [3.4. `manager-mobile` (Mobile Management Console - uni-app Implementation)](#34-manager-mobile-mobile-management-console---uni-app-implementation)
     *   [3.5. `digital-human` (Digital Human Test Module - Python+Web Implementation)](#35-digital-human-digital-human-test-module---pythonweb-implementation)
 4.  [Data Flow and Interaction Mechanisms](#4-data-flow-and-interaction-mechanisms)
 5.  [Key Features Summary](#5-key-features-summary)
@@ -227,8 +227,8 @@ The `manager-mobile` component is a cross-platform mobile management application
 *   **Platform Compatibility:**
 
 | H5 | iOS | Android | WeChat Mini Program |
-| -- | --- | ------- | ------------------ | 
-| ×  | √   | √       | √                  | 
+| -- | --- | ------- | ------------------ |
+| √  | √   | √       | √                  |
 
 *   **Core Technologies:**
     *   **uni-app v3:** A framework for developing all frontend applications using Vue.js, supporting iOS, Android, H5, and various mini-programs.
@@ -489,3 +489,48 @@ Configuration is key to customizing system behavior, especially in selecting AI 
 In the case of full module deployment, it is recommended to use the `manager-web` control panel as the main operation interface for most configuration tasks, as it provides a user-friendly way to manage various settings that are persisted by `manager-api` and ultimately used by `xiaozhi-server`.
 
 ---
+
+## Implementation details retained from the original technical guide
+
+The following details supplement the shared English overview above. Some descriptions in the original architecture guide were conceptual or tentative; they are not claims that this translation verified every runtime path.
+
+### Python engine
+
+- `app.py` checks FFmpeg through `check_ffmpeg_installed()`, loads configuration, initializes logging, and starts `WebSocketServer` and `SimpleHttpServer` with `asyncio.create_task()`. Typical endpoints are `ws://0.0.0.0:8000/xiaozhi/v1/` and `http://0.0.0.0:8003/xiaozhi/ota/`. Its `monitor_stdin()` coroutine handles terminal input or keeps the process alive in some environments.
+- The application generates or loads an `auth_key` for protected HTTP operations such as `/mcp/vision/explain`. The original guide states that it generates a UUID when `manager-api.secret` is empty.
+- Provider abstract base classes define the interface for ASR, TTS, LLM, VAD, Intent, Memory, and VLLM. For example, `core/providers/asr/base.py` describes the ASR contract, illustrated as `async def transcribe(self, audio_chunk: bytes) -> str: pass`. Concrete providers include `core/providers/asr/fun_local.py` and `core/providers/llm/openai.py`. Provider-specific `dto/` directories hold structured transfer objects.
+- `core/utils/modules_initialize.py` loads configured classes from `selected_module` and each provider's settings at startup or configuration refresh. `WebSocketServer.update_config()` uses `config_lock` (an `asyncio.Lock`), fetches settings through `get_config_from_api()` and `manage_api_client.py`, checks `check_vad_update()`/`check_asr_update()`, and calls `initialize_modules()` when needed.
+- Each connection has its own `ConnectionHandler`, isolating device dialogue/context. The WebSocket server's `_http_response` can return a simple HTTP GET health response such as “Server is running” without a WebSocket upgrade.
+- Handler responsibilities: `helloHandle.py` handles handshake/authentication/initialization; `receiveAudioHandle.py` runs incoming audio through VAD and ASR; `textHandle.py`/`intentHandler.py` interact with Intent and LLM; `functionHandler.py` dispatches tool calls; `sendAudioHandle.py` sends TTS audio; `abortHandle.py` interrupts output; `iotHandle.py`/`mcpHandle.py` handle device and MCP commands.
+- Plugins in `plugins_func/functions/`, such as `get_weather.py` and `hass_set_state.py`, supply function names, descriptions, and JSON parameter schemas. `loadplugins.py` loads them; `register.py` or module decorators register their metadata. The handler executes requested functions, returns results to the LLM, and lets it produce the final reply.
+- `settings.py` invokes `config_loader.py`. Remote values usually override matching local `config.yaml` values. Logging may use bound tags such as `logger.bind(tag=TAG)`. `config/assets/` holds prompts such as `bind_code.wav` and error tones. The auxiliary HTTP server also serves utility routes such as vision explanation.
+
+### Java management API
+
+- The stack also includes Lombok for generated boilerplate, HuTool/Google Guava utilities, Jackson JSON handling, and the Aliyun Dysmsapi SMS SDK.
+- Modules live in `src/main/java/xiaozhi/modules/`. A typical module contains `controller`, `service`, `dao`, `entity`, and `dto` packages. Controllers use `@GetMapping`/`@PostMapping` and JSON DTOs; services use `@Transactional` for transactions. MyBatis-Plus interfaces inherit `BaseMapper<Entity>`, with annotation-based SQL or XML mappings for more complex queries. Entities use `@TableName`/`@TableId`, often with Lombok `@Data`. DTOs separate API contracts from database entities.
+- Shared base types include `BaseDao`, `BaseEntity`, `BaseService`, and `CrudService`. Configurations include `MybatisPlusConfig` (pagination/data filtering), `RedisConfig`, `SwaggerConfig`, and `AsyncConfig`. `@LogOperation` adds operation logging; the original guide identifies `@DataFilter` and `RedisAspect` as possible data-scope/cache mechanisms.
+- `RenExceptionHandler` with `@ControllerAdvice` returns consistent JSON errors, including `RenException`; `ErrorCode` defines codes. Utilities cover dates, JSON, IP addresses, HTTP context, and the `Result` response wrapper. `ValidatorUtils`/`AssertUtils` support validation; `XssFilter` handles XSS filtering. `FieldMetaObjectHandler` fills common fields such as `createTime` and `updateTime`.
+- Shiro configuration usually lives under `modules/security/config/` or `common/config/`. Realms load credentials, salts, roles, and permissions; filters protect routes. The original guide discusses session/token integration with OAuth2 or JWT as a possible implementation pattern.
+- Liquibase tracks tables, indexes, and initial data in versioned changelogs and applies required changes at startup. Knife4j provides endpoint descriptions, request/response examples, and interactive API testing at `/xiaozhi/doc.html`; the original demo URL is [demo API documentation](https://2662r3426b.vicp.fun/xiaozhi/doc.html).
+
+### Web management frontend
+
+- `src/main.js` initializes Vue and registers Router, Vuex, and Element UI, mounting into `public/index.html` (usually `#app`). `src/App.vue` holds the layout and `<router-view></router-view>`. Views in `src/views/` form pages; reusable components include `HeaderBar.vue`, `AddDeviceDialog.vue`, and `AudioPlayer.vue`.
+- Router `beforeEach` guards can redirect unauthenticated users to login. Vuex `state` stores shared values; `getters` derive values; synchronous `mutations` change state; asynchronous `actions` call APIs and commit mutations. The original example describes a `login` action committing `SET_USER_INFO`.
+- API modules such as `src/apis/module/agent.js` and `src/apis/module/device.js` use a shared client configured in files such as `src/apis/api.js` or `src/apis/httpRequest.js`. Request interceptors add authentication tokens; response interceptors handle common errors and response preprocessing.
+- `src/styles/global.scss` holds shared styles, variables, and mixins; `<style scoped>` limits component styles; `src/assets/` holds images/fonts. Vue CLI uses Webpack and HMR. `workbox-webpack-plugin`, `service-worker.js`, and `registerServiceWorker.js` support resource caching and possible offline access. `opus-decoder`/`opus-recorder` indicate browser Opus recording/playback capabilities, whose specific uses the original guide described as tentative.
+
+For setup, use the English [server-only](../docs/Deployment.md), [full-module](../docs/Deployment_all.md), [digital-human](../docs/digital-human-wakeword.md), and [FAQ](../docs/FAQ.md) guides. This translation retains the supported providers and the uni-app mobile framework.
+
+## Mobile screenshot reference
+
+These English notes explain the original HBuilderX screenshots. Keep the original image filenames as compatibility aliases for links from the mobile documentation. The screenshots show an older tool version and sample app IDs/package names; use your own existing app identity and signing configuration. This translation does not create accounts, submit builds, or change mobile permissions.
+
+| Original screenshot | English instructions and labels |
+| --- | --- |
+| [Project recognition](../docs/images/manager-mobile/重新识别项目.png) | Right-click the project root and choose **Re-identify Project Type**. The nearby **Rebuild Project Index** and **Refresh** actions are different operations. |
+| [App ID configuration](../docs/images/manager-mobile/生成appid.png) | Open `src/manifest.json` in HBuilderX's visual editor, choose **Basic Configuration**, and locate **uni-app Application ID (AppID)**. The button beside it means **Obtain Again**; it requests the DCloud app identity for your project. The remaining visible fields are application name/description, version name, integer version code, and Vue version. Preserve an existing published app's identity instead of copying the screenshot's sample ID. |
+| [Local run menu](../docs/images/manager-mobile/本地运行.png) | Choose **Run > Run on Phone or Emulator**, then the Android App runtime, iOS App runtime, or iOS simulator runtime. Each **Specified Page** variant launches a chosen page. The same menu exposes the WebView debug console, custom debug runtime creation, Android emulator port, ADB path, and automatic Vue Devtools options. Choose the target matching your connected device/runtime. |
+| [Release menu](../docs/images/manager-mobile/打包发行步骤1.png) | Choose **Release > App-Android/iOS Cloud Packaging**. Adjacent options show cloud-build status, local Android/iOS packaging, local Harmony packaging, WGT packaging, mini-program publishing, and Web publishing. These are separate targets; opening this menu does not build the app. |
+| [Packaging dialog](../docs/images/manager-mobile/打包发行步骤2.png) | Select Android APK or iOS IPA, review the app name/version, and use **Edit manifest configuration** if needed. The pictured Android tab includes package name, own/cloud/public-test certificate choices, certificate file, keystore password, alias, and private-key password. Additional choices cover distribution channels, anti-re-signing checks, release versus custom-debug builds, iOS dSYM, SourceMap, and native obfuscation. At the bottom, **Traditional Packaging** uploads code/certificates; **Quick Secure Packaging** is labeled as not uploading code/certificates. The screenshot selects cloud signing and quick packaging; those sample selections do not replace a review of your own signing/release requirements. **Package** starts the chosen build and may use a provider's cloud service. |

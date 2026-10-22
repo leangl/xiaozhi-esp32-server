@@ -1,46 +1,52 @@
-"""服务端MCP客户端"""
+"""Server-side MCP client."""
 
 from __future__ import annotations
 
 from datetime import timedelta
 import asyncio
-import os
-import shutil
+import copy
 import concurrent.futures
 from contextlib import AsyncExitStack
 from typing import Optional, List, Dict, Any
 
-from mcp import ClientSession, StdioServerParameters, Implementation
+from mcp import ClientSession, Implementation
 from mcp.client.session import SamplingFnT, ElicitationFnT, ListRootsFnT, LoggingFnT, MessageHandlerFnT
-from mcp.client.stdio import stdio_client
 from mcp.client.sse import sse_client
 from mcp.client.streamable_http import streamablehttp_client
 from mcp.shared.session import ProgressFnT
 
 from config.logger import setup_logging
+from config.service_policy import ServicePolicyError, validate_endpoint, mcp_httpx_client
 from core.utils.util import sanitize_tool_name
 
 TAG = __name__
 
 
 class ServerMCPClient:
-    """服务端MCP客户端，用于连接和管理MCP服务"""
+    """Connect to and manage server-side MCP services."""
 
     def __init__(self, config: Dict[str, Any]):
-        """初始化服务端MCP客户端
+        """Initialize the server-side MCP client
 
         Args:
-            config: MCP服务配置字典
+            config: MCP service configuration dictionary.
         """
         self.logger = setup_logging()
-        self.config = config
+        # No process/package installers in the supported backend. Operate tool
+        # servers independently and expose a reviewed HTTP/SSE endpoint.
+        if "command" in config or "args" in config or "env" in config:
+            raise ServicePolicyError("MCP subprocess transport is unavailable; configure a reviewed HTTP service")
+        validate_endpoint(config.get("url"), "mcp")
+        if config.get("transport", "sse") not in {"sse", "streamable-http", "http"}:
+            raise ServicePolicyError("MCP transport is unavailable")
+        self.config = copy.deepcopy(config)
 
         self._worker_task: Optional[asyncio.Task] = None
         self._ready_evt = asyncio.Event()
         self._shutdown_evt = asyncio.Event()
 
         self.session: Optional[ClientSession] = None
-        self.tools: List = []  # 原始工具对象
+        self.tools: List = []  # Original tool objects
         self.tools_dict: Dict[str, Any] = {}
         self.name_mapping: Dict[str, str] = {}
 
@@ -51,7 +57,7 @@ class ServerMCPClient:
              logging_callback: LoggingFnT | None = None,
              message_handler: MessageHandlerFnT | None = None,
              client_info: Implementation | None = None):
-        """初始化MCP客户端连接"""
+        """Initialize the MCP client connection."""
         if self._worker_task:
             return
 
@@ -65,13 +71,15 @@ class ServerMCPClient:
                         client_info=client_info), name="ServerMCPClientWorker"
         )
         await self._ready_evt.wait()
+        if self._worker_task.done():
+            await self._worker_task
 
         self.logger.bind(tag=TAG).info(
-            f"服务端MCP客户端已连接，可用工具: {[name for name in self.name_mapping.values()]}"
+            f"Server-side MCP client connected; available tools: {[name for name in self.name_mapping.values()]}"
         )
 
     async def cleanup(self):
-        """清理MCP客户端资源"""
+        """Clean up MCP client resources."""
         if not self._worker_task:
             return
 
@@ -79,26 +87,26 @@ class ServerMCPClient:
         try:
             await asyncio.wait_for(self._worker_task, timeout=20)
         except (asyncio.TimeoutError, Exception) as e:
-            self.logger.bind(tag=TAG).error(f"服务端MCP客户端关闭错误: {e}")
+            self.logger.bind(tag=TAG).error("Error closing server-side MCP client")
         finally:
             self._worker_task = None
 
     def has_tool(self, name: str) -> bool:
-        """检查是否包含指定工具
+        """Check whether the specified tool exists.
 
         Args:
-            name: 工具名称
+            name: Tool name.
 
         Returns:
-            bool: 是否包含该工具
+            bool: Whether the tool exists.
         """
         return name in self.tools_dict
 
     def get_available_tools(self) -> List[Dict[str, Any]]:
-        """获取所有可用工具的定义
+        """Get definitions for all available tools.
 
         Returns:
-            List[Dict[str, Any]]: 工具定义列表
+            List[Dict[str, Any]]: Tool definitions.
         """
         return [
             {
@@ -113,20 +121,20 @@ class ServerMCPClient:
         ]
 
     async def call_tool(self, name: str, arguments: dict, read_timeout_seconds: timedelta | None = None, progress_callback: ProgressFnT | None = None, *, meta: dict[str, Any] | None = None) -> Any:
-        """调用指定工具
+        """Call the specified tool.
 
         Args:
-            name: 工具名称
-            arguments: 工具参数
+            name: Tool name.
+            arguments: Tool arguments.
             read_timeout_seconds:
-            progress_callback: 进度回调函数
+            progress_callback: Progress callback.
             meta:
 
         Returns:
-            Any: 工具执行结果
+            Any: Tool execution result.
 
         Raises:
-            RuntimeError: 客户端未初始化时抛出
+            RuntimeError: Raised when the client has not been initialized.
         """
         if not self.session:
             raise RuntimeError("服务端MCP客户端未初始化")
@@ -142,24 +150,24 @@ class ServerMCPClient:
         return await asyncio.wrap_future(fut)
 
     def is_connected(self) -> bool:
-        """检查MCP客户端是否连接正常
+        """Check whether the MCP client is connected and healthy.
 
         Returns:
-            bool: 如果客户端已连接并正常工作，返回True，否则返回False
+            bool: True if the client is connected and working, otherwise False.
         """
-        # 检查工作任务是否存在
+        # Check whether the worker task exists
         if self._worker_task is None:
             return False
 
-        # 检查工作任务是否已经完成或取消
+        # Check whether the worker task has completed or been canceled
         if self._worker_task.done():
             return False
 
-        # 检查会话是否存在
+        # Check whether the session exists
         if self.session is None:
             return False
 
-        # 所有检查都通过，连接正常
+        # All checks passed; the connection is healthy
         return True
 
     async def _worker(self, read_timeout_seconds: timedelta | None = None,
@@ -169,64 +177,48 @@ class ServerMCPClient:
              logging_callback: LoggingFnT | None = None,
              message_handler: MessageHandlerFnT | None = None,
              client_info: Implementation | None = None):
-        """MCP客户端工作协程"""
+        """MCP client worker coroutine."""
         async with AsyncExitStack() as stack:
             try:
-                # 建立 StdioClient
-                if "command" in self.config:
-                    cmd = (
-                        shutil.which("npx")
-                        if self.config["command"] == "npx"
-                        else self.config["command"]
-                    )
-                    env = {**os.environ, **self.config.get("env", {})}
-                    params = StdioServerParameters(
-                        command=cmd,
-                        args=self.config.get("args", []),
-                        env=env,
-                    )
-                    stdio_r, stdio_w = await stack.enter_async_context(
-                        stdio_client(params)
-                    )
-                    read_stream, write_stream = stdio_r, stdio_w
-
-                # 建立SSEClient
-                elif "url" in self.config:
+                validate_endpoint(self.config.get("url"), "mcp")
+                if "url" in self.config:
                     headers = dict(self.config.get("headers", {}))
-                    # TODO 兼容旧版本
+                    # TODO: support legacy versions
                     if "API_ACCESS_TOKEN" in self.config:
                         headers["Authorization"] = f"Bearer {self.config['API_ACCESS_TOKEN']}"
-                        self.logger.bind(tag=TAG).warning(f"你正在使用旧过时的配置 API_ACCESS_TOKEN ，请在.mcp_server_settings.json中将API_ACCESS_TOKEN直接设置在headers中，例如 'Authorization': 'Bearer API_ACCESS_TOKEN'")
+                        self.logger.bind(tag=TAG).warning(f"You are using the deprecated API_ACCESS_TOKEN setting. In .mcp_server_settings.json, set API_ACCESS_TOKEN directly in headers, for example 'Authorization': 'Bearer API_ACCESS_TOKEN'")
                    
-                    # 根据transport类型选择不同的客户端，默认为SSE
+                    # Choose the client by transport type; default to SSE
                     transport_type = self.config.get("transport", "sse")
 
                     if transport_type == "streamable-http" or transport_type == "http":
-                        # 使用 Streamable HTTP 传输
+                        # Use Streamable HTTP transport
                         http_r, http_w, get_session_id = await stack.enter_async_context(
                             streamablehttp_client(
                                 url=self.config["url"],
                                 headers=headers,
                                 timeout=self.config.get("timeout", 30),
                                 sse_read_timeout=self.config.get("sse_read_timeout", 60 * 5),
-                                terminate_on_close=self.config.get("terminate_on_close", True)
+                                terminate_on_close=self.config.get("terminate_on_close", True),
+                                httpx_client_factory=mcp_httpx_client
                             )
                         )
                         read_stream, write_stream = http_r, http_w
                     else:
-                        # 使用传统的 SSE 传输
+                        # Use traditional SSE transport
                         sse_r, sse_w = await stack.enter_async_context(
                             sse_client(
                                 url=self.config["url"],
                                 headers=headers,
                                 timeout=self.config.get("timeout", 5),
-                                sse_read_timeout=self.config.get("sse_read_timeout", 60 * 5)
+                                sse_read_timeout=self.config.get("sse_read_timeout", 60 * 5),
+                                httpx_client_factory=mcp_httpx_client
                             )
                         )
                         read_stream, write_stream = sse_r, sse_w
 
                 else:
-                    raise ValueError("MCP客户端配置必须包含'command'或'url'")
+                    raise ServicePolicyError("MCP configuration requires a reviewed HTTP endpoint")
 
                 self.session = await stack.enter_async_context(
                     ClientSession(
@@ -243,7 +235,7 @@ class ServerMCPClient:
                 )
                 await self.session.initialize()
 
-                # 获取工具
+                # Get tools
                 self.tools = (await self.session.list_tools()).tools
                 for t in self.tools:
                     sanitized = sanitize_tool_name(t.name)
@@ -252,10 +244,10 @@ class ServerMCPClient:
 
                 self._ready_evt.set()
 
-                # 挂起等待关闭
+                # Suspend until closure
                 await self._shutdown_evt.wait()
 
-            except Exception as e:
-                self.logger.bind(tag=TAG).error(f"服务端MCP客户端工作协程错误: {e}")
+            except Exception:
+                self.logger.bind(tag=TAG).error("Server-side MCP connection unavailable")
                 self._ready_evt.set()
                 raise

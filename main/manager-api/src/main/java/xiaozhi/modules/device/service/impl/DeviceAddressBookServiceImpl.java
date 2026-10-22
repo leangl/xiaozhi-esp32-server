@@ -58,12 +58,14 @@ public class DeviceAddressBookServiceImpl implements DeviceAddressBookService {
     public Map<String, Object> callByNickname(String callerMac, String nickname, boolean isAnswer) {
         Map<String, Map<String, String>> allBooks = getAllAddressBooks();
 
+        // Localized tool-result action labels below mean "answer" and "call". Keep Chinese speech output.
         if (isAnswer) {
             return postToMqtt("/api/call/accept", Map.of("mac", callerMac), "接听");
         }
 
-        // 主动呼叫模式
+        // Outgoing call mode
         Map<String, String> callerBook = allBooks.get(callerMac.toLowerCase());
+        // The not-found message below says no device has the requested nickname; it is spoken user output.
         if (callerBook == null) {
             return errorResult("未找到备注为'" + nickname + "'的设备");
         }
@@ -75,11 +77,12 @@ public class DeviceAddressBookServiceImpl implements DeviceAddressBookService {
         String targetMac = parts[0];
         boolean hasPermission = parts.length > 1 && "1".equals(parts[1]);
 
+        // Localized spoken denial: the caller has no permission to call this device.
         if (!hasPermission) {
             return errorResult("呼叫失败，您没有权限呼叫该设备");
         }
 
-        // 获取目标设备如何称呼主叫方
+        // Get how the target device addresses the caller
         Map<String, String> targetBook = allBooks.get(targetMac.toLowerCase());
         String callerNickname = null;
         if (targetBook != null) {
@@ -109,20 +112,20 @@ public class DeviceAddressBookServiceImpl implements DeviceAddressBookService {
             String alias = entity.getAlias();
             Boolean hasPermission = entity.getHasPermission();
 
-            // 构建正向映射: A对B的映射 nickname -> macB|permission
+            // Build forward mapping: A's entry for B, nickname -> macB|permission
             if (alias != null && !alias.isEmpty()) {
                 result.computeIfAbsent(macA, k -> new HashMap<>());
                 String permStr = (hasPermission != null && hasPermission) ? "1" : "0";
                 result.get(macA).put(alias, macB + "|" + permStr);
             }
 
-            // 构建反向记录用于查找B对A的称呼
+            // Build reverse records to find B's name for A
             if (alias != null && !alias.isEmpty()) {
                 reverseMap.put(macB + ":" + macA, alias);
             }
         }
 
-        // 构建反向映射: B对A的映射 macA -> nickname
+        // Build reverse mapping: B's entry for A, macA -> nickname
         for (DeviceAddressBookEntity entity : allRecords) {
             String macA = entity.getMacAddress().toLowerCase();
             String macB = entity.getTargetMac().toLowerCase();
@@ -159,11 +162,11 @@ public class DeviceAddressBookServiceImpl implements DeviceAddressBookService {
             DeviceAddressBookEntity entity = new DeviceAddressBookEntity();
             entity.setMacAddress(macAddress);
             entity.setTargetMac(targetMac);
-            // 如果 alias 为空，就默认使用设备名称
+            // Default to the device name if alias is empty
             if (StringUtils.isBlank(alias)) {
                 alias = deviceService.getDeviceByMacAddress(targetMac).getAlias();
             }
-            // 检查重名
+            // Check for duplicate names
             alias = generateUniqueAlias(macAddress, targetMac, alias);
             entity.setAlias(alias);
             entity.setHasPermission(hasPermission);
@@ -204,6 +207,7 @@ public class DeviceAddressBookServiceImpl implements DeviceAddressBookService {
 
         if (StringUtils.isBlank(mqttGatewayUrl) || "null".equals(mqttGatewayUrl)
                 || MqttGatewayAuthorization.isMissingSignatureKey(mqttSignatureKey)) {
+            // Localized tool result: the action failed because gateway configuration is missing.
             result.put("message", action + "失败，网关配置缺失");
             return result;
         }
@@ -224,6 +228,7 @@ public class DeviceAddressBookServiceImpl implements DeviceAddressBookService {
             }
             return result;
         } catch (Exception e) {
+            // Localized tool result: the action failed; try again later.
             result.put("message", action + "失败，请稍后再试");
             return result;
         }
@@ -234,6 +239,7 @@ public class DeviceAddressBookServiceImpl implements DeviceAddressBookService {
             return mac;
         }
         String lastTwo = mac.substring(mac.length() - 2);
+        // Preserve the Chinese spoken fallback name: "device ending in" the last two MAC characters.
         return "尾号为" + lastTwo + "的设备";
     }
 

@@ -1,0 +1,59 @@
+schema: spec-driven
+context: |
+  XiaoZhi server evaluation checkout at eb9dc8ca0fc8a30bc8afb0f302dcfc1578f76a7b.
+  Python voice engine, Java 21/Spring Boot management API, Vue web console,
+  uni-app mobile console, and digital-human test tools. MySQL and Redis.
+  Local deployment wrapper and a separate MQTT/UDP gateway are in the parent
+  directory; planning must account for those integration seams without silently
+  changing another repository or the running deployment.
+  Product: conversational toys for children with parent-managed configuration.
+  English translation and its 29 planned verification tasks completed on
+  2026-10-20; existing baseline test failures are documented in maintenance docs.
+  The user now requested implementation of service independence, replacing
+  China-based external services with approved Western or self-hosted interfaces.
+  Preserve Chinese locale support, user data and protocol compatibility.
+  No existing-container restarts, personal key imports, paid AI calls, firmware
+  changes, or AWS deployment are authorized. Parent wrapper/gateway changes
+  require an explicitly reviewed scope; do not silently edit those repositories.
+rules:
+  proposal:
+    - Write in English and identify exclusions and compatibility risks.
+  design:
+    - Separate observed source evidence from proposed behavior.
+    - Specify baseline, staged verification, rollback, and unresolved choices.
+  specs:
+    - Use testable SHALL/MUST requirements with GIVEN/WHEN/THEN scenarios.
+  tasks:
+    - Use unchecked tasks grouped into ordered independently verifiable slices.
+    - Do not mark implementation tasks complete while only planning.
+
+# Project context (optional)
+# This is shown to AI when creating artifacts.
+# Add your tech stack, conventions, style guides, domain knowledge, etc.
+# Example:
+#   context: |
+#     Tech stack: TypeScript, React, Node.js
+#     We use conventional commits
+#     Domain: e-commerce platform
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
+
+# Per-operation guidance (optional)
+# Add advisory guidance for how apply and archive work should be conducted.
+# This is separate from artifact rules above.
+# Example:
+#   operations:
+#     apply:
+#       guidance:
+#         - Keep test summaries concise
+#     archive:
+#       guidance:
+#         - Summarize the archive outcome before finishing

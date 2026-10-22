@@ -1,50 +1,83 @@
-# 第一阶段：构建Vue前端
-FROM node:18 AS web-builder
+# Required reviewed Docker Hub inputs, each including an @sha256 digest.
+ARG NODE_IMAGE
+ARG MAVEN_IMAGE
+ARG RUNTIME_IMAGE
+# Stage 1: build the Vue frontend
+FROM ${NODE_IMAGE} AS web-builder
+ENV HTTP_PROXY="" HTTPS_PROXY="" ALL_PROXY="" http_proxy="" https_proxy="" all_proxy=""
 WORKDIR /app
 COPY main/manager-web/package*.json ./
-RUN npm install
+COPY tools/build-npm-lock.mjs /opt/build-npm-lock.mjs
+ARG NPM_REGISTRY
+# Fail before npm can follow legacy lockfile mirrors. The lockfile owner must
+# migrate and review these URLs; --registry alone does not override resolved URLs.
+RUN test "${NPM_REGISTRY}" = "https://registry.npmjs.org" && \
+    node /opt/build-npm-lock.mjs /app/package-lock.json
+RUN env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY -u http_proxy -u https_proxy -u all_proxy \
+    NPM_CONFIG_USERCONFIG=/dev/null NPM_CONFIG_GLOBALCONFIG=/tmp/no-global-npmrc \
+    npm ci --ignore-scripts --registry=https://registry.npmjs.org --strict-ssl=true --no-audit --no-fund
 COPY main/manager-web .
-RUN npm run build
+# Reviewed, local-file-only Vue-version initializers from the integrity-locked
+# packages. No lifecycle hooks run during acquisition; these two run offline.
+RUN --network=none node node_modules/vue-demi/scripts/postinstall.js && \
+    node node_modules/v-code-diff/scripts/postinstall.cjs
+# Keep private .env files outside the context. Use only non-secret public inputs.
+ARG VUE_APP_API_BASE_URL=/xiaozhi
+ARG VUE_APP_PUBLIC_PATH=/
+ENV VUE_APP_USE_CDN=false
+RUN --network=none npm run build
 
-# 第二阶段：构建Java后端
-FROM maven:3.9.4-eclipse-temurin-21 AS api-builder
+# Stage 2: build the Java backend
+FROM ${MAVEN_IMAGE} AS api-builder
+ARG MAVEN_IMAGE
+ARG RUNTIME_IMAGE
+ENV HTTP_PROXY="" HTTPS_PROXY="" ALL_PROXY="" http_proxy="" https_proxy="" all_proxy=""
 WORKDIR /app
 COPY main/manager-api/pom.xml .
+COPY main/manager-api/.mvn ./.mvn
+COPY tools/service-dependency-lock.java /opt/service-dependency-lock.java
+COPY tools/dependency-locks/maven-linux-aarch64.lock /opt/maven.lock
+COPY tools/dependency-locks/manager-apk-aarch64.lock /opt/manager-apk.lock
+# Acquisition executes no POM/plugins. Every archive is SHA-256 checked first.
+RUN java /opt/service-dependency-lock.java fetch /opt/maven.lock /opt/locked-m2 "${MAVEN_IMAGE}" /app && \
+    java /opt/service-dependency-lock.java fetch /opt/manager-apk.lock /opt/locked-apk "${RUNTIME_IMAGE}"
 COPY main/manager-api/src ./src
-RUN mvn clean package -Dmaven.test.skip=true
+# A fresh local repository, a full preflight, Maven offline, AND no network.
+RUN --network=none java /opt/service-dependency-lock.java verify /opt/maven.lock /opt/locked-m2 "${MAVEN_IMAGE}" /app && \
+    mvn -o -B --settings .mvn/settings.xml -Dmaven.repo.local=/opt/locked-m2 clean package -Dmaven.test.skip=true
 
-# 第三阶段：构建最终镜像
-FROM bellsoft/liberica-runtime-container:jre-21-glibc
+# Stage 3: build the final image
+FROM ${RUNTIME_IMAGE}
+ARG RUNTIME_IMAGE
+ENV HTTP_PROXY="" HTTPS_PROXY="" ALL_PROXY="" http_proxy="" https_proxy="" all_proxy=""
 
-# 安装Nginx和字体库
-RUN apk update && \
-    apk add --no-cache --no-scripts \
-        nginx \
-        bash \
-        fontconfig \
-        ttf-dejavu \
-    && rm -rf /var/cache/apk/* \
-    && mkdir -p /run/nginx /var/log/nginx /var/tmp/nginx /etc/nginx/conf.d
+# Exact reviewed APK additions/transitives, not a mutable repository solve.
+COPY --from=api-builder /opt/locked-apk /opt/locked-apk
+COPY tools/dependency-locks/manager-apk-aarch64.lock /opt/manager-apk.lock
+COPY tools/service-dependency-lock-apk.sh /opt/service-dependency-lock-apk.sh
+RUN --network=none sh /opt/service-dependency-lock-apk.sh /opt/manager-apk.lock /opt/locked-apk "${RUNTIME_IMAGE}" && \
+    rm -rf /opt/locked-apk && \
+    mkdir -p /run/nginx /var/log/nginx /var/tmp/nginx /etc/nginx/conf.d
 
-# 复制项目自带的中文字体
+# Copy the bundled Chinese fonts
 COPY main/manager-web/public/generator/static/fonts/*.ttf /usr/share/fonts/
 
-# 更新字体缓存
-RUN fc-cache -f -v
+# Update the font cache
+RUN --network=none fc-cache -f -v
 
-# 配置Nginx
+# Configure Nginx
 COPY docs/docker/nginx.conf /etc/nginx/nginx.conf
 
-# 复制前端构建产物
+# Copy frontend build artifacts
 COPY --from=web-builder /app/dist /usr/share/nginx/html
 
-# 复制Java后端JAR包
+# Copy the Java backend JAR
 COPY --from=api-builder /app/target/xiaozhi-esp32-api.jar /app/xiaozhi-esp32-api.jar
 
-# 暴露端口
+# Expose the service port
 EXPOSE 8002
 
-# 启动脚本
+# Startup script
 COPY docs/docker/start.sh /start.sh
 RUN chmod +x /start.sh
 CMD ["/start.sh"]

@@ -6,7 +6,7 @@
     <packaging>jar</packaging>
     <version>0.0.1</version>
     <name>xiaozhi-esp32-api</name>
-    <description>小智后台管理系统</description>
+    <description>Xiaozhi management backend</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -30,8 +30,6 @@
         <captcha.version>1.6.2</captcha.version>
         <guava.version>33.6.0-jre</guava.version>
         <liquibase-core.version>4.20.0</liquibase-core.version>
-        <aliyun-sms-version>4.1.0</aliyun-sms-version>
-        <okio-version>3.4.0</okio-version>
         <skipTests>true</skipTests>
         <argLine></argLine>
     </properties>
@@ -72,7 +70,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- 验证码工具包 -->
+        <!-- Verification code utilities -->
         <dependency>
             <groupId>com.github.whvcse</groupId>
             <artifactId>easy-captcha</artifactId>
@@ -160,7 +158,7 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
-        <!-- mysql驱动 -->
+        <!-- MySQL driver -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
@@ -201,7 +199,7 @@
             <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
             <version>${knife4j.version}</version>
         </dependency>
-        <!-- BouncyCastle SM2加密 -->
+        <!-- Bouncy Castle SM2 encryption -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk18on</artifactId>
@@ -213,7 +211,7 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc.version}</version>
         </dependency>
-        <!-- 日常工具包 -->
+        <!-- General-purpose utilities -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -228,26 +226,14 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
-        <!-- 阿里云短信sdk -->
-        <dependency>
-            <groupId>com.aliyun</groupId>
-            <artifactId>dysmsapi20170525</artifactId>
-            <version>${aliyun-sms-version}</version>
-        </dependency>
-        <!-- 阿里云短信sdk使用的okio:1.15.0版本有安全漏洞：GHSA-w33c-445m-f8w7 现在升级成3.4.0安全版本-->
-        <dependency>
-            <groupId>com.squareup.okio</groupId>
-            <artifactId>okio</artifactId>
-            <version>${okio-version}</version>
-        </dependency>
     </dependencies>
 
-    <!-- 阿里云maven仓库 -->
+    <!-- Official Maven Central; no mirror or TLS-verification bypass. -->
     <repositories>
         <repository>
-            <id>public</id>
-            <name>aliyun nexus</name>
-            <url>https://maven.aliyun.com/repository/public/</url>
+            <id>central</id>
+            <name>Maven Central</name>
+            <url>https://repo.maven.apache.org/maven2/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -255,9 +241,9 @@
     </repositories>
     <pluginRepositories>
         <pluginRepository>
-            <id>public</id>
-            <name>aliyun nexus</name>
-            <url>https://maven.aliyun.com/repository/public/</url>
+            <id>central</id>
+            <name>Maven Central</name>
+            <url>https://repo.maven.apache.org/maven2/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>

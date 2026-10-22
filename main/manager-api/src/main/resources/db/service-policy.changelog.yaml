@@ -1,0 +1,11 @@
+databaseChangeLog:
+  # Keep the executed historical master and all referenced SQL byte-identical.
+  - include:
+      file: classpath:db/changelog/db.changelog-master.yaml
+  - changeSet:
+      id: 202610210001
+      author: platform
+      changes:
+        - sqlFile:
+            encoding: utf8
+            path: classpath:db/service-policy/202610210001.sql

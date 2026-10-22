@@ -1,0 +1,7 @@
+# Test-only DNS/firewall fixture. Never used as an application base or deployed.
+FROM xiaozhi-policy/server-base:20261021
+RUN apt-get update && apt-get install -y --no-install-recommends iptables \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+COPY tools/service-network-fixture.py /tools/service-network-fixture.py
+ENV CANDIDATE_EGRESS_FIXTURE=service-policy-rehearsal-20261021
+ENTRYPOINT ["python", "-B", "/tools/service-network-fixture.py"]

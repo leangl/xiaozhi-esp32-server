@@ -20,6 +20,7 @@ import xiaozhi.common.exception.RenException;
 import xiaozhi.common.redis.RedisKeys;
 import xiaozhi.common.redis.RedisUtils;
 import xiaozhi.common.utils.ConvertUtils;
+import xiaozhi.common.utils.ApprovedProviderCatalog;
 import xiaozhi.common.utils.JsonUtils;
 import xiaozhi.modules.agent.dao.AgentVoicePrintDao;
 import xiaozhi.modules.agent.entity.AgentContextProviderEntity;
@@ -44,7 +45,6 @@ import xiaozhi.modules.sys.dto.SysParamsDTO;
 import xiaozhi.modules.sys.service.SysParamsService;
 import xiaozhi.modules.timbre.service.TimbreService;
 import xiaozhi.modules.timbre.vo.TimbreDetailsVO;
-import xiaozhi.modules.voiceclone.entity.VoiceCloneEntity;
 import xiaozhi.modules.voiceclone.service.VoiceCloneService;
 
 @Service
@@ -67,24 +67,28 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public Map<String, Object> getConfig(Boolean isCache) {
         if (isCache) {
-            // 先从Redis获取配置
+            // Get configuration from Redis first
             Object cachedConfig = redisUtils.get(RedisKeys.getServerConfigKey());
             if (cachedConfig != null) {
-                return JsonUtils.toStringObjectMap(cachedConfig);
+                Map<String, Object> cached = JsonUtils.toStringObjectMap(cachedConfig);
+                filterUnavailableOptionalConfig(cached);
+                ApprovedProviderCatalog.validateRuntimeConfig(cached);
+                validateCachedModelReferences(cached);
+                return cached;
             }
         }
 
-        // 构建配置信息
+        // Build configuration
         Map<String, Object> result = new HashMap<>();
         buildConfig(result);
 
-        // 查询默认智能体
+        // Query the default agent
         AgentTemplateEntity agent = agentTemplateService.getDefaultTemplate();
         if (agent == null) {
             throw new RenException(ErrorCode.AGENT_TEMPLATE_NOT_FOUND);
         }
 
-        // 构建模块配置
+        // Build module configuration
         buildModuleConfig(
                 null,
                 null,
@@ -108,7 +112,9 @@ public class ConfigServiceImpl implements ConfigService {
                 result,
                 isCache);
 
-        // 将配置存入Redis
+        filterUnavailableOptionalConfig(result);
+        ApprovedProviderCatalog.validateRuntimeConfig(result);
+        // Cache configuration in Redis
         redisUtils.set(RedisKeys.getServerConfigKey(), result);
 
         return result;
@@ -116,19 +122,19 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public Map<String, Object> getAgentModels(String macAddress, Map<String, String> selectedModule) {
-        // 检查是否为管理控制台请求
+        // Check whether this is a management console request
         String redisKey = RedisKeys.getTmpRegisterMacKey(macAddress);
         Object isAdminRequest = redisUtils.get(redisKey);
 
         if (isAdminRequest != null && "true".equals(isAdminRequest)) {
-            // 管理控制台请求，返回getConfig的结果
-            redisUtils.delete(redisKey); // 使用后清理
+            // For management console requests, return getConfig results
+            redisUtils.delete(redisKey); // Clean up after use
             return getConfig(true);
         }
-        // 根据MAC地址查找设备
+        // Find a device by MAC address
         DeviceEntity device = deviceService.getDeviceByMacAddress(macAddress);
         if (device == null) {
-            // 如果设备，去redis里看看有没有需要连接的设备
+            // Check Redis for a device awaiting connection
             String cachedCode = deviceService.geCodeByDeviceId(macAddress);
             if (StringUtils.isNotBlank(cachedCode)) {
                 throw new RenException(ErrorCode.OTA_DEVICE_NEED_BIND, cachedCode);
@@ -136,12 +142,15 @@ public class ConfigServiceImpl implements ConfigService {
             throw new RenException(ErrorCode.OTA_DEVICE_NOT_FOUND);
         }
 
-        // 获取智能体信息
+        // Get agent information
         AgentEntity agent = agentService.getAgentById(device.getAgentId());
         if (agent == null) {
             throw new RenException(ErrorCode.AGENT_NOT_FOUND);
         }
-        // 获取音色信息
+        // Validate even VAD/ASR that the caller claims to have already instantiated.
+        ApprovedProviderCatalog.validateSelections(agent, modelConfigService::getModelByIdFromCache);
+        modelConfigService.validateVoiceSelection(agent.getTtsModelId(), agent.getTtsVoiceId());
+        // Get voice information
         String voice = null;
         String referenceAudio = null;
         String referenceText = null;
@@ -151,27 +160,22 @@ public class ConfigServiceImpl implements ConfigService {
             voice = timbre.getTtsVoice();
             referenceAudio = timbre.getReferenceAudio();
             referenceText = timbre.getReferenceText();
-            // 优先使用用户选择的语言，如果没有则使用音色支持的第一个语言
+            // Prefer the user-selected language; otherwise use the voice's first supported language
             if (StringUtils.isNotBlank(agent.getTtsLanguage())) {
                 language = agent.getTtsLanguage();
             } else if (StringUtils.isNotBlank(timbre.getLanguages())) {
                 language = timbre.getLanguages().split("、")[0].trim();
             }
-        } else {
-            VoiceCloneEntity voice_print = cloneVoiceService.selectById(agent.getTtsVoiceId());
-            if (voice_print != null) {
-                voice = voice_print.getVoiceId();
-                // 优先使用用户选择的语言，如果没有则使用默认值
-                language = StringUtils.isNotBlank(agent.getTtsLanguage()) ? agent.getTtsLanguage() : "普通话";
-            }
+        } else if (StringUtils.isNotBlank(agent.getTtsVoiceId())) {
+            throw ApprovedProviderCatalog.unavailable("tts");
         }
-        // 构建返回数据
+        // Build response data
         Map<String, Object> result = new HashMap<>();
-        // 获取单台设备每天最多输出字数
+        // Get the maximum daily output character count per device
         String deviceMaxOutputSize = sysParamsService.getValue("device_max_output_size", true);
         result.put("device_max_output_size", deviceMaxOutputSize);
 
-        // 获取聊天记录配置
+        // Get chat history configuration
         Integer chatHistoryConf = agent.getChatHistoryConf();
         if (agent.getMemModelId() != null && agent.getMemModelId().equals(Constant.MEMORY_NO_MEM)) {
             chatHistoryConf = Constant.ChatHistoryConfEnum.IGNORE.getCode();
@@ -181,7 +185,7 @@ public class ConfigServiceImpl implements ConfigService {
             chatHistoryConf = Constant.ChatHistoryConfEnum.RECORD_TEXT_AUDIO.getCode();
         }
         result.put("chat_history_conf", chatHistoryConf);
-        // 如果客户端已实例化模型，则不返回
+        // Omit models already instantiated by the client
         String alreadySelectedVadModelId = selectedModule.get("VAD");
         if (alreadySelectedVadModelId != null && alreadySelectedVadModelId.equals(agent.getVadModelId())) {
             agent.setVadModelId(null);
@@ -191,36 +195,37 @@ public class ConfigServiceImpl implements ConfigService {
             agent.setAsrModelId(null);
         }
 
-        // 添加函数调用参数信息
+        // Add function calling parameters
         if (!Objects.equals(agent.getIntentModelId(), "Intent_nointent")) {
             String agentId = agent.getId();
             List<AgentPluginMapping> pluginMappings = agentPluginMappingService.agentPluginParamsByAgentId(agentId);
             if (pluginMappings != null && !pluginMappings.isEmpty()) {
                 Map<String, Object> pluginParams = new HashMap<>();
                 for (AgentPluginMapping pluginMapping : pluginMappings) {
+                    if (!ApprovedProviderCatalog.isSupportedPlugin(pluginMapping.getProviderCode())) continue;
                     pluginParams.put(pluginMapping.getProviderCode(), pluginMapping.getParamInfo());
                 }
                 result.put("plugins", pluginParams);
             }
         }
-        // 获取mcp接入点地址
+        // Get the MCP access point URL
         String mcpEndpoint = agentMcpAccessPointService.getAgentMcpAccessAddress(agent.getId());
         if (StringUtils.isNotBlank(mcpEndpoint) && mcpEndpoint.startsWith("ws")) {
             mcpEndpoint = mcpEndpoint.replace("/mcp/", "/call/");
             result.put("mcp_endpoint", mcpEndpoint);
         }
 
-        // 获取上下文源配置
+        // Get context source configuration
         AgentContextProviderEntity contextProviderEntity = agentContextProviderService.getByAgentId(agent.getId());
         if (contextProviderEntity != null && contextProviderEntity.getContextProviders() != null
                 && !contextProviderEntity.getContextProviders().isEmpty()) {
             result.put("context_providers", contextProviderEntity.getContextProviders());
         }
 
-        // 获取声纹信息
+        // Get voiceprint information
         buildVoiceprintConfig(agent.getId(), result);
 
-        // 构建模块配置
+        // Build module configuration
         buildModuleConfig(
                 agent.getAgentName(),
                 agent.getSystemPrompt(),
@@ -244,7 +249,64 @@ public class ConfigServiceImpl implements ConfigService {
                 result,
                 true);
 
+        filterUnavailableOptionalConfig(result);
+        ApprovedProviderCatalog.validateRuntimeConfig(result);
         return result;
+    }
+
+    private void validateCachedModelReferences(Map<String, Object> config) {
+        for (var branch : config.entrySet()) {
+            String role = ApprovedProviderCatalog.normalize(branch.getKey());
+            if (role.equals("slm")) role = "llm";
+            if (!List.of("vad", "asr", "llm", "vllm", "tts", "memory", "intent", "rag").contains(role)) continue;
+            if (!(branch.getValue() instanceof Map<?, ?> models)) throw ApprovedProviderCatalog.unavailable(role);
+            for (Object id : models.keySet()) {
+                ApprovedProviderCatalog.validateSelection(role, modelConfigService.getModelByIdFromCache(String.valueOf(id)));
+            }
+        }
+    }
+
+    /** Historical optional settings become inert without blocking the core configuration. */
+    private void filterUnavailableOptionalConfig(Map<String, Object> config) {
+        Object plugins = config.get("plugins");
+        if (plugins instanceof Map<?, ?> entries) {
+            Map<String, Object> permitted = new HashMap<>();
+            for (var entry : entries.entrySet()) {
+                try {
+                    String code = String.valueOf(entry.getKey());
+                    ApprovedProviderCatalog.validateRuntimeConfig(Map.of("plugins", Map.of(code, entry.getValue())));
+                    permitted.put(code, entry.getValue());
+                } catch (RuntimeException unavailable) { /* No credentials or unsafe URL leave this boundary. */ }
+            }
+            config.put("plugins", permitted);
+        }
+        Object contexts = config.get("context_providers");
+        if (contexts instanceof Iterable<?> providers) {
+            List<Object> permitted = new ArrayList<>();
+            for (Object provider : providers) {
+                try {
+                    ApprovedProviderCatalog.validateRuntimeConfig(Map.of("context_providers", List.of(provider)));
+                    permitted.add(provider);
+                } catch (RuntimeException unavailable) { /* Optional stale context is unavailable. */ }
+            }
+            config.put("context_providers", permitted);
+        }
+        for (String optional : List.of("mcp_endpoint", "voiceprint")) {
+            Object value = config.get(optional);
+            if (value == null) continue;
+            try { ApprovedProviderCatalog.validateRuntimeConfig(Map.of(optional, value)); }
+            catch (RuntimeException unavailable) { config.remove(optional); }
+        }
+        Object server = config.get("server");
+        if (server instanceof Map<?, ?> values && values.get("voice_print") != null) {
+            try {
+                xiaozhi.common.utils.ApprovedServicePolicy.validateEndpoint(String.valueOf(values.get("voice_print")), "voiceprint");
+            } catch (RuntimeException unavailable) {
+                Map<String, Object> safe = JsonUtils.toStringObjectMap(values);
+                safe.remove("voice_print");
+                config.put("server", safe);
+            }
+        }
     }
 
     @Override
@@ -260,21 +322,23 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     /**
-     * 构建配置信息
+     * Build configuration
      * 
-     * @param config 系统参数列表
-     * @return 配置信息
+     * @param config system parameter list
+     * @return configuration
      */
     private Object buildConfig(Map<String, Object> config) {
 
-        // 查询所有系统参数
+        // Query all system parameters
         List<SysParamsDTO> paramsList = sysParamsService.list(new HashMap<>());
 
         for (SysParamsDTO param : paramsList) {
             String[] keys = param.getParamCode().split("\\.");
+            if (keys.length > 1 && "plugins".equals(keys[0])
+                    && !ApprovedProviderCatalog.isSupportedPluginConfig(keys[1])) continue;
             Map<String, Object> current = config;
 
-            // 遍历除最后一个key之外的所有key
+            // Traverse all keys except the last
             for (int i = 0; i < keys.length - 1; i++) {
                 String key = keys[i];
                 Object nestedConfig = current.computeIfAbsent(key, ignored -> new HashMap<String, Object>());
@@ -283,16 +347,16 @@ public class ConfigServiceImpl implements ConfigService {
                 current = nestedMap;
             }
 
-            // 处理最后一个key
+            // Process the last key
             String lastKey = keys[keys.length - 1];
             String value = param.getParamValue();
 
-            // 根据valueType转换值
+            // Convert the value according to valueType
             switch (param.getValueType().toLowerCase()) {
                 case "number":
                     try {
                         double doubleValue = Double.parseDouble(value);
-                        // 如果数值是整数形式，则转换为Integer
+                        // Convert integer-form numeric values to Integer
                         if (doubleValue == (int) doubleValue) {
                             current.put(lastKey, (int) doubleValue);
                         } else {
@@ -306,7 +370,7 @@ public class ConfigServiceImpl implements ConfigService {
                     current.put(lastKey, Boolean.parseBoolean(value));
                     break;
                 case "array":
-                    // 将分号分隔的字符串转换为数字数组
+                    // Convert a semicolon-separated string to a numeric array
                     List<String> list = new ArrayList<>();
                     for (String num : value.split(";")) {
                         if (StringUtils.isNotBlank(num)) {
@@ -331,26 +395,27 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     /**
-     * 构建声纹配置信息
+     * Build voiceprint configuration
      * 
-     * @param agentId 智能体ID
-     * @param result  结果Map
+     * @param agentId agent ID
+     * @param result result map
      */
     private void buildVoiceprintConfig(String agentId, Map<String, Object> result) {
         try {
-            // 获取声纹接口地址
+            // Get the voiceprint API URL
             String voiceprintUrl = sysParamsService.getValue(Constant.SERVER_VOICE_PRINT, true);
             if (StringUtils.isBlank(voiceprintUrl) || "null".equals(voiceprintUrl)) {
                 return;
             }
+            xiaozhi.common.utils.ApprovedServicePolicy.validateEndpoint(voiceprintUrl, "voiceprint");
 
-            // 获取智能体关联的声纹信息（不需要用户权限验证）
+            // Get the agent's voiceprints without user permission validation
             List<AgentVoicePrintVO> voiceprints = getVoiceprintsByAgentId(agentId);
             if (voiceprints == null || voiceprints.isEmpty()) {
                 return;
             }
 
-            // 构建speakers列表
+            // Build the speakers list
             List<String> speakers = new ArrayList<>();
             for (AgentVoicePrintVO voiceprint : voiceprints) {
                 String speakerStr = String.format("%s,%s,%s",
@@ -360,19 +425,19 @@ public class ConfigServiceImpl implements ConfigService {
                 speakers.add(speakerStr);
             }
 
-            // 构建声纹配置
+            // Build voiceprint configuration
             Map<String, Object> voiceprintConfig = new HashMap<>();
             voiceprintConfig.put("url", voiceprintUrl);
             voiceprintConfig.put("speakers", speakers);
 
-            // 获取声纹识别相似度阈值，默认0.4
+            // Get the recognition similarity threshold, defaulting to 0.4
             String thresholdStr = sysParamsService.getValue("server.voiceprint_similarity_threshold", true);
             if (StringUtils.isNotBlank(thresholdStr) && !"null".equals(thresholdStr)) {
                 try {
                     double threshold = Double.parseDouble(thresholdStr);
                     voiceprintConfig.put("similarity_threshold", threshold);
                 } catch (NumberFormatException e) {
-                    // 如果解析失败，使用默认值0.4
+                    // Use 0.4 if parsing fails
                     voiceprintConfig.put("similarity_threshold", 0.4);
                 }
             } else {
@@ -381,16 +446,16 @@ public class ConfigServiceImpl implements ConfigService {
 
             result.put("voiceprint", voiceprintConfig);
         } catch (Exception e) {
-            // 声纹配置获取失败时不影响其他功能
-            System.err.println("获取声纹配置失败: " + e.getMessage());
+            // Failure to get voiceprint configuration must not affect other features
+            System.err.println("Optional voiceprint configuration unavailable; endpoint details withheld");
         }
     }
 
     /**
-     * 获取智能体关联的声纹信息
+     * Get voiceprints associated with the agent
      * 
-     * @param agentId 智能体ID
-     * @return 声纹信息列表
+     * @param agentId agent ID
+     * @return voiceprint information list
      */
     private List<AgentVoicePrintVO> getVoiceprintsByAgentId(String agentId) {
         LambdaQueryWrapper<AgentVoicePrintEntity> queryWrapper = new LambdaQueryWrapper<>();
@@ -401,19 +466,19 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     /**
-     * 构建模块配置
+     * Build module configuration
      * 
-     * @param prompt         提示词
-     * @param voice          音色
-     * @param referenceAudio 参考音频路径
-     * @param referenceText  参考文本
-     * @param vadModelId     VAD模型ID
-     * @param asrModelId     ASR模型ID
-     * @param llmModelId     LLM模型ID
-     * @param ttsModelId     TTS模型ID
-     * @param memModelId     记忆模型ID
-     * @param intentModelId  意图模型ID
-     * @param result         结果Map
+     * @param prompt prompt
+     * @param voice voice
+     * @param referenceAudio reference audio path
+     * @param referenceText reference text
+     * @param vadModelId VAD model ID
+     * @param asrModelId ASR model ID
+     * @param llmModelId LLM model ID
+     * @param ttsModelId TTS model ID
+     * @param memModelId memory model ID
+     * @param intentModelId intent model ID
+     * @param result result map
      */
     private void buildModuleConfig(
             String assistantName,
@@ -449,15 +514,19 @@ public class ConfigServiceImpl implements ConfigService {
             if (modelIds[i] == null) {
                 continue;
             }
-            // 关键：第三个参数传false，确保获取原始密钥
+            // Important: pass false as the third argument to retrieve the original secret
             ModelConfigEntity model = modelConfigService.getModelByIdFromCache(modelIds[i]);
             if (model == null) {
-                continue;
+                throw ApprovedProviderCatalog.unavailable(modelTypes[i]);
             }
+            ApprovedProviderCatalog.validateSelection("SLM".equals(modelTypes[i]) ? "llm" : modelTypes[i], model);
+            // Runtime decorations must not mutate shared cached entities.
+            model = ConvertUtils.sourceToTarget(model, ModelConfigEntity.class);
+            model.setConfigJson(new cn.hutool.json.JSONObject(model.getConfigJson().toString()));
             Map<String, Object> typeConfig = new HashMap<>();
             if (model.getConfigJson() != null) {
                 typeConfig.put(model.getId(), model.getConfigJson());
-                // 如果是TTS类型，添加private_voice属性
+                // Add private_voice for TTS types
                 if ("TTS".equals(modelTypes[i])) {
                     if (voice != null)
                         ((Map<String, Object>) model.getConfigJson()).put("private_voice", voice);
@@ -474,16 +543,8 @@ public class ConfigServiceImpl implements ConfigService {
                     if (ttsPitch != null)
                         ((Map<String, Object>) model.getConfigJson()).put("ttsPitch", ttsPitch);
 
-                    // 火山引擎声音克隆需要替换resource_id
-                    Map<String, Object> map = (Map<String, Object>) model.getConfigJson();
-                    if (Constant.VOICE_CLONE_HUOSHAN_DOUBLE_STREAM.equals(map.get("type"))) {
-                        // 如果voice是”S_”开头的，使用seed-icl-1.0
-                        if (voice != null && voice.startsWith("S_")) {
-                            map.put("resource_id", "seed-icl-1.0");
-                        }
-                    }
                 }
-                // 如果是Intent类型，且type=intent_llm，则给他添加附加模型
+                // For Intent with type=intent_llm, add the auxiliary model
                 if ("Intent".equals(modelTypes[i])) {
                     Map<String, Object> map = (Map<String, Object>) model.getConfigJson();
                     if ("intent_llm".equals(map.get("type"))) {
@@ -493,13 +554,12 @@ public class ConfigServiceImpl implements ConfigService {
                         }
                     }
                     if (map.get("functions") != null) {
-                        String functionStr = (String) map.get("functions");
-                        if (StringUtils.isNotBlank(functionStr)) {
+                        Object configuredFunctions = map.get("functions");
+                        if (configuredFunctions instanceof String functionStr && StringUtils.isNotBlank(functionStr)) {
                             String[] functions = functionStr.split(";");
                             map.put("functions", functions);
                         }
                     }
-                    System.out.println("map: " + map);
                 }
                 if ("Memory".equals(modelTypes[i])) {
                     Map<String, Object> map = (Map<String, Object>) model.getConfigJson();
@@ -511,27 +571,30 @@ public class ConfigServiceImpl implements ConfigService {
                         }
                     }
                 }
-                // 如果是LLM类型，且intentLLMModelId不为空，则添加附加模型
+                // For LLM with a nonempty intentLLMModelId, add the auxiliary model
                 if ("LLM".equals(modelTypes[i])) {
                     if (StringUtils.isNotBlank(intentLLMModelId)) {
                         if (!typeConfig.containsKey(intentLLMModelId)) {
-                            // 修改这里：添加isMaskSensitive=false参数
+                            // Add isMaskSensitive=false here
                             ModelConfigEntity intentLLM = modelConfigService.getModelByIdFromCache(intentLLMModelId);
+                            ApprovedProviderCatalog.validateSelection("llm", intentLLM);
                             typeConfig.put(intentLLM.getId(), intentLLM.getConfigJson());
                         }
                     }
                     if (StringUtils.isNotBlank(memLocalShortLLMModelId)) {
                         if (!typeConfig.containsKey(memLocalShortLLMModelId)) {
-                            // 修改这里：添加isMaskSensitive=false参数
+                            // Add isMaskSensitive=false here
                             ModelConfigEntity memLocalShortLLM = modelConfigService
                                     .getModelByIdFromCache(memLocalShortLLMModelId);
+                            ApprovedProviderCatalog.validateSelection("llm", memLocalShortLLM);
                             typeConfig.put(memLocalShortLLM.getId(), memLocalShortLLM.getConfigJson());
                         }
                     }
-                    // LLM也返回所选的SLM，如果同名id则不重复显示
+                    // Also return the selected SLM for the LLM, avoiding duplicates with the same ID
                     if (StringUtils.isNotBlank(slmModelId) && !slmModelId.equals(llmModelId)) {
                         if (!typeConfig.containsKey(slmModelId)) {
                             ModelConfigEntity slmModel = modelConfigService.getModelByIdFromCache(slmModelId);
+                            ApprovedProviderCatalog.validateSelection("llm", slmModel);
                             if (slmModel != null && slmModel.getConfigJson() != null) {
                                 typeConfig.put(slmModel.getId(), slmModel.getConfigJson());
                             }
@@ -546,6 +609,7 @@ public class ConfigServiceImpl implements ConfigService {
 
         result.put("selected_module", selectedModule);
         if (StringUtils.isNotBlank(prompt)) {
+            // Preserve the Chinese proper name Xiaozhi in the assistant-name fallback.
             prompt = prompt.replace("{{assistant_name}}", StringUtils.isBlank(assistantName) ? "小智" : assistantName);
         }
         result.put("prompt", prompt);
